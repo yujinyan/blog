@@ -1,0 +1,68 @@
+{
+  "assetsByChunkName": {
+    "component---src-pages-index-js": [
+      "component---src-pages-index-js-836c219851c15031f403.js",
+      "component---src-pages-index-js-836c219851c15031f403.js.map"
+    ],
+    "path---": [
+      "path----557518bd178906f8d58a.js",
+      "path----557518bd178906f8d58a.js.map"
+    ],
+    "component---node-modules-gatsby-plugin-offline-app-shell-js": [
+      "component---node-modules-gatsby-plugin-offline-app-shell-js-5c4c5a0f7af9dc69d6d7.js",
+      "component---node-modules-gatsby-plugin-offline-app-shell-js-5c4c5a0f7af9dc69d6d7.js.map"
+    ],
+    "component---src-templates-blog-post-js": [
+      "component---src-templates-blog-post-js-052f0980d7c7ba766264.js",
+      "component---src-templates-blog-post-js-052f0980d7c7ba766264.js.map"
+    ],
+    "path---centering-in-css": [
+      "path---centering-in-css-59fa7bfe75609836de0d.js",
+      "path---centering-in-css-59fa7bfe75609836de0d.js.map"
+    ],
+    "component---src-layouts-index-js": [
+      "component---src-layouts-index-js-f354f2218a164556c1f4.js",
+      "component---src-layouts-index-js-f354f2218a164556c1f4.js.map"
+    ],
+    "path---index": [
+      "path---index-63b89aeaf45b7671d7bb.js",
+      "path---index-63b89aeaf45b7671d7bb.js.map"
+    ],
+    "component---src-pages-404-js": [
+      "component---src-pages-404-js-4503918ea3a16cfcdb75.js",
+      "component---src-pages-404-js-4503918ea3a16cfcdb75.js.map"
+    ],
+    "commons": [
+      "commons-6e82eaae3f56c620a9ec.js",
+      "build-js-styles.css",
+      "commons-6e82eaae3f56c620a9ec.js.map",
+      "build-js-styles.css.map"
+    ],
+    "path---404-html": [
+      "path---404-html-a0e39f21c11f6a62c5ab.js",
+      "path---404-html-a0e39f21c11f6a62c5ab.js.map"
+    ],
+    "path---flatmap": [
+      "path---flatmap-3c484ba57b4a93d8f948.js",
+      "path---flatmap-3c484ba57b4a93d8f948.js.map"
+    ],
+    "path---offline-plugin-app-shell-fallback": [
+      "path---offline-plugin-app-shell-fallback-a0e39f21c11f6a62c5ab.js",
+      "path---offline-plugin-app-shell-fallback-a0e39f21c11f6a62c5ab.js.map"
+    ],
+    "app": [
+      "app-9dba57d11feb0186df4e.js",
+      "build-js-styles.css",
+      "app-9dba57d11feb0186df4e.js.map",
+      "build-js-styles.css.map"
+    ],
+    "path---define-constants-in-laravel": [
+      "path---define-constants-in-laravel-fccfb846b4b5dd164b0f.js",
+      "path---define-constants-in-laravel-fccfb846b4b5dd164b0f.js.map"
+    ],
+    "path---404": [
+      "path---404-a0e39f21c11f6a62c5ab.js",
+      "path---404-a0e39f21c11f6a62c5ab.js.map"
+    ]
+  }
+}
