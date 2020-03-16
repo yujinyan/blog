@@ -1,0 +1,85 @@
+---
+title: "在 Laravel 中优雅地定义常量"
+date: "2017-12-16T22:12:03.284Z"
+---
+
+在业务开发中有一些需要统一维护的字符串，比如 Redis 的键，接口错误码等。直接在代码中裸写字符串显然是非常糟糕的，因此比较理想的解决方案是将这些变量统一放在一个文件中，方便维护。
+ 
+一般在 Laravel 中定义常量通常采用配置文件的形式：
+ 
+```php
+$value = config('app.value');
+```
+ 
+但是配置文件是一个动态的数组。相比静态的常量定义，配置文件无法提供代码提示、重构等方便的优势。
+ 
+由于 Laravel 框架在`app`路径下使用了 `PSR-4` autoload 规范，一个文件对应一个类，比较直接的做法是新建一个专门的`RedisKey`类，将需要的字符串定义为公共常量。
+ 
+```php
+namespace App\Constants\RedisKey;
+ 
+class RedisKey
+{
+  const ARTICLE_HTML_CACHE = 'c:a:h';
+}
+ 
+// 调用略显麻烦
+$articleHtml = Redis::get(RedisKey::ARTICLE_HTML_CACHE);
+```
+ 
+此法的问题在于`Redis::get(RedisKey::ARTICLE_HTML_CACHE)`的调用略显繁琐，不够流畅，而且这个类也显得功能单薄比较积累。比较优雅的做法是希望能这样写：
+ 
+```php
+$articleHtml = Redis::get(ARTICLE_HTML_CACHE);
+```
+ 
+为了能够引入定义的常量，我们需要自定义 composer 的 autoload 方式，修改项目的 `composer.json` 文件：
+ 
+```javascript
+{
+  "autoload": {
+    "files": [
+      "constants/Redis.php"
+    ]
+  }
+}
+```
+ 
+在 `constants/Redis.php` 中定义常量：
+ 
+```php
+<?php
+ 
+namespace Constants\Redis;
+ 
+const ARTICLE_HTML_CACHE = 'a:h:c';
+const USER_FAC_COUNT = 'u:${uid}:f:c';
+```
+ 
+由于常量定义的文件不是遵循 `PSR-4`，因此 `namespace` 可以自由定义，不一定和文件路径一一对应。参考目录结构如下：
+ 
+```
+.
+├── app/
+├── ...
+├── composer.json
+├── composer.lock
+├── config/
+├── constants/
+│    ├── Redis.php
+│    ├── errcodes.php
+│    ├── ...
+├── database/
+└── ...
+```
+ 
+在使用的时候可以直接将需要的常量 `use` 进来：
+ 
+```php
+<?php
+use Constants\Redis\ARTICLE_HTML_CACHE;
+// ...
+$cache = Redis::get(ARTICLE_HTML_CACHE);
+```
+ 
+这样的常量定义方法的好处包括：调用书写简洁优雅；充分利用静态定义的优势，编辑器自动提示、重构等功能支持一应俱全。目前看下来的缺点是在 `constants` 目录下每新加文件都需要修改 `composer.json` 文件并且运行 `composer dump-autoload` 命令。
