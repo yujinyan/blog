@@ -30,7 +30,7 @@ const BlogIndex = ({ data, location }) => {
                   {get(node, "frontmatter.translate.title") ? (
                     <TranslateMark />
                   ) : null}
-                  <span style={{verticalAlign: "middle"}}>{title}</span>
+                  <span style={{ verticalAlign: "middle" }}>{title}</span>
                 </Link>
               </h3>
               <small>{node.frontmatter.date}</small>

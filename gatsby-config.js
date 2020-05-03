@@ -64,7 +64,7 @@ module.exports = {
         short_name: `Yu's Blog`,
         start_url: `/`,
         background_color: `#ffffff`,
-        theme_color: `#663399`,
+        theme_color: `#007acc`,
         display: `minimal-ui`,
         icon: `content/assets/fish.png`,
       },
@@ -81,7 +81,10 @@ module.exports = {
       options: {
         trackingId: `UA-117949087-1`,
       },
-    }
+    },
+    `gatsby-plugin-dark-mode`,
+    `gatsby-plugin-sass`
+
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

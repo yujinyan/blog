@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "gatsby"
+import DarkModeToggle from "./DarkModeToggle"
 
 import { rhythm, scale } from "../utils/typography"
 
@@ -56,13 +57,21 @@ const Layout = ({ location, title, children }) => {
         marginRight: `auto`,
         maxWidth: rhythm(24),
         padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
+        transition: "color 0.2s ease-out, background 0.2s ease-out",
+        color: "var(--textNormal)",
       }}
     >
-      <header>{header}</header>
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        {header}
+        <DarkModeToggle />
+      </header>
       <main>{children}</main>
-      <footer>
-        © {new Date().getFullYear()} yujinyan.me
-      </footer>
+      <footer>© {new Date().getFullYear()} yujinyan.me</footer>
     </div>
   )
 }
