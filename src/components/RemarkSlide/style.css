@@ -1,0 +1,100 @@
+@import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+
+body {
+  font-family: "TIBch", "Classic Grotesque W01", "Avenir Next", "Segoe UI",
+    "Helvetica Neue", Arial, "Hiragino Sans GB", "PingFang SC", "Heiti SC",
+    "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei UI",
+    "Microsoft YaHei", sans-serif;
+  color: #424242;
+}
+h1,
+h2,
+h3 {
+  font-family: "Yanone Kaffeesatz", "Noto Sans CJK SC", "Source Han Sans SC",
+    "Microsoft YaHei UI";
+  font-weight: normal;
+}
+.remark-code,
+.remark-inline-code {
+  font-family: "Cascadia Code", "JetBrainsMono", "Operator Mono";
+  text-align: left !important;
+}
+
+.tree .remark-code {
+  font-family: monospace !important;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+.text-xl {
+  font-size: 1.25rem;
+}
+.text-4xl {
+  font-size: 2.25rem !important;
+}
+
+.text-ref {
+  font-family: Georgia, "Times New Roman", Times, STKaiti, KaiTi, serif;
+}
+
+.space-lg {
+  height: 2rem;
+}
+
+ul li {
+  margin-bottom: 0.5em;
+  list-style-type: square;
+}
+
+.column:first-of-type {
+  float: left;
+}
+.column:last-of-type {
+  float: right;
+}
+.split-50 .column {
+  width: 50%;
+}
+
+.douban-poster img {
+  width: 550px;
+}
+
+a {
+  color: rgb(75, 75, 75);
+  font-family: monospace, "Sarasa Mono SC";
+  text-decoration: underline;
+  text-decoration-color: rgb(125, 125, 125);
+  text-decoration-line: underline;
+  text-underline-position: under;
+}
+
+.small-link a {
+  font-size: 1rem;
+  color: rgb(125, 125, 125);
+  text-decoration-line: none;
+}
+
+blockquote {
+  font-family: Georgia, "Times New Roman", Times, STKaiti, KaiTi, serif;
+  color: #424242;
+  border-left: 0.5rem solid orange;
+  padding-left: 0.75rem;
+  line-height: 1.5;
+  background: #eceff1;
+}
+
+blockquote p {
+  padding: 0.75rem 0.25rem;
+}
+
+blockquote strong {
+  /* color: #ef6c00; */
+  line-height: 2rem;
+  text-decoration: underline;
+  /* text-decoration-color: #ef6c00; */
+  text-decoration-color: #ffa726;
+  text-underline-position: under;
+  font-weight: 500;
+}
