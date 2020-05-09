@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@1,400;1,600&display=swap');
+
 body.light {
   --primary: #007acc;
   --bg: #ffffff;
@@ -30,6 +32,10 @@ body.dark {
 
 .dark hr {
   background: var(--hr);
+}
+
+.dark p {
+  color: var(--textNormal)
 }
 
 body {
@@ -69,4 +75,23 @@ a {
 .dark :not(pre) > code[class*="language-"] {
   color: #f6f3f2;
   background: #606060;
+}
+
+blockquote {
+  font-family: "Zilla Slab",  Georgia, "Times New Roman", Times, STKaiti, KaiTi, serif;
+  font-style: initial;
+}
+
+.dark blockquote {
+  border-color: var(--textNormal);
+}
+
+.gatsby-highlight-code-line {
+  background-color:#67cdcc21;
+  display: block;
+  margin-right: -1em;
+  margin-left: -1em;
+  padding-right: 1em;
+  padding-left: 0.75em;
+  border-left: 0.325em solid #f99;
 }
