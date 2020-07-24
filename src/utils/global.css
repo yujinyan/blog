@@ -58,6 +58,11 @@ a {
 .dark pre[class*="language-"] {
   background: transparent !important;
 }
+
+.dark blockquote {
+  color: var(--textTitle);
+  border-left-color: var(--textNormal)
+}
 /* inline code */
 :not(pre) > code[class*="language-"] {
   padding: 0 0.375em !important;
