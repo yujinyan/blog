@@ -59,7 +59,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       {post.frontmatter.issueId &&
         <UtterancesComments issueId={post.frontmatter.issueId} />
       }
-      <nav>
+      <nav style={{ marginTop: rhythm(2) }}>
         <ul
           style={{
             display: `flex`,
