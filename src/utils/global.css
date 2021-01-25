@@ -48,6 +48,7 @@ a {
     border-radius: 10px;
     -webkit-overflow-scrolling: touch;
     overflow: auto;
+    font-size: 15px;
   }
   .gatsby-highlight pre {
     /* aligns code with paragraphs */

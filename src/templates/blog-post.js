@@ -6,6 +6,9 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
+import { UtterancesComments } from "../components/utterances"
+import 'gitalk/dist/gitalk.css';
+import '../utils/gitalk-overrides.css';
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
@@ -53,8 +56,10 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           <Bio />
         </footer>
       </article>
-
-      <nav>
+      {post.frontmatter.issueId &&
+        <UtterancesComments issueId={post.frontmatter.issueId} />
+      }
+      <nav style={{ marginTop: rhythm(2) }}>
         <ul
           style={{
             display: `flex`,
@@ -100,6 +105,7 @@ export const pageQuery = graphql`
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
+        issueId
         translate {
           title
           url
