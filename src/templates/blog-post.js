@@ -6,7 +6,7 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
-import GitalkComponent from "gitalk/dist/gitalk-component";
+import { UtterancesComments } from "../components/utterances"
 import 'gitalk/dist/gitalk.css';
 import '../utils/gitalk-overrides.css';
 
@@ -57,16 +57,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         </footer>
       </article>
       {post.frontmatter.issueId &&
-        <section>
-          <GitalkComponent options={{
-            clientID: "2032cd34b351d057de94",
-            clientSecret: "39818f47551850737f30c7dfffedd992f77bc59d",
-            repo: "blog",
-            owner: "yujinyan",
-            admin: "yujinyan",
-            id: "kotlin-suspend"
-          }} />
-        </section>
+        <UtterancesComments issueId={post.frontmatter.issueId} />
       }
       <nav>
         <ul
