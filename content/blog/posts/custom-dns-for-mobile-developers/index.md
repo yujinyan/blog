@@ -55,14 +55,14 @@ sudo ./coredns
 
 ### 客户端配置
 
-![dns settings](https://static.yujinyan.me/images/2018-05/ios-android-network-setting.jpg)
+![dns settings](./ios-android-network-setting.jpg)
 
 在 iOS 和 Android 的 Wi-Fi 设置中进入更多选项可以手动配置 DNS 服务器（Android 需要设置为固定 IP）。将前面搭建好的 DNS 服务公网地址填入即可。
 
 ## 客户端方案
 在 PC 上我们可以通过 hosts 文件自定义域名解析规则。相比搭建自己的 DNS 服务，直接在设备上修改会更加便捷。
 
-![surge](https://static.yujinyan.me/images/2018-05/surge.png)
+![surge](./ios-surge.png)
 iOS 上推荐 Surge，可以直接添加自定义的域名解析规则。 
 
 <a href="https://itunes.apple.com/cn/app/surge-3-web-developer-tool/id1329879957?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/zh-cht/appstore-lrg.svg) no-repeat;width:135px;height:40px;background-size:contain;"></a>
