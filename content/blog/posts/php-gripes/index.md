@@ -16,7 +16,7 @@ $service = app('some.service');
 
 自己的代码可以通过注释添加类型信息，但对于框架中的代码就无能为力了。Laravel 框架的实现运用了许多`__call`，`__get` 等魔术方法，比如常用的 `Illuminate\Database\Eloquent\Model` 类中将查询相关的逻辑通过魔术方法委托给 `Illuminate\Database\Eloquent\Builder` 类实现。这样便造成调用的方法要等到运行时才能确定，编辑器无法找到相应的方法，报一堆虚线警告，看起来实在非常令人纠结。此外要想看一下调用的方法还得在源码中查阅一番，人脑运行一遍代码，造成了不必要的思维负担。
 
-![php ide](https://static.yujinyan.me/images/2018-04/php-ide.png)
+![php ide](./php-ide.png)
 
 新一点的 PHP 版本可以给函数参数以及返回值指定类型提示（type hinting / declarations），例如：
 
