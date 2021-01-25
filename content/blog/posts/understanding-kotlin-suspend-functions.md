@@ -143,7 +143,7 @@ lifecycleScope.launch(Dispatchers.Main) {
 
 比如上面这个代码块，我们指定这个协程块调度到主线程执行，里面调用了一个不知道哪里来的 `suspend foo` 方法。这个方法内部可能是耗时的 CPU 计算，可能是耗时的 IO 请求，但是我在写这个协程块的时候，其实并不需要关心这里面到底是怎么回事，运行在哪个线程。类似地，在阅读这段协程块的时候，我们可以清楚地知道眼前的这段代码会在主线程执行，`suspend foo` 里面的代码是一个潜在的耗时操作，具体在哪个线程执行是这个函数的实现细节，对于当前代码的逻辑是「透明」的。
 
-但前提是这个 `suspend` 函数实现正确，真正做到了不阻塞当前线程。单纯地给函数加上`suspend` 关键字并不会神奇地让函数变成非阻塞的，比如假设 `suspend foo` 里面的实现是这样的：
+但前提是这个 `suspend` 函数实现正确，真正做到了不阻塞当前线程。单纯地给函数加上 `suspend` 关键字并不会神奇地让函数变成非阻塞的，比如假设 `suspend foo` 里面的实现是这样的：
 
 ```kotlin
 // 😖
@@ -158,9 +158,9 @@ suspend fun findBigPrime(): BigInteger = withContext(Dispatchers.Default) {
 }
 ```
 
-借助 `withContext` 我们把耗时操作从当前主线程挪到了一个默认的后台线程池。因此有人说，即使是用了协程，最终还是会「阻塞」某个线程，「所有的代码本质上都是阻塞式的」。这样理解有些草率。CPU 执行线程，而上面 `BigInteger.probablePrime` 是一个耗时的 CPU 计算，只能等待 CPU 把结果算出来，但 IO 造成的等待并不一定要阻塞 CPU，由此有阻塞和非阻塞 IO 之分。
+借助 `withContext` 我们把耗时操作从当前主线程挪到了一个默认的后台线程池。因此有人说，即使是用了协程，最终还是会「阻塞」某个线程，「所有的代码本质上都是阻塞式的」。这种理解可以帮助我们认识到 Android / JVM 上最终需要线程作为执行协程的载体，但忽略了阻塞和非阻塞 IO 之分。CPU 执行线程，而上面 `BigInteger.probablePrime` 是一个耗时的 CPU 计算，只能等待 CPU 把结果算出来，但 IO 造成的等待并不一定要阻塞 CPU。
 
-比如 Retrofit 虽然支持 `suspend` 函数（实际上也就是包装一下早就存在的基于回调的 API），但是底层依赖的 OkHttp 用的是阻塞的方法，最终执行请求是调度到线程池里面去执行。而 [Ktor 的 HTTP 客户端](https://ktor.io/docs/clients-index.html)支持非阻塞 IO。尝试用这两个客户端去并发做请求，可以感受到两者的不同。
+阻塞和非阻塞 IO 是有实际区别的。比如 Retrofit 虽然支持 `suspend` 函数（实际上也就是包装一下早就存在的基于回调的 API `enqueue`），但是底层依赖的 OkHttp 用的是阻塞的方法，最终执行请求是调度到线程池里面去执行。而 [Ktor 的 HTTP 客户端](https://ktor.io/docs/clients-index.html)支持非阻塞 IO。尝试用这两个客户端去并发做请求，可以感受到两者的不同。
 
 当然客户端不会像服务端那样有很多「高并发」的场景，不太需要同时发起大量请求，所以一般使用线程池加上阻塞的 API 已经够用了。服务端可能需要处理大量请求，而每个请求一般都会去调数据库、缓存等外部服务，有大量 IO 操作，因此利用非阻塞的 IO API 理论上可以节省硬件资源。Spring Framework 在传统的基于 Servlet 的 WebMvc 之外还提供了 WebFlux。后者为非阻塞的服务器（比如 Netty）提供了支持。Spring WebFlux 原生用 Reactive Streams 提供了一种反应式编程模型（类似 RxJava）来支持非阻塞的 API。目前 WebFlux 也已经支持 Kotlin 协程，可以在 Controller 直接写 suspend 函数。
 
