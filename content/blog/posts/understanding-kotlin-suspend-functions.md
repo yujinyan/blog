@@ -63,7 +63,7 @@ suspend fun postItem(item: Item) {
 
 由于 `createPost` 这些方法实际上是耗时的 IO 异步操作，需要等到拿到返回值才能执行后面的逻辑，但我们又不希望阻塞当前线程（通常是主线程），因此最终必须实现某种消息传递的机制，让后台线程做完耗时操作以后把结果传给主线程。
 
-假设我们有了前面提到的三个基于回调的 API，实现 `suspend` 可以在编译的时候把每个挂起点 🏹 后面的逻辑包在一个 lambda 里面，然后去调用回调 API，最终生成类似嵌套的代码。但这样每一个挂起点在运行时都需要开销一个 lambda 对象。Kotlin 和许多其他语言都采用生成状态机的方式，效率更佳。
+假设我们有了前面提到的三个基于回调的 API，实现 `suspend` 可以在编译的时候把每个挂起点 🏹 后面的逻辑包在一个 lambda 里面，然后去调用回调 API，最终生成类似嵌套的代码。但这样每一个挂起点在运行时都需要开销一个 lambda 对象。Kotlin 和许多其他语言都采用生成状态机的方式，性能更好。
 
 具体来说，编译器看到 `suspend` 关键字会去掉 `suspend` ，给函数添加一个额外的 `Continuation` 参数。这个 `Continuation` 就代表了一个回调：
 
@@ -124,7 +124,7 @@ fun postItem(item: Item, cont: Continuation) {
 
 `suspend` 提供了这样一个**约定(Convention)**：调用这个函数不会阻塞当前调用的线程。这对 UI 编程是非常有用的，因为 UI 的主线程需要不断相应各种图形绘制、用户操作的请求，如果主线程上有耗时操作会让其他请求无法及时响应，造成 UI 卡顿。
 
-Android 社区流行的网络请求库 Retrofit、官方出品的数据库 ORM Room 都已经通过提供 `suspend` API 的形式支持了协程。Android 官方也利用 Kotlin 扩展属性的方式给 `Activity` 等具有生命周期的组件提供了开启协程所需的 `CoroutineScope` ，其中的 context 指定了使用 `Dispatchers.Main` ，即通过 `lifecycleScope` 开启的协程都会被调度到主线程执行。因此我们可以在调用 `suspend` 函数，拿到结果后直接更新 UI，无须做任何线程切换操作。这样的 `suspend` 函数叫作[「main 安全」](https://developer.android.com/kotlin/coroutines#use-coroutines-for-main-safety)的。
+Android 社区流行的网络请求库 Retrofit、官方出品的数据库 ORM Room 都已经通过提供 `suspend` API 的形式支持了协程。Android 官方也利用 Kotlin 扩展属性的方式给 `Activity` 等具有生命周期的组件提供了开启协程所需的 `CoroutineScope` ，其中的 context 指定了使用 `Dispatchers.Main` ，即通过 `lifecycleScope` 开启的协程都会被调度到主线程执行。因此我们可以在调用 `suspend` 函数，拿到结果后直接更新 UI，无须做任何线程切换的动作。这样的 `suspend` 函数叫作[「main 安全」](https://developer.android.com/kotlin/coroutines#use-coroutines-for-main-safety)的。
 
 ```kotlin
 lifecycleScope.launch {
@@ -161,19 +161,19 @@ suspend fun findBigPrime(): BigInteger = withContext(Dispatchers.Default) {
 
 借助 `withContext` 我们把耗时操作从当前主线程挪到了一个默认的后台线程池。因此有人说，即使是用了协程，最终还是会「阻塞」某个线程，「所有的代码本质上都是阻塞式的」。这种理解可以帮助我们认识到 Android / JVM 上最终需要线程作为执行协程的载体，但忽略了阻塞和非阻塞 IO 之分。CPU 执行线程，而上面 `BigInteger.probablePrime` 是一个耗时的 CPU 计算，只能等待 CPU 把结果算出来，但 IO 造成的等待并不一定要阻塞 CPU。
 
-阻塞和非阻塞 IO 是有实际区别的。比如 Retrofit 虽然支持 `suspend` 函数（实际上也就是包装一下早就存在的基于回调的 API `enqueue`），但是底层依赖的 OkHttp 用的是阻塞的方法，最终执行请求是调度到线程池里面去执行。而 [Ktor 的 HTTP 客户端](https://ktor.io/docs/clients-index.html)支持非阻塞 IO。尝试用这两个客户端去并发做请求，可以感受到两者的不同。
+阻塞和非阻塞 IO 是有实际区别的。比如 Retrofit 虽然支持 `suspend` 函数（实际上也就是包装一下基于回调的 API `enqueue`），但是底层依赖的 OkHttp 用的是阻塞的方法，最终执行请求还是调度到线程池里面去。而 [Ktor 的 HTTP 客户端](https://ktor.io/docs/clients-index.html)支持非阻塞 IO。尝试用这两个客户端去并发做请求，可以感受到两者的不同。
 
-当然客户端不会像服务端那样有很多「高并发」的场景，不太需要同时发起大量请求，所以一般使用线程池加上阻塞的 API 已经够用了。服务端可能需要处理大量请求，而每个请求一般都会去调数据库、缓存等外部服务，有大量 IO 操作，因此利用非阻塞的 IO API 理论上可以节省硬件资源。Spring Framework 在传统的基于 Servlet 的 WebMvc 之外还提供了 WebFlux。后者为非阻塞的服务器（比如 Netty）提供了支持。Spring WebFlux 原生用 Reactive Streams 提供了一种反应式编程模型（类似 RxJava）来支持非阻塞的 API。目前 WebFlux 也已经支持 Kotlin 协程，可以在 Controller 直接写 suspend 函数。
+当然客户端不会像服务端那样有很多「高并发」的场景，不太需要同时发起大量请求，所以一般使用线程池加上阻塞的 API 已经够用了。服务端可能需要同时响应大量请求，而每个请求一般都会去调数据库、缓存等外部服务，有大量 IO 操作，因此利用非阻塞的 IO API 理论上可以节省硬件资源。Spring Framework 在传统的基于 Servlet 的 WebMvc 之外还提供了 WebFlux。后者为非阻塞的服务器（比如 Netty）提供了支持。Spring WebFlux 原生用 Reactive Streams 提供了一种反应式编程模型（类似 RxJava）来支持非阻塞的 API。目前 WebFlux 也已经支持 Kotlin 协程，可以在 Controller 直接写 suspend 函数。
 
-随着 Android 官方将协程作为推荐的异步方案，常见的异步场景如网络请求、数据库都已经有支持协程的库，可以设想未来 Android 开发的新人其实不太需要知道线程切换的细节，只需要直接在主线程调用 `suspend` 函数即可，切换线程应该被当成实现细节被封装掉而几乎变成「透明」的，这是协程的厉害之处。
+随着 Android 官方将协程作为推荐的异步方案，常见的异步场景如网络请求、数据库都已经有支持协程的库，可以设想未来 Android 开发的新人其实不太需要知道线程切换的细节，只需要直接在主线程调用封装好的 `suspend` 函数即可，切换线程应该被当成实现细节被封装掉而几乎变成「透明」的，这是协程的厉害之处。
 
 ## 可以 `suspend` 的不仅仅是 IO
 
-`suspend` 本身并不完全是线程切换，只不过异步 IO 在 Android 平台最终都得依托多线程来实现；而异步 IO 又是协程的主要应用场景。Android 开发者们已经见识过各种异步 IO 的 API（对线程切换情有独钟），这些 API 本质上都得依靠某种形式的回调，将异步 IO 的结果通知给主线程进行 UI 刷新。协程的 `supend` 也是如此，只不过通过关键字的引入和编译器的支持，让我们可以用顺序、从上到下（sequential）的代码写出异步逻辑。不仅提升了代码可读性，还方便我们利用熟悉的条件、循环、try catch 这些构造轻松地写出复杂的逻辑。
+`suspend` 本身并不完全是线程切换，只不过异步 IO 在 Android 平台最终都得依托多线程来实现；而异步 IO 又是协程的主要应用场景。Android 开发者们已经见识过各种异步 IO 的 API（对线程切换情有独钟），这些 API 本质上都得依靠某种形式的回调，将异步 IO 的结果通知给主线程进行 UI 刷新。协程的 `suspend` 也是如此，只不过通过关键字的引入和编译器的支持，让我们可以用顺序、从上到下（sequential）的代码写出异步逻辑。不仅提升了代码可读性，还方便我们利用熟悉的条件、循环、try catch 等构造轻松地写出复杂的逻辑。
 
-把协程和 `suspend` 看成线程切换工具有很大的局限。由于 `suspend` 就是回调，也提供了包装回调 API 的方法，很多基于回调的 API 都可以用 `suspend` 函数进行封装改造。
+把协程和 `suspend` 单纯看成线程切换工具有很大的局限性。由于 `suspend` 就是回调，也提供了包装回调 API 的方法，很多基于回调的 API 都可以用 `suspend` 函数进行封装改造。
 
-[Splitties](https://github.com/LouisCAD/Splitties) 是一个非常地道的 Kotlin Android 辅助函数库，其中提供了一个 `AlertDialog.showAndAwait` 方法。下面的示例代码会打开一个对话框，等待用户确认是否要做删除的操作。这是一个异步的操作，于是将协程「挂起」，等用户选择完毕后返回一个布尔值。
+[Splitties](https://github.com/LouisCAD/Splitties) 是一个非常地道的 Kotlin Android 辅助函数库，其中提供了一个 `AlertDialog.showAndAwait` 方法。下面的示例代码会打开一个对话框，等待用户确认是否要删除。这是一个异步的操作，于是将协程「挂起」，等用户选择完毕后返回一个布尔值。
 
 ```kotlin
 suspend fun shouldWeReallyDeleteFromTrash(): Boolean = alertDialog(
@@ -269,14 +269,14 @@ suspend fun getSalad() = 🏹 either<CookingException, Salad> {
 
 本文 CPS 的例子摘抄自 Roman Elizarov 在 2017 年 KotlinConf 的介绍：[Deep Dive into Coroutines on JVM](https://www.youtube.com/watch?v=YrrUCSi72E8)。
 
-Roman 是 Kotlin 协程的主要设计者，现在担任 Kotlin Project Lead，他在 [Medium](https://elizarov.medium.com/) 上有一系列介绍 Kotlin 和协程的文章，非常值得我们学习和理解 Kotlin 的一些设计思想。
+Roman 是 Kotlin 协程的主要设计者，现在担任 Kotlin Project Lead，他在 [Medium](https://elizarov.medium.com/) 上有一系列介绍 Kotlin 和协程的文章，可以帮助我们学习和理解 Kotlin 的一些设计思想。
 
 ## 题外话：Kotlin 的异常处理
 
-本文提到了 Λrrow `Either` 这个 ADT 来做异常处理，这是笔者认为比较好的异常处理方式。Kotlin 在类型系统区分了 null 和非 null 的值，解决了 `NullPointerException` 的问题，但是在异常处理这一块干掉了 Checked Exception，可以说是开了倒车。我们调用一个函数不去了解实现很难确定是否会抛出异常，这在客户端使用协程的情况下尤其糟糕，异常抛出的规律不容易掌握，稍有不慎便会让应用崩溃。异常处理在其他现代编程语言比如 Swift 和 Rust 就要好得多。不过可以理解 Kotlin 这一设计或许更多是 Java 生态的包袱。
+本文提到了 Λrrow `Either` 这个 ADT 来做异常处理，这是笔者认为比较好的异常处理方式。Kotlin 在类型系统区分了 null 和非 null 的值，解决了 `NullPointerException` 的问题，但是在异常处理这一块却干掉了 Checked Exception，可以说是开了倒车。我们调用一个函数不去了解其实现很难确定是否会抛出异常。这在客户端使用协程的情况下尤其糟糕，异常抛出的规律不容易掌握，稍有不慎便会让应用崩溃。异常处理在其他现代编程语言比如 Swift 和 Rust 就要好得多。不过可以理解 Kotlin 这一设计或许更多是 Java 生态的包袱造成的。
 
-所以笔者推荐在使用基于协程的 API 的时候，把所有的异常都在全局位置（比如 Retrofit 的 call adapter）全部 catch 掉，根据业务逻辑封装成类似标准库 `Result` 类型或者 Λrrow 的 `Either` 。如果调用方不需要获取具体错误信息的可以直接用 `T?` 可空类型来表示，这样既有类型安全又有 `?.` 、`?:` 语法糖。据说 Kotlin 有可能结合 `Result` 类给函数返回类型做个语法糖，非常期待。
+所以笔者推荐在使用基于协程的 API 的时候，把所有的异常在全局位置（比如 Retrofit 的 call adapter）全部 catch 掉，然后根据业务逻辑封装成类似标准库 `Result` 类型或者 Λrrow 的 `Either` 。如果调用方不需要获取具体错误信息的话可以直接用 `T?` 可空类型来表示，这样既有类型安全又有 `?.` 、`?:` 语法糖。据说 Kotlin 有可能结合 `Result` 类给函数返回类型做个语法糖，非常期待。
 
 ## 题外话：没有用的 `await` 关键字
 
-近日，Swift 语言通过了 [Async/await](https://github.com/apple/swift-evolution/blob/main/proposals/0296-async-await.md#asynchronous-functions) 提案。`async` 相当于 Kotlin 的 `suspend` 。在调用 async / suspend 函数的时候，Swift 需要一个额外的 `await` 关键字，但是 Kotlin 不需要，调用 suspend 函数的语法和调用普通函数没有区别。这个 `await` 除了标记之外没有其他作用。Kotlin 的这个设计在写起来是更加方便的，但是读起来的时候其实还是有个标记比较好，所以 IDE 会在在 gutter 有个图标提示，在没有 IDE 的环境比如写作本文就比较麻烦，需要在 `await` 的地方放个 emoji 手动标记 😂。
+近日，Swift 语言通过了 [Async/await](https://github.com/apple/swift-evolution/blob/main/proposals/0296-async-await.md#asynchronous-functions) 提案。`async` 相当于 Kotlin 的 `suspend` 。在调用 async / suspend 函数的时候，Swift 需要一个额外的 `await` 关键字，但是 Kotlin 不需要，调用 suspend 函数的语法和调用普通函数没有区别。这个 `await` 除了标记之外没有其他作用。Kotlin 的这个设计写起来更加方便，但是读起来的时候还是有个标记比较好，所以 IDE 会在在 gutter 有个图标提示。在没有 IDE 的环境比如写作本文的时候就比较麻烦，需要在 `await` 的地方放个 emoji 手动标记 😂。
