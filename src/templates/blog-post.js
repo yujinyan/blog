@@ -6,6 +6,9 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
+import GitalkComponent from "gitalk/dist/gitalk-component";
+import 'gitalk/dist/gitalk.css';
+import '../utils/gitalk-overrides.css';
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
@@ -53,7 +56,18 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           <Bio />
         </footer>
       </article>
-
+      {post.frontmatter.issueId &&
+        <section>
+          <GitalkComponent options={{
+            clientID: "2032cd34b351d057de94",
+            clientSecret: "39818f47551850737f30c7dfffedd992f77bc59d",
+            repo: "blog",
+            owner: "yujinyan",
+            admin: "yujinyan",
+            id: "kotlin-suspend"
+          }} />
+        </section>
+      }
       <nav>
         <ul
           style={{
@@ -100,6 +114,7 @@ export const pageQuery = graphql`
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
+        issueId
         translate {
           title
           url
