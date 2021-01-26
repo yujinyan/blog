@@ -8,7 +8,7 @@ Cloned from [Gatsby's blog starter](https://github.com/gatsbyjs/gatsby-starter-b
 
 The `issues` feature of this project serves as comment section for blog contents, powered by [utterances](https://utteranc.es/).
 
-To enable the comment section a blog post, I manually create an issue, take note of the issue id and record it in the corresponding posts' fronter matter with a custom attribute `issueId`. This could be automated in the future.
+To enable the comment section for a blog post, I manually create an issue, take note of the issue id and record it in the corresponding post's front matter with a custom attribute `issueId`. This could be automated in the future.
 
 Feel free to open new issues for older posts.
 
