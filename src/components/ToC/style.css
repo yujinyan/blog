@@ -1,8 +1,8 @@
 .ToCs {
-  /* magic number */
   position: fixed;
   bottom: 0px;
   right: 0;
+  /* magic number */
   width: calc(50vw - 368px);
   font-size: 10px;
   border-left: 1px solid #86868638;
