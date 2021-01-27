@@ -6,6 +6,7 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
+import ToC from "../components/ToC"
 import { UtterancesComments } from "../components/utterances"
 import 'gitalk/dist/gitalk.css';
 import '../utils/gitalk-overrides.css';
@@ -22,6 +23,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         description={post.frontmatter.description || post.excerpt}
       />
       <article>
+        <ToC html={post.tableOfContents} />
         <header>
           <h1
             style={{
@@ -102,6 +104,9 @@ export const pageQuery = graphql`
       id
       excerpt(pruneLength: 160)
       html
+      tableOfContents(
+        absolute: false
+      )
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")

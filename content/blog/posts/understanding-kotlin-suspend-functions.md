@@ -4,9 +4,6 @@ date: "2021-01-24T23:14:03.284Z"
 issueId: "4"
 ---
 
-```toc
-# pass
-```
 
 ## `suspend` 是回调（Callback）
 

@@ -5,7 +5,7 @@ body.light {
   --header: var(--pink);
   --textNormal: #222;
   --textTitle: #222;
-  --textLink: #d23669;
+  --textLink: #1a1a1a;
   --hr: hsla(0, 0%, 0%, 0.2);
   --inlineCode-bg: rgba(255, 229, 100, 0.2);
   --inlineCode-text: #1a1a1a;
@@ -21,7 +21,7 @@ body.dark {
   --header: #ffffff;
   --textNormal: rgba(255, 255, 255, 0.88);
   --textTitle: #ffffff;
-  --textLink: var(--pink);
+  --textLink: var(--textTitle);
   --hr: hsla(0, 0%, 100%, 0.2);
   --inlineCode-bg: rgba(115, 124, 153, 0.2);
   --inlineCode-text: #e6e6e6;
@@ -83,33 +83,4 @@ a.anchor {
 }
 a.anchor.before {
   padding-right: 8px;
-}
-
-.table-of-contents {
-  /* magic number */
-  position: fixed;
-  bottom: 0px;
-  right: 0;
-  width: calc(50vw - 368px);
-  font-size: 10px;
-}
-.table-of-contents ul {
-  border-left: 1px solid #86868638;
-  padding-left: 2rem;
-  list-style: none;
-}
-.table-of-contents li {
-  margin-bottom: 0.375rem;
-}
-.table-of-contents a {
-  /* color: none; */
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: none;
-  color: #8c8c8c;
-}
-
-@media (max-width: 1268px) {
-  .table-of-contents {
-    display: none;
-  }
 }
