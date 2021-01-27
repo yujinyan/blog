@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 
 export const useActiveHash = (itemIds, rootMargin = undefined) => {
+  const isSSR = typeof window === "undefined"
   const [activeHash, setActiveHash] = useState(``)
 
   useEffect(() => {
+    if (isSSR) return []
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
