@@ -62,7 +62,7 @@ a {
 
 .dark blockquote {
   color: var(--textTitle);
-  border-left-color: var(--textNormal)
+  border-left-color: var(--textNormal);
 }
 /* inline code */
 :not(pre) > code[class*="language-"] {
@@ -75,4 +75,41 @@ a {
 .dark :not(pre) > code[class*="language-"] {
   color: #f6f3f2;
   background: #606060;
+}
+
+a.anchor {
+  color: transparent;
+  fill: white;
+}
+a.anchor.before {
+  padding-right: 8px;
+}
+
+.table-of-contents {
+  /* magic number */
+  position: fixed;
+  bottom: 0px;
+  right: 0;
+  width: calc(50vw - 368px);
+  font-size: 10px;
+}
+.table-of-contents ul {
+  border-left: 1px solid #86868638;
+  padding-left: 2rem;
+  list-style: none;
+}
+.table-of-contents li {
+  margin-bottom: 0.375rem;
+}
+.table-of-contents a {
+  /* color: none; */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: none;
+  color: #8c8c8c;
+}
+
+@media (max-width: 1268px) {
+  .table-of-contents {
+    display: none;
+  }
 }
