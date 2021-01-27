@@ -19,7 +19,7 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   box-shadow: none;
   color: #8c8c8c;
-  transition: color 0.25s ease-in;
+  transition: color 0.2s ease-in;
 }
 
 .ToCs a.isActive {
