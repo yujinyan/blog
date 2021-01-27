@@ -191,15 +191,15 @@ suspend fun shouldWeReallyDeleteFromTrash(): Boolean = alertDialog(
 suspend fun Animator.awaitEnd() { /* 略去实现 */}
 
 lifecycleScope.launch {
-    ObjectAnimator.ofFloat(imageView, View.ALPHA, 0f, 1f).run {
-        start(); 🏹 awaitEnd()
-    }
-    ObjectAnimator.ofFloat(imageView, View.TRANSLATION_Y, 0f, 100f).run {
-        start(); 🏹 awaitEnd()
-    }
-    ObjectAnimator.ofFloat(imageView, View.TRANSLATION_X, -100f, 0f).run {
-        start(); 🏹 awaitEnd()
-    }
+  ObjectAnimator.ofFloat(imageView, View.ALPHA, 0f, 1f).run {
+    start(); 🏹 awaitEnd()
+  }
+  ObjectAnimator.ofFloat(imageView, View.TRANSLATION_Y, 0f, 100f).run {
+    start(); 🏹 awaitEnd()
+  }
+  ObjectAnimator.ofFloat(imageView, View.TRANSLATION_X, -100f, 0f).run {
+    start(); 🏹 awaitEnd()
+  }
 }
 ```
 
