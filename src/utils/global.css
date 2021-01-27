@@ -40,6 +40,15 @@ a {
   color: var(--primary);
 }
 
+.gatsby-highlight-code-line {
+  display: block;
+  background: #3c4846e0;
+  margin-right: -1.3125rem;
+  margin-left: -1rem;
+  /* padding-left + border-left = margin-left */
+  padding-left: .6875rem;
+  border-left: #cc99cd solid 0.3125em;
+}
 @media (max-width: 42rem) {
   .gatsby-highlight {
     margin-bottom: 1.75rem;
@@ -54,6 +63,10 @@ a {
     /* aligns code with paragraphs */
     padding-left: 1.3125rem !important;
   }
+  .gatsby-highlight-code-line {
+    margin-left: -1.3125rem;
+    padding-left: 1rem;
+  }
 }
 
 .dark pre[class*="language-"] {
@@ -62,7 +75,7 @@ a {
 
 .dark blockquote {
   color: var(--textTitle);
-  border-left-color: var(--textNormal)
+  border-left-color: var(--textNormal);
 }
 /* inline code */
 :not(pre) > code[class*="language-"] {

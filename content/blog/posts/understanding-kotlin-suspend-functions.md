@@ -72,7 +72,7 @@ public interface Continuation<in T> {
   public val context: CoroutineContext
 
   // 用来回调的方法
-  public fun resumeWith(result: Result<T>)
+  public fun resumeWith(result: Result<T>) // highlight-line
 }
 ```
 
@@ -92,7 +92,7 @@ fun postItem(item: Item, cont: Continuation) {
   // 初始化一个对应调用这次 postItem 的状态机
   val sm = (cont as? ThisSM) ?: object: ContinuationImpl {
     fun resume(..) {
-      postItem(null, this)
+      postItem(null, this) // highlight-line
     }
   }
   switch (sm.label) {
@@ -138,7 +138,7 @@ lifecycleScope.launch {
 ```kotlin
 
 lifecycleScope.launch(Dispatchers.Main) {
-   🏹 foo()
+   🏹 foo() // highlight-line
 }
 ```
 
@@ -178,7 +178,7 @@ suspend fun findBigPrime(): BigInteger = withContext(Dispatchers.Default) {
 ```kotlin
 suspend fun shouldWeReallyDeleteFromTrash(): Boolean = alertDialog(
     message = txt(R.string.dialog_msg_confirm_delete_from_trash)
-).🏹 showAndAwait(
+).🏹 showAndAwait( // highlight-line
     okValue = true,
     cancelValue = false,
     dismissValue = false
