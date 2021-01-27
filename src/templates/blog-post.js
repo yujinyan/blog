@@ -23,7 +23,6 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         description={post.frontmatter.description || post.excerpt}
       />
       <article>
-        <ToC html={post.tableOfContents} />
         <header>
           <h1
             style={{
@@ -46,6 +45,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             {post.frontmatter.date}
           </p>
         </header>
+        {post.tableOfContents && <ToC html={post.tableOfContents} />}
         {post.frontmatter.translate &&
           TranslateInfo(post.frontmatter.translate)}
         <section dangerouslySetInnerHTML={{ __html: post.html }} />
