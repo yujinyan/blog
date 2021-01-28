@@ -72,7 +72,7 @@ public interface Continuation<in T> {
   public val context: CoroutineContext
 
   // 用来回调的方法
-  public fun resumeWith(result: Result<T>)
+  public fun resumeWith(result: Result<T>) // highlight-line
 }
 ```
 
@@ -92,7 +92,9 @@ fun postItem(item: Item, cont: Continuation) {
   // 初始化一个对应调用这次 postItem 的状态机
   val sm = (cont as? ThisSM) ?: object: ContinuationImpl {
     fun resume(..) {
-      postItem(null, this)
+      // 通过 ContinuationImpl.resume
+      // 重新回调回这个方法
+      postItem(null, this) // highlight-line
     }
   }
   switch (sm.label) {
@@ -138,7 +140,7 @@ lifecycleScope.launch {
 ```kotlin
 
 lifecycleScope.launch(Dispatchers.Main) {
-   🏹 foo()
+   🏹 foo() // highlight-line
 }
 ```
 
@@ -154,9 +156,10 @@ suspend fun foo() = BigInteger.probablePrime(4096, Random())
 这里这个 `suspend` 函数的内部实现是一段耗时的 CPU 操作，类似地也可以想象成是一段时间复杂度特别高的代码。我们如果在主线程调用这个函数还是会阻塞 UI。问题出在这个 `foo` 函数的实现没有遵守 `suspend` 的语义，是错误的。正确的做法应该修改这个 `foo` 函数：
 
 ```kotlin
-suspend fun findBigPrime(): BigInteger = withContext(Dispatchers.Default) {
-  BigInteger.probablePrime(4096, Random())
-}
+suspend fun findBigPrime(): BigInteger = 
+  withContext(Dispatchers.Default) { // highlight-line
+    BigInteger.probablePrime(4096, Random())
+  }
 ```
 
 借助 `withContext` 我们把耗时操作从当前主线程挪到了一个默认的后台线程池。因此有人说，即使是用了协程，最终还是会「阻塞」某个线程，「所有的代码本质上都是阻塞式的」。这种理解可以帮助我们认识到 Android / JVM 上最终需要线程作为执行协程的载体，但忽略了阻塞和非阻塞 IO 之分。CPU 执行线程，而上面 `BigInteger.probablePrime` 是一个耗时的 CPU 计算，只能等待 CPU 把结果算出来，但 IO 造成的等待并不一定要阻塞 CPU。
@@ -180,7 +183,7 @@ suspend fun findBigPrime(): BigInteger = withContext(Dispatchers.Default) {
 ```kotlin
 suspend fun shouldWeReallyDeleteFromTrash(): Boolean = alertDialog(
     message = txt(R.string.dialog_msg_confirm_delete_from_trash)
-).🏹 showAndAwait(
+).🏹 showAndAwait( // highlight-line
     okValue = true,
     cancelValue = false,
     dismissValue = false
@@ -274,21 +277,21 @@ class Tree(val left: Tree?, val right: Tree?)
 
 fun depth(tree: Tree?): Int =
   if (t == null) 0 else maxOf(
-    depth(tree.left),
-    depth(tree.right),
+    depth(tree.left), // highlight-line
+    depth(tree.right) // highlight-line
   ) + 1
 ```
 
 但如果递归过深超出限制，运行时会抛出 `StackOverflowException`。因此我们需要利用空间更大的堆内存。通常我们可以显式地维护一个栈数据结构。
 
-Kotlin 标准库中有个试验性的 [`DeepRecursiveFunction`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-deep-recursive-function/) 辅助类，帮助我们写出的代码保持递归的「大致形状」，但是将中间状态保存在堆内存中。其中实现的机制就是 `suspend` 的 CPS 变换。
+Kotlin 标准库中有个试验性的 [`DeepRecursiveFunction`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-deep-recursive-function/) 辅助类，帮助我们写出的代码保持递归算法的「大致形状」，但是将中间状态保存在堆内存中。其中实现的机制就是 `suspend` 的 CPS 变换。
 
 ```kotlin
 val depth = DeepRecursiveFunction<Tree?, Int> { tree ->
   // 这里是一个 suspend 的 λ
   if (tree == null) 0 else maxOf(
-    🏹 callRecursive(tree.left),
-    🏹 callRecursive(tree.right)
+    🏹 callRecursive(tree.left), // highlight-line
+    🏹 callRecursive(tree.right) // highlight-line
   ) + 1
 }
 
