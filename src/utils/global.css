@@ -41,8 +41,9 @@ a {
 }
 
 /* see https://github.com/yujinyan/blog/pull/10 */
-.gatsby-highlight code {
+.gatsby-highlight pre > code {
   display: inline-block;
+  min-width: 100%;
 }
 
 .gatsby-highlight-code-line {
@@ -51,7 +52,7 @@ a {
   margin-right: -1.3125rem;
   margin-left: -1rem;
   /* padding-left + border-left = margin-left */
-  padding-left: .6875rem;
+  padding-left: 0.6875rem;
   border-left: #cc99cd solid 0.3125em;
 }
 @media (max-width: 42rem) {
