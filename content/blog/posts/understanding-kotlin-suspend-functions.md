@@ -173,6 +173,8 @@ suspend fun findBigPrime(): BigInteger = withContext(Dispatchers.Default) {
 
 把协程和 `suspend` 单纯看成线程切换工具有很大的局限性。由于 `suspend` 就是回调，也提供了包装回调 API 的方法，很多基于回调的 API 都可以用 `suspend` 函数进行封装改造。
 
+### Android View API
+
 [Splitties](https://github.com/LouisCAD/Splitties) 是一个非常地道的 Kotlin Android 辅助函数库，其中提供了一个 `AlertDialog.showAndAwait` 方法。下面的示例代码会打开一个对话框，等待用户确认是否要删除。这是一个异步的操作，于是将协程「挂起」，等用户选择完毕后返回一个布尔值。
 
 ```kotlin
@@ -191,19 +193,23 @@ suspend fun shouldWeReallyDeleteFromTrash(): Boolean = alertDialog(
 suspend fun Animator.awaitEnd() { /* 略去实现 */}
 
 lifecycleScope.launch {
-    ObjectAnimator.ofFloat(imageView, View.ALPHA, 0f, 1f).run {
-        start(); 🏹 awaitEnd()
-    }
-    ObjectAnimator.ofFloat(imageView, View.TRANSLATION_Y, 0f, 100f).run {
-        start(); 🏹 awaitEnd()
-    }
-    ObjectAnimator.ofFloat(imageView, View.TRANSLATION_X, -100f, 0f).run {
-        start(); 🏹 awaitEnd()
-    }
+  ObjectAnimator.ofFloat(imageView, View.ALPHA, 0f, 1f).run {
+    start(); 🏹 awaitEnd()
+  }
+  ObjectAnimator.ofFloat(imageView, View.TRANSLATION_Y, 0f, 100f).run {
+    start(); 🏹 awaitEnd()
+  }
+  ObjectAnimator.ofFloat(imageView, View.TRANSLATION_X, -100f, 0f).run {
+    start(); 🏹 awaitEnd()
+  }
 }
 ```
 
-上面这些例子都只涉及主线程，并不涉及线程切换的问题。更进一步， `suspend` 函数的应用场景甚至都不一定局限于异步。
+上面这些例子都只涉及主线程，并不涉及线程切换的问题。
+
+### 函数式异常处理
+
+更进一步， `suspend` 函数的应用场景甚至都不一定局限于异步。
 
 我们平时使用的 Kotlin 协程代码的实现在两个包里，一个是 Kotlin 的标准库 `kotlin-stdlib` ，另一个是协程库 `kotlinx.coroutines` 。标准库里提供了 CPS 变换有关的 `Continuation` 和其他基础设施，`kotlinx.coroutines` 则提供了协程的具体实现。所以我们实际上可以利用标准库里 CPS 变换的基础设施写出其他有意思的东西。
 
@@ -259,7 +265,47 @@ suspend fun getSalad() = 🏹 either<CookingException, Salad> {
 }
 ```
 
-可见，`suspend` 可以看成是回调的语法糖，其实和 IO、和线程切换并没有本质的关系。
+### 深递归
+
+递归应用在递归的数据结构的时候往往可以使代码简洁优雅。比如下面计算树高度的算法：
+
+```kotlin
+class Tree(val left: Tree?, val right: Tree?)
+
+fun depth(tree: Tree?): Int =
+  if (t == null) 0 else maxOf(
+    depth(tree.left),
+    depth(tree.right),
+  ) + 1
+```
+
+但如果递归过深超出限制，运行时会抛出 `StackOverflowException`。因此我们需要利用空间更大的堆内存。通常我们可以显式地维护一个栈数据结构。
+
+Kotlin 标准库中有个试验性的 [`DeepRecursiveFunction`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-deep-recursive-function/) 辅助类，帮助我们写出的代码保持递归的「大致形状」，但是将中间状态保存在堆内存中。其中实现的机制就是 `suspend` 的 CPS 变换。
+
+```kotlin
+val depth = DeepRecursiveFunction<Tree?, Int> { tree ->
+  // 这里是一个 suspend 的 λ
+  if (tree == null) 0 else maxOf(
+    🏹 callRecursive(tree.left),
+    🏹 callRecursive(tree.right)
+  ) + 1
+}
+
+val deepTree = generateSequence(Tree(null, null)) { prev ->
+  Tree(prev, null)
+}.take(100_000).last()
+
+// DeepRecursiveFunction 重载了 invoke 操作符
+// 可以模拟函数调用语法
+println(depth(deepTree)) // 100_000
+```
+
+`DeepRecursiveFunction` 接的是一个 `suspend` 的块，其中的接收者（Receiver）是 `DeepRecursiveScope`，可以类比成 `CoroutineScope`。在这个块里面，注意我们不能像原算法那样直接递归调用 `depth`（因为还是会依赖于空间有限的函数调用栈）。`DeepRecursiveScope` 提供了一个 `suspend callRecursive` 方法。在这里，我们借助 CPS 变换得到的状态机来保存递归函数调用栈中的中间结果。由于 `Continuation` 对象在运行时存放在堆内存中，也就避开了函数调用栈的空间限制。（所以 Kotlin 的协程属于一种所谓的「无栈协程（stackless coroutine）」。）
+
+具体原理可以参考 [Deep recursion with coroutines](https://elizarov.medium.com/deep-recursion-with-coroutines-7c53e15993e3)。[KT-31741](https://youtrack.jetbrains.com/issue/KT-31741) 有关于标准库设计和实现以及性能方面的一些讨论。
+
+通过上面这些关于 Android UI、函数式编程以及一般编程等方面的不同例子可以看到，`suspend` 可以看成是回调的语法糖，其实和 IO、和线程切换并没有本质的关系。回过头来看 `suspend` 这个关键字在别的语言通常叫 `async`，而 Kotlin 叫 `suspend` 或许正暗示了 Kotlin 协程独特的设计并不限于 asynchrony，而有着更宽广的应用场景。
 
 ---
 
