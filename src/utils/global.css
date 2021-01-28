@@ -40,6 +40,11 @@ a {
   color: var(--primary);
 }
 
+/* see https://github.com/yujinyan/blog/pull/10 */
+.gatsby-highlight code {
+  display: inline-block;
+}
+
 .gatsby-highlight-code-line {
   display: block;
   background: #3c4846e0;
