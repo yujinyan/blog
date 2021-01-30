@@ -40,6 +40,11 @@ a {
   color: var(--primary);
 }
 
+.gatsby-highlight code {
+  font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono,
+    monospace !important;
+}
+
 /* see https://github.com/yujinyan/blog/pull/10 */
 .gatsby-highlight pre > code {
   display: inline-block;
