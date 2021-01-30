@@ -136,7 +136,7 @@ a.anchor.before {
   position: absolute;
   left: -0.5rem;
   font-size: 2.5rem;
-  top: -51px;
+  top: -3rem;
 }
 @media (max-width: 1024px) {
   .tip {
