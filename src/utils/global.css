@@ -6,7 +6,7 @@ body.light {
   --textNormal: #222;
   --textTitle: #222;
   --textLink: #1a1a1a;
-  --hr: hsla(0, 0%, 0%, 0.2);
+  --hr: hsla(0, 0%, 0%, 0.1);
   --inlineCode-bg: rgba(255, 229, 100, 0.2);
   --inlineCode-text: #1a1a1a;
   --form-shadow: 0 2px 15px 0 rgba(210, 214, 220, 0.5);
