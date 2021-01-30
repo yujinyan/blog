@@ -1,22 +1,25 @@
 import React, { useEffect, useMemo } from "react"
 import { useActiveHash } from "./use-active-hash"
 import "./style.css"
+import { link } from "pngquant-bin"
 
 // https://stackoverflow.com/questions/60833907/gatsby-syncing-the-table-of-contents-with-the-page-scroll-and-style-the-active-l
-export default function TableOfContents({ html }) {
+export default function TableOfContents({ items }) {
+  // console.log(html)
   const isSSR = typeof window === "undefined"
   let targetedIds = useMemo(() => {
-    if (isSSR) return []
-    var dummyDOM = document.createElement("html")
-    dummyDOM.innerHTML = html
-    const justAnchors = dummyDOM.querySelectorAll(`a`)
+    return []
+    // if (isSSR) return []
+    // var dummyDOM = document.createElement("html")
+    // dummyDOM.innerHTML = html
+    // const justAnchors = dummyDOM.querySelectorAll(`a`)
 
-    let val = []
-    justAnchors.forEach(a => {
-      val.push(a.hash.replace("#", ""))
-    })
+    // let val = []
+    // justAnchors.forEach(a => {
+    //   val.push(a.hash.replace("#", ""))
+    // })
 
-    return val
+    // return val
   }, [])
 
   const activeHash = useActiveHash(targetedIds)
@@ -38,7 +41,17 @@ export default function TableOfContents({ html }) {
   }, [activeHash])
 
   return (
-    <div
-      className="ToCs" dangerouslySetInnerHTML={{ __html: html }} />
+    <div className="ToCs">
+      <ul>
+        {items.map(i => builditem(i))}
+      </ul>
+    </div>
   )
+}
+
+function builditem(item) {
+  return <li>
+    <a href={item.url}>{item.title}</a>
+    {item.items && <ul>{item.items.map(i => builditem(i))}</ul>}
+  </li>
 }

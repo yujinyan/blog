@@ -9,9 +9,10 @@ import { TranslateInfo, TranslateMark } from "../components/translate"
 import ToC from "../components/ToC"
 import { UtterancesComments } from "../components/utterances"
 import Helmet from "react-helmet"
+import { MDXRenderer } from "gatsby-plugin-mdx"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
-  const post = data.markdownRemark
+  const post = data.mdx
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
 
@@ -51,7 +52,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         {post.tableOfContents && <ToC html={post.tableOfContents} />}
         {post.frontmatter.translate &&
           TranslateInfo(post.frontmatter.translate)}
-        <section dangerouslySetInnerHTML={{ __html: post.html }} />
+        <MDXRenderer>{post.body}</MDXRenderer>
         <hr
           style={{
             marginBottom: rhythm(1),
@@ -103,13 +104,11 @@ export const pageQuery = graphql`
         title
       }
     }
-    markdownRemark(fields: { slug: { eq: $slug } }) {
+    mdx(fields: { slug: { eq: $slug } }) {
       id
       excerpt(pruneLength: 160)
-      html
-      tableOfContents(
-        absolute: false
-      )
+      body
+      tableOfContents
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
