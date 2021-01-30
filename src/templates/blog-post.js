@@ -8,8 +8,7 @@ import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
 import ToC from "../components/ToC"
 import { UtterancesComments } from "../components/utterances"
-import 'gitalk/dist/gitalk.css';
-import '../utils/gitalk-overrides.css';
+import Helmet from "react-helmet"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
@@ -18,6 +17,10 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
 
   return (
     <Layout location={location} title={siteTitle}>
+      <Helmet>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital@0;1&display=swap" rel="stylesheet" />
+      </Helmet>
       <SEO
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}
