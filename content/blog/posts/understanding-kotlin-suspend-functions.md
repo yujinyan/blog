@@ -45,8 +45,10 @@ fun postItem(item: Item) = requestToken()
 
 Kotlin 的 `suspend` 关键字可以帮助我们消除回调，用同步的写法写异步：
 
+[[tip | 🏹 ]]
+| 代表挂起点（suspension point）
+
 ```kotlin
-// 🏹 代表挂起点（suspension point）
 
 suspend fun requestToken(): String
 suspend fun createPost(token: String, item: Item): Post
@@ -129,9 +131,8 @@ fun postItem(item: Item, cont: Continuation) {
 
 编译器将 `suspend` 编译成带有 continuation 参数的方法叫做 CPS (Continuation-Passing-Style) 变换。
 
-[[tip]]
+[[tip | 💡]]
 | 我们可以写一段简单的 `suspend` 函数，然后通过 IntelliJ IDEA / Android Studio 的 Tools -> Kotlin -> Show Kotlin Bytecode (Decompile) 查看 Kotlin 生成的状态机代码。
-
 
 ## 使用 `suspend` 函数无须关心线程切换
 
@@ -151,7 +152,7 @@ lifecycleScope.launch {
 ```kotlin
 
 lifecycleScope.launch(Dispatchers.Main) {
-   🏹 foo() // highlight-line
+  🏹 foo() // highlight-line
 }
 ```
 
@@ -167,7 +168,7 @@ suspend fun foo() = BigInteger.probablePrime(4096, Random())
 这里这个 `suspend` 函数的内部实现是一段耗时的 CPU 操作，类似地也可以想象成是一段时间复杂度特别高的代码。我们如果在主线程调用这个函数还是会阻塞 UI。问题出在这个 `foo` 函数的实现没有遵守 `suspend` 的语义，是错误的。正确的做法应该修改这个 `foo` 函数：
 
 ```kotlin
-suspend fun findBigPrime(): BigInteger = 
+suspend fun findBigPrime(): BigInteger =
   withContext(Dispatchers.Default) { // highlight-line
     BigInteger.probablePrime(4096, Random())
   }

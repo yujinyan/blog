@@ -131,8 +131,8 @@ a.anchor.before {
 .tip p {
   margin: 0;
 }
-.tip::before {
-  content: "💡";
+
+.tip .custom-block-heading {
   position: absolute;
   left: -0.5rem;
   font-size: 2.5rem;

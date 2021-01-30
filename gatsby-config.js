@@ -52,7 +52,8 @@ module.exports = {
             options: {
               blocks: {
                 tip: {
-                  classes: "tip"
+                  classes: "tip",
+                  title: "optional"
                 }
               }
             }
