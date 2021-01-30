@@ -91,11 +91,13 @@ suspend fun postItem(item: Item) {
 // 1.脱掉了 suspend 关键字
 // 2.增加了一个 Continuation 对象
 fun postItem(item: Item, cont: Continuation) {
+
   // 判断传入的是否是 postItem 的 `ContiuationImpl`
   // false: 初始化一个对应调用本次 postItem 的状态机
   // true: 对应 postItem 内其他 suspend 函数回调回来情况
   // 其中 ThisSM 指的 object: ContinuationImpl 这个匿名类
   val sm = (cont as? ThisSM) ?: object: ContinuationImpl {
+
     // 实际源码中 override 的是
     // kotlin.coroutine.jvm.internal.BaseContinuationImpl
     // 的 invokeSuspend 方法
@@ -105,6 +107,7 @@ fun postItem(item: Item, cont: Continuation) {
       postItem(null, this) // highlight-line
     }
   }
+
   switch (sm.label) {
     case 0:
       // 捕获后续步骤需要的局部变量
@@ -318,7 +321,7 @@ println(depth(deepTree)) // 100_000
 
 `DeepRecursiveFunction` 接的是一个 `suspend` 的块，其中的接收者（Receiver）是 `DeepRecursiveScope`，可以类比成 `CoroutineScope`。在这个块里面，注意我们不能像原算法那样直接递归调用 `depth`（因为还是会依赖于空间有限的函数调用栈）。`DeepRecursiveScope` 提供了一个 `suspend callRecursive` 方法。在这里，我们借助 CPS 变换得到的状态机来保存递归函数调用栈中的中间结果。由于 `Continuation` 对象在运行时存放在堆内存中，也就避开了函数调用栈的空间限制。（所以 Kotlin 的协程属于一种所谓的「无栈协程（stackless coroutine）」。）
 
-具体原理可以参考 [Deep recursion with coroutines](https://elizarov.medium.com/deep-recursion-with-coroutines-7c53e15993e3)。[KT-31741](https://youtrack.jetbrains.com/issue/KT-31741) 有关于标准库设计和实现以及性能方面的一些讨论。
+具体实现可以参考 [Deep recursion with coroutines](https://elizarov.medium.com/deep-recursion-with-coroutines-7c53e15993e3)。[KT-31741](https://youtrack.jetbrains.com/issue/KT-31741) 有关于标准库设计和实现以及性能方面的一些讨论。
 
 通过上面这些关于 Android UI、函数式编程以及一般编程等方面的不同例子可以看到，`suspend` 可以看成是回调的语法糖，其实和 IO、和线程切换并没有本质的关系。回过头来看 `suspend` 这个关键字在别的语言通常叫 `async`，而 Kotlin 叫 `suspend` 或许正暗示了 Kotlin 协程独特的设计并不限于 asynchrony，而有着更宽广的应用场景。
 
