@@ -89,9 +89,15 @@ suspend fun postItem(item: Item) {
 // 1.脱掉了 suspend 关键字
 // 2.增加了一个 Continuation 对象
 fun postItem(item: Item, cont: Continuation) {
-  // 初始化一个对应调用这次 postItem 的状态机
+  // 判断传入的是否是 postItem 的 `ContiuationImpl`
+  // false: 初始化一个对应调用本次 postItem 的状态机
+  // true: 对应 postItem 内其他 suspend 函数回调回来情况
+  // 其中 ThisSM 指的 object: ContinuationImpl 这个匿名类
   val sm = (cont as? ThisSM) ?: object: ContinuationImpl {
-    fun resume(..) {
+    // 实际源码中 override 的是
+    // kotlin.coroutine.jvm.internal.BaseContinuationImpl
+    // 的 invokeSuspend 方法
+    override fun resume(..) {
       // 通过 ContinuationImpl.resume
       // 重新回调回这个方法
       postItem(null, this) // highlight-line
@@ -116,11 +122,16 @@ fun postItem(item: Item, cont: Continuation) {
       createPost(token, item, sm)
     case 2:
       procesPost(post)
+    // ...
   }
 }
 ```
 
 编译器将 `suspend` 编译成带有 continuation 参数的方法叫做 CPS (Continuation-Passing-Style) 变换。
+
+[[tip]]
+| 我们可以写一段简单的 `suspend` 函数，然后通过 IntelliJ IDEA / Android Studio 的 Tools -> Kotlin -> Show Kotlin Bytecode (Decompile) 查看 Kotlin 生成的状态机代码。
+
 
 ## 使用 `suspend` 函数无须关心线程切换
 
