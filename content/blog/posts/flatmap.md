@@ -3,6 +3,7 @@ title: "谈谈 flatMap"
 date: "2017-11-25T22:12:03.284Z"
 ---
 前一阵子在 Twitter 上看到 GitHub 上✨星星✨最多的 Sindre Sorhus 分享了一段 Swift 代码
+
 ```swift
 // view.subviews(ofType: BoxView.self)
 fun subviews<T: NSView>(ofType type: T.Type) -> [T] {
@@ -78,7 +79,7 @@ public class Main {
 }
 ```
  
-这里的 Optional 是一个通过泛型包裹其他类型的容器。Optional<T> 可以包裹类型为 T 的对象，也可以是空。
+这里的 Optional 是一个通过泛型包裹其他类型的容器。`Optional<T>` 可以包裹类型为 T 的对象，也可以是空。
  
 `flatMap` 在这套 api 里起到了传递 Optional 的作用。观察 `flatMap` 接受的函数的类型都是 `T->Optional<U>` ，也就是说这个操作符拿到 Optional 容器内的值，然后返回了一个新的 Optional 容器，其中包含的值的类型未必和原先的一致。由于空对象不再以 `null` 的形式出现，而是被包在了 Optional 容器之中，这样就可以链式调用，避免空指针异常。如果在调用的过程中有一个 Optional 中为空值，则最终返回通过 `orElse` 提供的默认值。
  
@@ -150,7 +151,7 @@ RxTextView.textChanges(etSearch)
  
 ## 参考资料
 * https://repl.it/@yujinyan1992/RxJS-vs-Array-Methods
-* https://repl.it/@yujinyan1992/Learning-Swift`
+* https://repl.it/@yujinyan1992/Learning-Swift
 * https://www.natashatherobot.com/swift-2-flatmap/
 * https://gist.github.com/samgiles/762ee337dff48623e729
 * [Swift 烧脑体操（四） - map 和 flatMap](http://www.infoq.com/cn/articles/swift-brain-gym-map-and-flatmap)
