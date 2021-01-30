@@ -49,7 +49,6 @@ Kotlin 的 `suspend` 关键字可以帮助我们消除回调，用同步的写�
 | 代表挂起点（suspension point）
 
 ```kotlin
-
 suspend fun requestToken(): String
 suspend fun createPost(token: String, item: Item): Post
 suspend fun processPost(post)
@@ -93,8 +92,8 @@ suspend fun postItem(item: Item) {
 fun postItem(item: Item, cont: Continuation) {
 
   // 判断传入的是否是 postItem 的 `ContiuationImpl`
-  // false: 初始化一个对应调用本次 postItem 的状态机
-  // true: 对应 postItem 内其他 suspend 函数回调回来情况
+  // * false: 初始化一个对应本次调用 postItem 的状态机
+  // * true: 对应 postItem 内其他 suspend 函数回调回来情况
   // 其中 ThisSM 指的 object: ContinuationImpl 这个匿名类
   val sm = (cont as? ThisSM) ?: object: ContinuationImpl {
 
