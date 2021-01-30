@@ -20,7 +20,6 @@ export const useActiveHash = (itemIds, rootMargin = undefined) => {
     itemIds.forEach(id => {
       // handle Chinese characters
       const decoded = decodeURI(id)
-      console.log(`id is ${decoded}`)
       observer.observe(document.getElementById(decoded))
     })
 

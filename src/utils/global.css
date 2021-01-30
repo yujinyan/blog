@@ -6,7 +6,7 @@ body.light {
   --textNormal: #222;
   --textTitle: #222;
   --textLink: #1a1a1a;
-  --hr: hsla(0, 0%, 0%, 0.2);
+  --hr: hsla(0, 0%, 0%, 0.1);
   --inlineCode-bg: rgba(255, 229, 100, 0.2);
   --inlineCode-text: #1a1a1a;
   --form-shadow: 0 2px 15px 0 rgba(210, 214, 220, 0.5);
@@ -26,6 +26,11 @@ body.dark {
   --inlineCode-bg: rgba(115, 124, 153, 0.2);
   --inlineCode-text: #e6e6e6;
   --form-shadow: 0 2px 15px 0 rgba(26, 26, 27, 0.637);
+}
+
+/* get rid of ugly scrollbar on Windows */
+*::-webkit-scrollbar {
+  width: 16px;
 }
 
 .dark hr {
@@ -107,4 +112,35 @@ a.anchor {
 }
 a.anchor.before {
   padding-right: 8px;
+}
+
+.monospace {
+  font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono,
+    monospace !important;
+}
+
+.tip {
+  position: relative;
+  border-top: 1.25px solid var(--hr);
+  border-bottom: 1.25px solid var(--hr);
+  padding: 1rem 0 1rem 0;
+  margin: 1rem;
+  margin-left: -4.75rem;
+  font-family: "JetBrains Mono", monospace;
+}
+.tip p {
+  margin: 0;
+}
+
+.tip .custom-block-heading {
+  position: absolute;
+  left: -0.5rem;
+  font-size: 2.5rem;
+  top: -51px;
+}
+@media (max-width: 1024px) {
+  .tip {
+    margin-left: 0;
+    margin-top: 3rem;
+  }
 }

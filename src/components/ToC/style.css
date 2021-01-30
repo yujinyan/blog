@@ -5,7 +5,7 @@
   /* magic number */
   width: calc(50vw - 368px);
   font-size: 10px;
-  border-left: 1px solid #86868638;
+  border-left: 1px solid var(--hr);
   padding-left: 2rem;
 }
 .ToCs ul {
