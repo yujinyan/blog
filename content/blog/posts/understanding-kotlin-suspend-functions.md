@@ -134,7 +134,7 @@ fun postItem(item: Item, cont: Continuation) {
 编译器将 `suspend` 编译成带有 continuation 参数的方法叫做 CPS (Continuation-Passing-Style) 变换。
 
 [[tip | 💡]]
-| 我们可以写一段简单的 `suspend` 函数，然后通过 IntelliJ IDEA / Android Studio 的 Tools -> Kotlin -> Show Kotlin Bytecode (Decompile) 查看 Kotlin 生成的状态机代码。
+| 我们可以写一段简单的 `suspend` 函数，然后通过 IntelliJ IDEA / Android Studio 的 Tools -> Kotlin -> Show Kotlin Bytecode (Decompile) 查看 Kotlin 生成的状态机代码。尝试写一下这个状态机代码对理解 `suspend` 函数非常有益。可以在[这里](https://github.com/yujinyan/kotlin-playground/blob/master/src/main/kotlin/coroutine/continuation/ManualContinuationExercise.kt)查看笔者写的一个例子。
 
 ## 使用 `suspend` 函数无须关心线程切换
 
@@ -342,4 +342,12 @@ Roman 是 Kotlin 协程的主要设计者，现在担任 Kotlin Project Lead，�
 
 ## 题外话：没有用的 `await` 关键字
 
-近日，Swift 语言通过了 [Async/await](https://github.com/apple/swift-evolution/blob/main/proposals/0296-async-await.md#asynchronous-functions) 提案。`async` 相当于 Kotlin 的 `suspend` 。在调用 async / suspend 函数的时候，Swift 需要一个额外的 `await` 关键字，但是 Kotlin 不需要，调用 suspend 函数的语法和调用普通函数没有区别。这个 `await` 除了标记之外没有其他作用。Kotlin 的这个设计写起来更加方便，但是读起来的时候还是有个标记比较好，所以 IDE 会在在 gutter 有个图标提示。在没有 IDE 的环境比如写作本文的时候就比较麻烦，需要在 `await` 的地方放个 emoji 手动标记 😂。
+近日，Swift 语言通过了 [Async/await](https://github.com/apple/swift-evolution/blob/main/proposals/0296-async-await.md#asynchronous-functions) 提案。`async` 相当于 Kotlin 的 `suspend` 。在调用 async / suspend 函数的时候，Swift 需要一个额外的 `await` 关键字，但是 Kotlin 不需要，调用 suspend 函数的语法和调用普通函数没有区别。这个 `await` 除了标记之外没有其他作用。
+
+Kotlin 的这个设计写起来是更加方便的。比如不会有 JavaScript 中[被吐槽的这种写法](https://twitter.com/threepointone/status/1355494949454831620)：
+
+```javascript
+await (await fetch(url)).json()
+```
+
+但是在阅读代码的时候似乎还是有个标记比较好，所以 IDE 会在 gutter 有个图标提示。在没有 IDE 的环境比如写作本文的时候就比较麻烦，需要在 `await` 的地方放个 emoji 手动标记 😂。
