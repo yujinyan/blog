@@ -2,15 +2,23 @@
 title: "谈谈 flatMap"
 date: "2017-11-25T22:12:03.284Z"
 ---
-前一阵子在 Twitter 上看到 GitHub 上✨星星✨最多的 Sindre Sorhus 分享了一段 Swift 代码
+
+## 引例
+
+https://twitter.com/sindresorhus/status/927805562124775424
+
+在 Swift 中可以通过 `flatMap` 过滤掉 `nil`
+
 ```swift
 // view.subviews(ofType: BoxView.self)
 fun subviews<T: NSView>(ofType type: T.Type) -> [T] {
     return subviews.flatMap { $0 as? T}
 }
 ```
-正好借机跟 Swifter 好友交流切磋一番，然发现自己概念有些模糊还需修炼一下，所以发个总结的文章交作业。
- 
+
+[[tip | ⚠️]]
+| [更新] Swift 4.1 废弃了 `flatMap` 这种用法，改成了 `compactMap`，见 [Introduce Sequence.compactMap(_:)](https://github.com/apple/swift-evolution/blob/master/proposals/0187-introduce-filtermap.md#introduce-sequencecompactmap_)
+
 ## 数组
 💡 简而言之，flatMap 就是两个步骤，先 map 再 flatten：
 ```swift
@@ -64,17 +72,15 @@ public class USB {
   }
 }
  
-public class Main {
-    public static void main(String[] args) {
-        Optional<Computer> computer = Optional.of(new Computer());
-        String name = computer
-                .flatMap(Computer::getSoundcard) // 👈
-                .flatMap(Soundcard::getUSB) // 👈
-                .map(USB::getVersion) // 👈
-                .orElse("UNKNOWN");
- 
-        System.out.println(name); // "UNKNOWN"
-    }
+public static void main(String[] args) {
+  Optional<Computer> computer = Optional.of(new Computer());
+  String name = computer
+    .flatMap(Computer::getSoundcard) // 👈
+    .flatMap(Soundcard::getUSB) // 👈
+    .map(USB::getVersion) // 👈
+    .orElse("UNKNOWN");
+
+  System.out.println(name); // "UNKNOWN"
 }
 ```
  
@@ -122,8 +128,7 @@ RxTextView.textChanges(etSearch)
     }
   })
   .observeOn(Schedulers.io())
-  // 👇
-  .switchMap(new Function <CharSequence, Observable <? extends List <?>>> () {
+  .switchMap(new Function <CharSequence, Observable <? extends List <?>>> () { // highlight-line
     @Override
     public Observable <? extends List <?>> apply(@NonNull CharSequence charSequence) throws Exception {
       return callApi(charSequence.toString());
