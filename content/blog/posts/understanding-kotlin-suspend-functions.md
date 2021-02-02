@@ -188,26 +188,14 @@ suspend fun findBigPrime(): BigInteger =
 
 `suspend` 本身并不完全是线程切换，只不过异步 IO 在 Android 平台最终都得依托多线程来实现；而异步 IO 又是协程的主要应用场景。Android 开发者们已经见识过各种异步 IO 的 API（对线程切换情有独钟），这些 API 本质上都得依靠某种形式的回调，将异步 IO 的结果通知给主线程进行 UI 刷新。协程的 `suspend` 也是如此，只不过通过关键字的引入和编译器的支持，让我们可以用顺序、从上到下（sequential）的代码写出异步逻辑。不仅提升了代码可读性，还方便我们利用熟悉的条件、循环、try catch 等构造轻松地写出复杂的逻辑。
 
-把协程和 `suspend` 单纯看成线程切换工具有很大的局限性。由于 `suspend` 就是回调，也提供了包装回调 API 的方法，很多基于回调的 API 都可以用 `suspend` 函数进行封装改造。
+把协程和 `suspend` 单纯看成线程切换工具有很大的局限性。由于 `suspend` 就是回调，也提供了包装回调 API 的方法，基于回调的 API 都可以用 `suspend` 函数进行封装改造。
 
 ### Android View API
-
-[Splitties](https://github.com/LouisCAD/Splitties) 是一个非常地道的 Kotlin Android 辅助函数库，其中提供了一个 `AlertDialog.showAndAwait` 方法。下面的示例代码会打开一个对话框，等待用户确认是否要删除。这是一个异步的操作，于是将协程「挂起」，等用户选择完毕后返回一个布尔值。
-
-```kotlin
-suspend fun shouldWeReallyDeleteFromTrash(): Boolean = alertDialog(
-    message = txt(R.string.dialog_msg_confirm_delete_from_trash)
-).🏹 showAndAwait( // highlight-line
-    okValue = true,
-    cancelValue = false,
-    dismissValue = false
-)
-```
 
 [Suspending over views](https://medium.com/androiddevelopers/suspending-over-views-19de9ebd7020) 这篇文章介绍了用协程封装 Android view 相关 API 的例子，比如下面等待 `Animator` 结束的扩展函数：
 
 ```kotlin
-suspend fun Animator.awaitEnd() { /* 略去实现 */}
+suspend fun Animator.awaitEnd() { /* 实现见后文 */}
 
 lifecycleScope.launch {
   ObjectAnimator.ofFloat(imageView, View.ALPHA, 0f, 1f).run {
@@ -222,7 +210,66 @@ lifecycleScope.launch {
 }
 ```
 
-上面这些例子都只涉及主线程，并不涉及线程切换的问题。
+使用传统基于回调的 API 在表达这样具有复杂先后顺序的代码时会造成大量嵌套，代码可读性大幅下降。封装成 `suspend` 函数后，我们可以在协程中用从上到下的顺序代码写出来，同时方便使用各种条件、循环等逻辑控制构造，提升代码表达力。
+
+这个 `Animator.awaitEnd` 包装了 `AnimatorListenerAdapter` 这个异步回调接口。Kotlin 协程库提供了 `suspendCoroutine` 和 `suspendCancellableCoroutine` 函数（注意这两个函数本身都是 `suspend` 的）。我们可以在传入的 lambda 中获取到对应当前「挂起」的 `Continuation` 实例。在合适的回调里调用这个实例的 `resume` 系列方法，便能桥接 `suspend` 函数和基于回调的 API：
+
+```kotlin
+suspend fun Animator.awaitEnd() = 
+🏹 suspendCancellableCoroutine<Unit> { cont -> // highlight-line
+
+    // 如果执行这个 suspend 函数的协程被取消的话，同时取消这个 Animator。
+    // 注意这个 `awaitEnd` 是定义在 `Animator` 上的扩展函数，
+    // 因此可以直接调用 `Animator` 上的方法。
+    cont.invokeOnCancellation { cancel() }
+
+    addListener(object : AnimatorListenerAdapter() { // highlight-line
+
+      // 标记 Animator 被取消还是正常结束
+      private var endedSuccessfully = true
+      override fun onAnimationCancel(animation: Animator) {
+        // Animator has been cancelled, so flip the success flag
+        endedSuccessfully = false
+      }
+
+      override fun onAnimationEnd(animation: Animator) {
+        animation.removeListener(this)
+
+        // 如果协程仍在执行中
+        if (cont.isActive) {
+          // 并且 Animator 未被取消
+          if (endedSuccessfully) {
+              cont.resume(Unit) // highlight-line
+          } else {
+            // 否则取消协程
+            cont.cancel()
+          }
+        }
+      }
+    })
+  }
+
+```
+
+[Splitties](https://github.com/LouisCAD/Splitties) 是一个非常地道的 Kotlin Android 辅助函数库，其中提供了一个 `suspend AlertDialog.showAndAwait` 方法。下面的示例代码会打开一个对话框，等待用户确认是否要删除。这是一个异步的操作，于是将协程「挂起」，等用户选择完毕后返回一个布尔值。
+
+```kotlin
+suspend fun shouldWeReallyDeleteFromTrash(): Boolean = 
+  alertDialog(
+    message = txt(R.string.dialog_msg_confirm_delete_from_trash)
+  ).🏹 showAndAwait( // highlight-line
+    okValue = true,
+    cancelValue = false,
+    dismissValue = false
+  )
+```
+
+这里 `AlertDialog.showAndAwait` 使用 `suspendCancellableCoroutine` 包装了 `DialogInterface.OnClickListener` 接口。
+
+[[tip|😏]]
+| 基于回调的 API 都能用 `suspendCoroutine` （和它支持取消的兄弟）包装成 `suspend` 函数。合理使用可以提升代码表达力。
+
+注意上面这些例子都只涉及主线程，并不涉及线程切换的问题。
 
 ### 函数式异常处理
 
