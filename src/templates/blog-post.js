@@ -8,6 +8,7 @@ import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
 import ToC from "../components/ToC"
 import { UtterancesComments } from "../components/utterances"
+import GithubCorner from "../components/GithubCorner"
 import Helmet from "react-helmet"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
@@ -64,6 +65,11 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       {post.frontmatter.issueId &&
         <UtterancesComments issueId={post.frontmatter.issueId} />
       }
+      <GithubCorner url={
+        post.frontmatter.issueId ?
+          `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
+          "https://github.com/yujinyan/blog"
+      } />
       <nav style={{ marginTop: rhythm(2) }}>
         <ul
           style={{

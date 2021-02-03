@@ -4,6 +4,7 @@ import { Link, graphql } from "gatsby"
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import GithubCorner from "../components/GithubCorner"
 import { rhythm } from "../utils/typography"
 import { TranslateMark } from "../components/translate"
 import get from "lodash/get"
@@ -15,6 +16,7 @@ const BlogIndex = ({ data, location }) => {
   return (
     <Layout location={location} title={siteTitle}>
       <SEO title="All posts" />
+      <GithubCorner url="https://github.com/yujinyan/blog"/>
       <Bio />
       {posts.map(({ node }) => {
         const title = node.frontmatter.title || node.fields.slug

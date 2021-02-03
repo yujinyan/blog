@@ -45,6 +45,22 @@ a {
   color: var(--primary);
 }
 
+.github-corner .bg {
+  fill: #282c35;
+}
+.dark .github-corner .bg {
+  fill: white;
+}
+.github-corner .octocat {
+  fill: var(--bg);
+}
+/* We don't have enough space for .github-corner on smaller screen. */
+@media (max-width: 768px) {
+  .github-corner {
+    visibility: hidden;
+  }
+}
+
 .gatsby-highlight code {
   font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono,
     monospace !important;
