@@ -403,4 +403,4 @@ await (await fetch(url)).json()
 
 不过根据笔者的实际体会，Kotlin 的设计权衡似乎还是令「可写性」略高于「可读性」。我们阅读代码的目的可以分成两种：探索型（学习、研究）和批判型（例如 code review）。对于探索型的代码阅读，语言提供更多线索是有帮助的。比如，有时阅读 Kotlin 源码会分不清楚某个方法是调在 Receiver 上还是外层的对象。
 
-所以作为介绍 `suspend` 函数的文章，本文在 Kotlin 省去的 `await` 关键字的位置插入一个 🏹 emoji。最近发现 iOS 14.2 和 Android 11 最新支持的「回旋镖 boomerang 🪃」似乎比 🏹 更恰当一些，不知读者有没有同感😉？
+所以作为介绍 `suspend` 函数的文章，本文在 Kotlin 省去的 `await` 关键字的位置插入一个 🏹 emoji。最近发现 iOS 14.2 和 Android 11 最新支持的「回旋镖 boomerang 🪃」似乎比 🏹 更恰当一些，不知读者有没有同感 😉 ？
