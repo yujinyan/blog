@@ -33,15 +33,6 @@ body.dark {
   width: 16px;
 }
 
-/* svg.excalidraw rect {
-  fill: var(--bg);
-} */
-
-/* svg.excalidraw g, path, text {
-  fill: var(--textNormal);
-  stroke: var(--textNormal);
-} */
-
 .excalidraw {
   width: 100%;
   margin: 0 auto;
