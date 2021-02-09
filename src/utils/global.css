@@ -33,6 +33,14 @@ body.dark {
   width: 16px;
 }
 
+.excalidraw {
+  width: 100%;
+  margin: 0 auto;
+}
+.dark .excalidraw {
+  filter: invert(100%) hue-rotate(180deg);
+}
+
 .dark hr {
   background: var(--hr);
 }
