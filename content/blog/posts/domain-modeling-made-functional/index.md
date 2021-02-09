@@ -43,23 +43,23 @@ DDD 有个 Context Map 的概念，是一个分析模块（限界上下文）间
 record 类似其他语言的 map、struct 这些数据结构：
 
 ```fsharp
-type Payment = { 
-	Amount: int;
-	Method: PaymentMethod 
+type Payment = {
+  Amount: int;
+  Method: PaymentMethod
 }
 
 type CreditCardInfo = {
-	CardType: CardType
-	CardNumber: CardNumber
+  CardType: CardType
+  CardNumber: CardNumber
 }
 ```
 
 discriminated union 表示枚举出来的若干类型只出现一个，比如：
 
 ```fsharp
-type PaymentMethod = 
-	| Cash
-	| Card of CreditCardInfo
+type PaymentMethod =
+  | Cash
+  | Card of CreditCardInfo
 ```
 
 其中的 `Cash` 和 `Card` 叫 tag，代表 `PaymentMethod` 的值是 `Cash` 类型**或者** `Card` 类型。tag 还可以附加额外的数据。比如 `Card` 可以附加 `CreditCardInfo` 类型的数据。
@@ -91,11 +91,11 @@ record 要求 a, b, c 存在，record 的值有 `size A * size B * size C` 种�
 ```kotlin
 @Service
 class UserService(private val userRepository) {
-	fun register(data: RegisterUserPayload): User {
-		val user = toUserModel(data)
-		return userRepository.save(user)
-	}
-	// ...
+  fun register(data: RegisterUserPayload): User {
+    val user = toUserModel(data)
+    return userRepository.save(user)
+  }
+// ...
 }
 ```
 
@@ -105,9 +105,9 @@ class UserService(private val userRepository) {
 
 ```fsharp
 let register
-		saveUser           // dependency
-		registerUserData =   // input
-		registerUserData |> toUserModel |> saveUser
+    saveUser           // dependency
+    registerUserData =   // input
+    registerUserData |> toUserModel |> saveUser
 ```
 
 由于 F# 支持 partial application，我们可以将用于初始化函数的依赖和实际调用的输入值分开来，在不同的时候应用到函数上。这样函数的依赖可以被保存在闭包之中，达到了和面向对象保存内部状态类似的效果：
@@ -130,12 +130,12 @@ register createUserData
 
 ```fsharp
 type Result<'Success, 'Failure> =
-	| Ok of 'Success
-	| Error of 'Failure
+  | Ok of 'Success
+  | Error of 'Failure
 
 // example
 type PayOrder =
-	UnpaidOrder -> Payment -> Result<PaidOrder, PaymentError>
+  UnpaidOrder -> Payment -> Result<PaidOrder, PaymentError>
 ```
 
 其中 `'Success` 和 `'Failure` 在 F# 中表示两个泛型。
@@ -144,8 +144,8 @@ type PayOrder =
 
 ```fsharp
 type Optional<'a> =
-	| Some of 'a
-	| None
+  | Some of 'a
+  | None
 ```
 
 使用 union type 对异常进行建模，可以充分利用编译器的静态检查，强制我们在代码中对函数可能产生的异常进行适当的处理，提升代码的健壮性。
