@@ -105,8 +105,8 @@ class UserService(private val userRepository) {
 
 ```fsharp
 let register
-    saveUser           // dependency
-    registerUserData =   // input
+    saveUser            // dependency
+    registerUserData =  // input
     registerUserData |> toUserModel |> saveUser
 ```
 
