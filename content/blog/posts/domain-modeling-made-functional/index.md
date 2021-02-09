@@ -162,7 +162,7 @@ let result = 100 |> funcA |> funcB |> funcC
 
 在 `Result` 类的背景下，作者提出了「轨道」的比喻：一连串返回 `Result` 的函数输入和输出串联在一起，如果其中一个函数返回了错误类型，那么往后的函数直接全部走错误的「轨道」
 
-![https://fsharpforfunandprofit.com/posts/recipe-part2/](./railroad.png)
+![https://fsharpforfunandprofit.com/posts/recipe-part2/](./railroad.svg)
 
 这样的「适配器」有两种：`bind` (或者叫 `flatMap`) 以及 `map` ，由此推出了 monad 的概念。`Result` 就是一个 monad，其他常见的比如 JDK 8 加入的 `Optional` 。本书还提到了 Reader Monad 做依赖注入。不过本书作为入门书籍，并未做深入介绍。
 
