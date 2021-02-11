@@ -40,7 +40,8 @@ Kotlin 的协程为何需要一个 scope 的概念？能不能去掉 scope 只�
 **Context 像一个集合（Set）**：这个集合由不同类型的 `Element` 组成。可以通过运算符重载的 add 添加元素，如果添加已经存在的类型的元素则会覆盖。
 
 ```kotlin
-CoroutineName("foo") + CoroutineName("bar") == CoroutineName("bar")
+CoroutineName("foo") + CoroutineName("bar") 
+  == CoroutineName("bar") // true
 ```
 
 将两个 Context 「+」在一起以后返回的类型是 `CombinedContext`。由于这个集合本身和里面的元素 `CoroutineContext.Element` 都是 `CoroutineContext`，我们在调用 `launch` 这种接收 context 的函数的时候既可以传单个元素，也可以传组合在一起的 context，而不需要额外在外面加一个 `listOf` 这样的套子，或者使用 vararg，十分简洁优雅。
@@ -185,7 +186,7 @@ suspend fun checkContinuationContext(): Boolean {
 
 我们知道 Context 是为了协程服务的。所谓协程就是编程语言在运行时「协作式 」地将子程序调度到线程上执行。
 
-`ContinuationInterceptor` 这个 Element 为协程的调度提供了基础设施。我们熟悉的用于指定执行协程的线程的 `[Dispatchers.IO](http://dispatchers.IO)` 等 `CoroutineDispatcher` 就是 `ContinuationInterceptor` 。
+`ContinuationInterceptor` 这个 Element 为协程的调度提供了基础设施。我们熟悉的用于指定执行协程的线程的 `Dispatchers.IO` 等 `CoroutineDispatcher` 就是 `ContinuationInterceptor` 。
 
 ```kotlin
 object CommonPoolContext : 

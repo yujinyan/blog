@@ -40,11 +40,6 @@ body.dark {
 .dark .excalidraw {
   filter: invert(100%) hue-rotate(180deg);
 }
-.dark .excalidraw .emoji {
-  /* Don't apply filter on emoji.
-  This is a bit hacky. */
-  filter: invert(100%) hue-rotate(180deg);
-}
 
 .dark hr {
   background: var(--hr);
@@ -74,6 +69,10 @@ a {
   }
 }
 
+.gatsby-highlight {
+  /* same as p */
+  margin-bottom: 1.75rem;
+}
 .gatsby-highlight code {
   font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono,
     monospace !important;
@@ -83,6 +82,7 @@ a {
 .gatsby-highlight pre > code {
   display: inline-block;
   min-width: 100%;
+  font-size: 14px;
 }
 
 .gatsby-highlight-code-line {
@@ -102,7 +102,6 @@ a {
     border-radius: 10px;
     -webkit-overflow-scrolling: touch;
     overflow: auto;
-    font-size: 15px;
   }
   .gatsby-highlight pre {
     /* aligns code with paragraphs */
