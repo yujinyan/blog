@@ -40,6 +40,11 @@ body.dark {
 .dark .excalidraw {
   filter: invert(100%) hue-rotate(180deg);
 }
+.dark .excalidraw .emoji {
+  /* Don't apply filter on emoji.
+  This is a bit hacky. */
+  filter: invert(100%) hue-rotate(180deg);
+}
 
 .dark hr {
   background: var(--hr);
