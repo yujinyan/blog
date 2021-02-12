@@ -1,6 +1,7 @@
 ---
 title: 谈谈 Kotlin 协程的 Context 和 Scope
 date: 2021-02-11T15:49:03.284Z
+issueId: "19"
 ---
 
 ## 引子
@@ -46,7 +47,12 @@ CoroutineName("foo") + CoroutineName("bar")
 
 将两个 Context 「+」在一起以后返回的类型是 `CombinedContext`。由于这个集合本身和里面的元素 `CoroutineContext.Element` 都是 `CoroutineContext`，我们在调用 `launch` 这种接收 Context 的函数的时候既可以传单个元素，也可以传组合在一起的 Context，而不需要额外在外面加一个 `listOf` 这样的套子，或者使用 vararg，十分简洁优雅。
 
+<figure>
+
 ![context hierarchy](./context-hierarchy.svg)
+
+<figcaption>hello world</figcaption>
+</figure>
 
 **Context 是不可变（immutable）的**。对 Context 进行添加或者删除元素的操作都会返回新的 Context 对象。这一性质是协程并发场景下的需要。
 
