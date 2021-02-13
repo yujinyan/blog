@@ -18,10 +18,6 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
 
   return (
     <Layout location={location} title={siteTitle}>
-      <Helmet>
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital@0;1&display=swap" rel="stylesheet" />
-      </Helmet>
       <SEO
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}

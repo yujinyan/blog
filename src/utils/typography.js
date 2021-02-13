@@ -10,7 +10,14 @@ Wordpress2016.overrideThemeStyles = () => {
   }
 }
 
-delete Wordpress2016.googleFonts
+Wordpress2016.googleFonts = [
+  { name: "Noto Serif SC", styles: [400, 900] },
+  { name: "JetBrains Mono", styles: [400] }
+]
+
+Wordpress2016.bodyFontFamily = [
+  "Noto Serif SC", "Georgia", "serif"
+]
 
 const typography = new Typography(Wordpress2016)
 
