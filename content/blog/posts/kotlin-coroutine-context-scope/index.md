@@ -301,9 +301,9 @@ class MyActivity: Activity {
 
 这么看来异步 API 把 join 等待异步任务完成设计成默认行为似乎是更好的选择——这就是「结构化并发 Structured Concurrency」的核心思想。
 
-Python 一个异步并发库 Trio 的作者 Nathaniel J. Smith 在 2018 年发布了一篇博文 *[Notes on structured concurrency, or: Go statement considered harmful](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/)，*详尽地阐述了 Structured Concurrency，值得一读。Go 语言的 `go` 关键字类似 Kotlin 协程的 `GlobalScope.launch` 。文中认为，以 `go` 关键字为典型的现有异步 API 就好比半个世纪前 Dijkstra 反对的 goto 语句。
+Python 一个异步并发库 Trio 的作者 Nathaniel J. Smith 在 2018 年发布了一篇博文 <cite>[Notes on structured concurrency, or: Go statement considered harmful](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/)</cite>，详尽地阐述了 Structured Concurrency，值得一读。Go 语言的 `go` 关键字类似 Kotlin 协程的 `GlobalScope.launch` 。文中认为，以 `go` 关键字为典型的现有异步 API 就好比半个世纪前 Dijkstra 反对的 goto 语句。
 
-Dijkstra 在他著名的 [*Go To Statement Considered Harmful (1968)*](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf) 一文中指出：人们更擅长把握事物的静态关系，而当程序运行起来以后，进程的状态流转是一个非常动态的过程。因此，人们很难在头脑中勾绘程序在运行时状态变化的完整图景。编程语言的设计应当尽可能**缩短代码文本和运行时程序之间的差异**，使得程序员看着某行代码就能推断程序运行的状态。
+Dijkstra 在他著名的 <cite>[Go To Statement Considered Harmful (1968)](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf)</cite> 一文中指出：人们更擅长把握事物的静态关系，而当程序运行起来以后，进程的状态流转是一个非常动态的过程。因此，人们很难在头脑中勾绘程序在运行时状态变化的完整图景。编程语言的设计应当尽可能**缩短代码文本和运行时程序之间的差异**，使得程序员看着某行代码就能推断程序运行的状态。
 
 而那时非常流行的 goto 语句可以使进程跳到对应代码文本的任意位置。这样我们只能从头开始在头脑中模拟执行一遍程序的执行，很难在代码局部位置推断程序运行时的状态，难以保证程序的正确性。
 
@@ -619,19 +619,19 @@ fun CoroutineScope.foo(params: Params): Response
 
 Structured Concurrency
 
-- *[Nathaniel J. Smith: Notes on structured concurrency, or: Go statement considered harmful](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/)*
+- <cite>[Nathaniel J. Smith: Notes on structured concurrency, or: Go statement considered harmful](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/)</cite>
 - Kotlin 协程引入 Structured Concurrency 的 [issue](https://github.com/Kotlin/kotlinx.coroutines/issues/410)
 - Nathaniel J. Smith 维护了一个 Structured Concurrency [资源汇总](https://trio.discourse.group/t/structured-concurrency-resources/21)
 
 Roman Elizarov 有多篇文章和视频介绍 Kotlin 的 Structured Concurrency：
 
-- *[Structured concurrency](https://elizarov.medium.com/structured-concurrency-722d765aa952)*
-- [*Hydra Conf - Structured concurrency*](https://www.youtube.com/watch?v=Mj5P47F6nJg)
-- [*The reason to avoid GlobalScope*](https://elizarov.medium.com/the-reason-to-avoid-globalscope-835337445abc)
+- <cite>[Structured concurrency](https://elizarov.medium.com/structured-concurrency-722d765aa952)</cite>
+- <cite>[Hydra Conf - Structured concurrency](https://www.youtube.com/watch?v=Mj5P47F6nJg)</cite>
+- <cite>[The reason to avoid GlobalScope](https://elizarov.medium.com/the-reason-to-avoid-globalscope-835337445abc)</cite>
 
-*[Roman Elizarov: Coroutine Context and Scope](https://elizarov.medium.com/coroutine-context-and-scope-c8b255d59055)*
+<cite>[Roman Elizarov: Coroutine Context and Scope](https://elizarov.medium.com/coroutine-context-and-scope-c8b255d59055)</cite>
 
-Goroutine 和 Context 部分内容参考了 [Go 语言设计和实现](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/) 和 *[The Go Programming Language](https://www.gopl.io/)* 。
+Goroutine 和 Context 部分内容参考了 [Go 语言设计和实现](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/) 和 <cite>[The Go Programming Language](https://www.gopl.io/)</cite> 。
 
 ## 后记
 
