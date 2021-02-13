@@ -4,13 +4,25 @@ import './global.css'
 
 Wordpress2016.overrideThemeStyles = () => {
   return {
-    "a.gatsby-resp-image-link": {
-      boxShadow: `none`,
-    },
+    "a.gatsby-resp-image-link": { boxShadow: `none`, },
+    h1: { fontFamily: ["Roboto Slab", "Noto Sans SC", "sans-serif"].join(",") },
+    blockquote: { fontFamily: ["Zilla Slab", "serif"].join(",") },
+    cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
   }
 }
 
-delete Wordpress2016.googleFonts
+Wordpress2016.googleFonts = [
+  { name: "Noto Serif SC", styles: [400, 900] },
+  { name: "Noto Sans SC", styles: [900] },
+]
+
+Wordpress2016.bodyFontFamily = [
+  "Noto Serif SC", "Georgia", "serif"
+]
+
+Wordpress2016.headerFontFamily = [
+  "Roboto Slab", "Noto Sans SC", "sans-serif"
+]
 
 const typography = new Typography(Wordpress2016)
 

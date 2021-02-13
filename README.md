@@ -12,6 +12,30 @@ To enable the comment section for a blog post, I manually create an issue, take 
 
 Feel free to open new issues for older posts.
 
+## 🔮 Custom blocks
+
+I made some custom blocks for custom layout elements in the blog posts.
+
+The implementation uses [`remark-custom-blocks`](https://github.com/zestedesavoir/zmarkdown/tree/master/packages/remark-custom-blocks) and its [Gatsby plugin](https://www.gatsbyjs.com/plugins/gatsby-remark-custom-blocks/).
+
+### `tip` cutom block
+
+Example:
+```
+[[tip | 🚨]]
+| 作为顶层函数的 coroutine builders 已被废弃，在目前的 API 中相当于通过 `GlobalScope` 开启协程。本文使用 `GlobalScope` 来模拟全局顶层的 coroutine builders。
+```
+
+### `fig` custom block
+
+The whole thing will be wrapped in a `<figure>` element, while the title portion will end up in a `<figcaption>`
+
+Example:
+```
+[[fig | 黑盒性质：控制流流入 → [黑盒] → 控制流流出，复刻自[njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
+| ![Structured Programming](./structured-programming.svg)
+```
+
 ## 🚀 Develop
 
 Start dev server.

@@ -4,6 +4,7 @@ body.light {
   --bg-secondary: rgb(249, 250, 251);
   --header: var(--pink);
   --textNormal: #222;
+  --textSecondary: rgba(0, 0, 0, 0.5);
   --textTitle: #222;
   --textLink: #1a1a1a;
   --hr: hsla(0, 0%, 0%, 0.1);
@@ -14,12 +15,12 @@ body.light {
 
 body.dark {
   -webkit-font-smoothing: antialiased;
-
   --primary: #65b6ec;
   --bg: #282c35;
   --bg-secondary: rgb(54, 60, 72);
   --header: #ffffff;
   --textNormal: rgba(255, 255, 255, 0.88);
+  --textSecondary: rgba(255, 255, 255, 0.5);
   --textTitle: #ffffff;
   --textLink: var(--textTitle);
   --hr: hsla(0, 0%, 100%, 0.2);
@@ -121,6 +122,15 @@ a {
   color: var(--textTitle);
   border-left-color: var(--textNormal);
 }
+
+figcaption {
+  text-align: center;
+  margin-bottom: 1.75rem;
+  font-size: 0.8rem;
+  color: var(--textSecondary);
+  font-family: sans-serif;
+}
+
 /* inline code */
 :not(pre) > code[class*="language-"] {
   padding: 0 0.375em !important;
@@ -131,7 +141,7 @@ a {
 }
 .dark :not(pre) > code[class*="language-"] {
   color: #f6f3f2;
-  background: #606060;
+  background: #6060608c;
 }
 
 a.anchor {
@@ -154,7 +164,7 @@ a.anchor.before {
   padding: 1rem 0 1rem 0;
   margin: 1rem;
   margin-left: -4.75rem;
-  font-family: "JetBrains Mono", monospace;
+  font-family: "JetBrains Mono", "Noto Serif SC", sans-serif;
 }
 .tip p {
   margin: 0;
