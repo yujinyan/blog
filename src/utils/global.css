@@ -126,9 +126,9 @@ a {
 figcaption {
   text-align: center;
   margin-bottom: 1.75rem;
-  font-size: .8rem;
+  font-size: 0.8rem;
   color: var(--textSecondary);
-  /* font-family: sans-serif; */
+  font-family: sans-serif;
 }
 
 /* inline code */
@@ -141,7 +141,7 @@ figcaption {
 }
 .dark :not(pre) > code[class*="language-"] {
   color: #f6f3f2;
-  background: #606060;
+  background: #6060608c;
 }
 
 a.anchor {
@@ -164,7 +164,7 @@ a.anchor.before {
   padding: 1rem 0 1rem 0;
   margin: 1rem;
   margin-left: -4.75rem;
-  font-family: "JetBrains Mono", monospace;
+  font-family: "JetBrains Mono", "Noto Serif SC", sans-serif;
 }
 .tip p {
   margin: 0;

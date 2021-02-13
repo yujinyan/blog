@@ -6,6 +6,7 @@ Wordpress2016.overrideThemeStyles = () => {
   return {
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
     h1: { fontFamily: ["Roboto Slab", "Noto Sans SC", "sans-serif"].join(",") },
+    blockquote: { fontFamily: ["Zilla Slab", "serif"].join(",") }
   }
 }
 

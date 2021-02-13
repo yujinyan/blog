@@ -5,3 +5,4 @@
 import "prismjs/themes/prism-tomorrow.css"
 import "@fontsource/roboto-slab/900.css"
 import "@fontsource/jetbrains-mono/400.css"
+import "@fontsource/zilla-slab/400-italic.css"

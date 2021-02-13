@@ -40,6 +40,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
               ...scale(-1 / 5),
               display: `block`,
               marginBottom: rhythm(1),
+              fontFamily: "Georgia, serif"
             }}
           >
             {post.frontmatter.date}

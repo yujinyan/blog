@@ -309,14 +309,14 @@ Dijkstra 在他著名的 [*Go To Statement Considered Harmful (1968)*](https://h
 
 Dijkstra 认为高级语言应当摒弃 goto 语句，提倡「结构化编程 Structured Programming」——即程序员使用条件、循环、函数块等结构块进行组合表达程序逻辑。
 
-[[fig | 黑盒性质：控制流流入 → [黑盒] → 控制流流出，复刻自[njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
+[[fig | 黑盒性质：控制流流入 → [黑盒] → 控制流流出，复刻自 [njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
 | ![Structured Programming](./structured-programming.svg)
 
 可以看到，程序经过这些控制结构的时候总是从上到下（sequential）的：一个入口，一个出口。不同控制结构中间部分像一个「黑盒」。我们在阅读到这一块代码的时候可以确定这个块里有一些逻辑，这些逻辑完成以后，控制流最终会从一个出口出来，进入下一行代码。而一旦编程语言支持 goto 语句，这种封装就被破坏。
 
 在结构化并发中，所有异步任务都会被约束在一个作用域里面，这个作用域类似于结构化编程中的条件、循环、函数控制体，虽然可能有多个任务并发执行，但最终都会从一个出口出来，符合「黑盒」的性质。假设程序员读到图示虚线的位置，他可以确定，如果代码走到这里，上面并发的三个任务一定成功完成了。
 
-[[fig | 结构化并发同样满足「黑盒」性质，复刻自[njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
+[[fig | 结构化并发同样满足「黑盒」性质，复刻自 [njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
 | ![Structured Concurrency](./structured-concurrency.svg)
 
 越来越多语言正在吸收结构化并发的思想，例如 Java 的 [Project Loom](https://wiki.openjdk.java.net/display/loom/Structured+Concurrency) 和 [Swift 的协程](https://forums.swift.org/t/swift-concurrency-roadmap/41611)。
