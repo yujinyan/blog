@@ -28,7 +28,7 @@ public fun CoroutineScope.launch(
 
 ```kotlin
 public interface CoroutineScope {
-    public val coroutineContext: CoroutineContext
+  public val coroutineContext: CoroutineContext
 }
 ```
 
@@ -47,12 +47,8 @@ CoroutineName("foo") + CoroutineName("bar")
 
 将两个 Context 「+」在一起以后返回的类型是 `CombinedContext`。由于这个集合本身和里面的元素 `CoroutineContext.Element` 都是 `CoroutineContext`，我们在调用 `launch` 这种接收 Context 的函数的时候既可以传单个元素，也可以传组合在一起的 Context，而不需要额外在外面加一个 `listOf` 这样的套子，或者使用 vararg，十分简洁优雅。
 
-<figure>
-
-![context hierarchy](./context-hierarchy.svg)
-
-<figcaption>hello world</figcaption>
-</figure>
+[[fig | 重要 Context 的继承/实现关系]]
+| ![context hierarchy](./context-hierarchy.svg)
 
 **Context 是不可变（immutable）的**。对 Context 进行添加或者删除元素的操作都会返回新的 Context 对象。这一性质是协程并发场景下的需要。
 
@@ -82,7 +78,8 @@ Context 集合和字典的性质确保了 `CombinedContext` 这个集合里**每
 
 虽然 Context 用起来像字典和集合，但其**实现却是链表**。
 
-![CombinedContext](./combined-context.svg)
+[[fig | `CombinedContext` 数据结构示意]]
+| ![CombinedContext](./combined-context.svg)
 
 由于 Context 中每种类型的 Element 是唯一的，而 Element 类型定义在 Kotlin 协程库（kotlinx.coroutines）内部，其数量是固定的，所以对链表操作的时间复杂度是有上界的。使用自定义的链表来实现 Context 相比使用现成的数据结构可以避免一些额外的开销，对于框架实现来说是非常合理的。
 
@@ -312,13 +309,15 @@ Dijkstra 在他著名的 [*Go To Statement Considered Harmful (1968)*](https://h
 
 Dijkstra 认为高级语言应当摒弃 goto 语句，提倡「结构化编程 Structured Programming」——即程序员使用条件、循环、函数块等结构块进行组合表达程序逻辑。
 
-![Structured Programming](./structured-programming.svg)
+[[fig | 黑盒性质：控制流流入 → [黑盒] → 控制流流出，复刻自[njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
+| ![Structured Programming](./structured-programming.svg)
 
 可以看到，程序经过这些控制结构的时候总是从上到下（sequential）的：一个入口，一个出口。不同控制结构中间部分像一个「黑盒」。我们在阅读到这一块代码的时候可以确定这个块里有一些逻辑，这些逻辑完成以后，控制流最终会从一个出口出来，进入下一行代码。而一旦编程语言支持 goto 语句，这种封装就被破坏。
 
 在结构化并发中，所有异步任务都会被约束在一个作用域里面，这个作用域类似于结构化编程中的条件、循环、函数控制体，虽然可能有多个任务并发执行，但最终都会从一个出口出来，符合「黑盒」的性质。假设程序员读到图示虚线的位置，他可以确定，如果代码走到这里，上面并发的三个任务一定成功完成了。
 
-![Structured Concurrency](./structured-concurrency.svg)
+[[fig | 结构化并发同样满足「黑盒」性质，复刻自[njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
+| ![Structured Concurrency](./structured-concurrency.svg)
 
 越来越多语言正在吸收结构化并发的思想，例如 Java 的 [Project Loom](https://wiki.openjdk.java.net/display/loom/Structured+Concurrency) 和 [Swift 的协程](https://forums.swift.org/t/swift-concurrency-roadmap/41611)。
 
@@ -602,8 +601,7 @@ suspend fun main() {
 - 定义在 `CoroutineScope` 上的扩展函数提供了这样的约定（Convention）：这个函数会立即返回，但是函数会开启异步任务，可以理解为这个函数内的子程序和调用方的的代码并发执行。
 - 本文的姊妹篇 [理解 Kotlin 的 suspend 函数](https://blog.yujinyan.me/posts/understanding-kotlin-suspend-functions/#%E5%8F%AF%E4%BB%A5-suspend-%E7%9A%84%E4%B8%8D%E4%BB%85%E4%BB%85%E6%98%AF-io) 介绍了 suspend 函数提供的约定：调用这个函数不会阻塞线程，函数内的子程序执行完毕以后函数才会返回，控制流回到调用方。suspend 函数不应该有开启异步任务的副作用。
 
-[[tip |”]]
-| Suspend functions are sequential by default. Concurrency is hard, and its launch must be explicit.
+> Suspend functions are sequential by default. Concurrency is hard, and its launch must be explicit.
 
 可以看到，Kotlin 在类型系统对这两种不同性质的函数作了区分：
 

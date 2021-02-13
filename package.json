@@ -46,6 +46,7 @@
     "typeface-montserrat": "0.0.75",
     "typography": "^0.16.19",
     "typography-theme-wordpress-2016": "^0.16.19",
+    "unist-util-select": "^3.0.4",
     "unist-util-visit": "^2.0.3"
   },
   "devDependencies": {

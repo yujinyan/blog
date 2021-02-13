@@ -55,10 +55,17 @@ module.exports = {
                 tip: {
                   classes: "tip",
                   title: "optional"
+                },
+                fig: {
+                  classes: "svg",
+                  title: "optional",
+                  containerElement: 'figure',
+                  titleElement: 'figcaption'
                 }
               }
             }
-          }
+          },
+          `gatsby-remark-figure-block`
         ],
       },
     },
