@@ -79,6 +79,12 @@ a {
     monospace !important;
 }
 
+.light pre[class*="language-"] {
+  border-radius: 3px;
+  /* inspiration https://evan.tatarka.me/blog/2020-03-02-you-dont-need-to-null-out-views */
+  box-shadow: 0 6px 12px rgb(0 0 0 / 25%);
+}
+
 /* see https://github.com/yujinyan/blog/pull/10 */
 .gatsby-highlight pre > code {
   display: inline-block;
@@ -96,6 +102,10 @@ a {
   border-left: #cc99cd solid 0.3125em;
 }
 @media (max-width: 42rem) {
+  .light pre[class*="language-"] {
+    border-radius: 0;
+    box-shadow: 0 2px 8px 0px rgb(0 0 0 / 25%);
+  }
   .gatsby-highlight {
     margin-bottom: 1.75rem;
     margin-left: -1.3125rem;
