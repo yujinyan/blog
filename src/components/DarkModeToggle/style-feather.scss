@@ -1,7 +1,7 @@
 // uses the feather icon set
 // https://iconify.design/icon-sets/feather/
 
-$scale: .25;
+$scale: .2;
 $icon-size: 6em * $scale;
 
 .toggle-checkbox {
@@ -18,7 +18,7 @@ $icon-size: 6em * $scale;
   width: 20.5em * $scale;
   border-radius: 10em * $scale;
   background-color: white;
-  box-shadow: 0px 8px * $scale 20px * $scale #e4e7ec;
+  box-shadow: 0px 8px * $scale 20px * $scale #8b8b8b50;
   transition: background-color 250ms;
 }
 
@@ -27,7 +27,8 @@ $icon-size: 6em * $scale;
 }
 
 .toggle-checkbox:checked ~ .toggle-slot {
-  background-color: #374151;
+  background-color: #3741515e;
+  backdrop-filter: blur(8px);
 }
 
 .toggle-button {

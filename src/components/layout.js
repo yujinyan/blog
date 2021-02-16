@@ -65,7 +65,7 @@ const Layout = ({ location, title, children }) => {
         }}
       >
         {header}
-        <DarkModeToggle />
+        <DarkModeToggle style={{ position: "fixed", right: rhythm(1), top: rhythm(1.250), zIndex: 100 }} />
       </header>
       <main>{children}</main>
       <footer>© {new Date().getFullYear()} yujinyan.me</footer>

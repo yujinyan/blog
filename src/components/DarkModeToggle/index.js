@@ -5,11 +5,11 @@ import moonIcon from "@iconify/icons-feather/moon"
 import sunIcon from "@iconify/icons-feather/sun"
 import "./style-feather.scss"
 
-const DarkModeToggle = () => (
+const DarkModeToggle = (props) => (
   <ThemeToggler>
     {({ theme, toggleTheme }) =>
       theme && (
-        <label>
+        <label {...props}>
           <input
             className="toggle-checkbox"
             checked={theme === "dark"}
