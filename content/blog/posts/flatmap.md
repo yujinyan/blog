@@ -16,6 +16,8 @@ fun subviews<T: NSView>(ofType type: T.Type) -> [T] {
 }
 ```
 
+<!-- excerpt end -->
+
 [[tip | ⚠️]]
 | [更新] Swift 4.1 废弃了 `flatMap` 这种用法，改成了 `compactMap`，见 [Introduce Sequence.compactMap(_:)](https://github.com/apple/swift-evolution/blob/master/proposals/0187-introduce-filtermap.md#introduce-sequencecompactmap_)
 

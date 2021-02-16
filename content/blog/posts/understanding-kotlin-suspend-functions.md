@@ -8,6 +8,8 @@ issueId: "4"
 
 理解 `suspend` 其实不需要纠结神奇的「挂起」是什么意思或者拘泥于线程是怎么切换的。实际上 `suspend` 的背后是大家非常熟悉的回调。
 
+<!-- excerpt end -->
+
 假设 `postItem` 由三个有依赖关系的异步子任务组成： `requestToken`，`createPost` 和 `processPost` ，这三个函数都是基于回调的 API：
 
 ```kotlin

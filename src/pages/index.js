@@ -40,6 +40,7 @@ const BlogIndex = ({ data, location }) => {
             </header>
             <section>
               <p
+                className="excerpt"
                 dangerouslySetInnerHTML={{
                   __html: node.frontmatter.description || node.excerpt,
                 }}
@@ -64,7 +65,7 @@ export const pageQuery = graphql`
     allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
       edges {
         node {
-          excerpt
+          excerpt(format: HTML)
           fields {
             slug
           }

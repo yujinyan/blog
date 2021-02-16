@@ -8,6 +8,8 @@ issueId: "19"
 
 开启 Kotlin 协程需要在 `CoroutineScope` 上调用 `launch` 或者 `async` 这些方法。这些定义在 `CoroutineScope` 上的扩展方法叫作 coroutine builder。
 
+<!-- excerpt end -->
+
 ```kotlin
 lifecycleScope.launch(Dispatchers.IO) {
   delay(1000)

@@ -7,6 +7,7 @@ date: "2018-06-02T22:17:00.200Z"
 ```javascript
 [' some ', ' strings '].map(s => s.trim())
 ```
+<!-- excerpt end -->
 进一步优化，考虑将 map 中包裹的函数去掉，直接使用 String.prototype.trim。然而问题出现了：
 ```javascript
 [' some ', ' strings '].map(String.prototype.trim)

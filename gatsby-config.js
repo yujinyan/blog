@@ -67,6 +67,7 @@ module.exports = {
           },
           `gatsby-remark-figure-block`
         ],
+        excerpt_separator:  `<!-- excerpt end -->`
       },
     },
     `gatsby-transformer-sharp`,
