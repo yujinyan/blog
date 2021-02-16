@@ -15,8 +15,8 @@ const BlogIndex = ({ data, location }) => {
 
   return (
     <Layout location={location} title={siteTitle}>
-      <SEO title="All posts" />
-      <GithubCorner url="https://github.com/yujinyan/blog"/>
+      <SEO title="All posts | Yu Jinyan's Blog" />
+      <GithubCorner url="https://github.com/yujinyan/blog" />
       <Bio />
       {posts.map(({ node }) => {
         const title = node.frontmatter.title || node.fields.slug
@@ -35,7 +35,7 @@ const BlogIndex = ({ data, location }) => {
                   <span style={{ verticalAlign: "middle" }}>{title}</span>
                 </Link>
               </h3>
-              <small>{node.frontmatter.date}</small>
+              <small className="subtitle"><i>{node.frontmatter.date}</i></small>
             </header>
             <section>
               <p

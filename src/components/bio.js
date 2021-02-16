@@ -41,6 +41,7 @@ const Bio = () => {
       style={{
         display: `flex`,
         marginBottom: rhythm(2.5),
+        alignItems: "center"
       }}
     >
       <Image
@@ -56,13 +57,16 @@ const Bio = () => {
           borderRadius: `50%`,
         }}
       />
-      <p>
+      <p className="subtitle" style={{ margin: 0, lineHeight: "1.5em" }}>
         Written by{" "}
         <strong>
-          <a href={`https://twitter.com/${social.twitter}`}>{author.name}</a>
+          <a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a>
         </strong>
-        .<br />
-        {author.summary}
+        .
+        <br/>
+        Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>.
+        I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>.
+        {/* {author.summary} */}
       </p>
     </div>
   )

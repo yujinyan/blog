@@ -8,6 +8,7 @@ Wordpress2016.overrideThemeStyles = () => {
     h1: { fontFamily: ["Roboto Slab", "Noto Sans SC", "sans-serif"].join(",") },
     blockquote: { fontFamily: ["Zilla Slab", "serif"].join(",") },
     cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
+    ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
   }
 }
 

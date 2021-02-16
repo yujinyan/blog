@@ -51,7 +51,7 @@ body {
 }
 
 a {
-  color: var(--primary);
+  color: var(--textNormal);
 }
 
 .github-corner .bg {
