@@ -8,6 +8,7 @@ import GithubCorner from "../components/GithubCorner"
 import { rhythm } from "../utils/typography"
 import { TranslateMark } from "../components/translate"
 import get from "lodash/get"
+import "./index.css"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata.title

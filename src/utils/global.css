@@ -161,11 +161,6 @@ a.anchor.before {
   padding-right: 8px;
 }
 
-.monospace {
-  font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono,
-    monospace !important;
-}
-
 .tip {
   position: relative;
   border-top: 1.25px solid var(--hr);
@@ -174,6 +169,7 @@ a.anchor.before {
   margin-left: -4.75rem;
   font-family: "JetBrains Mono", "Noto Serif SC", sans-serif;
 }
+
 .tip p {
   margin: 0;
 }
