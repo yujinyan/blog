@@ -7,6 +7,7 @@ import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
 import ToC from "../components/ToC"
+import Fab from "../components/Fab"
 import { UtterancesComments } from "../components/utterances"
 import GithubCorner from "../components/GithubCorner"
 import Helmet from "react-helmet"
@@ -67,6 +68,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
           "https://github.com/yujinyan/blog"
       } />
+      <Fab />
       <nav style={{ marginTop: rhythm(2) }}>
         <ul
           style={{
