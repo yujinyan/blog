@@ -6,7 +6,7 @@ Cloned from [Gatsby's blog starter](https://github.com/gatsbyjs/gatsby-starter-b
 
 可以通过 issues 对文章进行评论，欢迎分享您的想法！
 
-The `issues` feature of this project serves as comment section for blog contents, powered by [utterances](https://utteranc.es/).
+The `issues` labeled by `👋 comments welcome` serve as comment section for blog posts, powered by [utterances](https://utteranc.es/).
 
 To enable the comment section for a blog post, I manually create an issue, take note of the issue id and record it in the corresponding post's front matter with a custom attribute `issueId`. This could be automated in the future.
 
@@ -14,7 +14,7 @@ Feel free to open new issues for older posts.
 
 ## 🔮 Custom blocks
 
-I made some custom blocks for custom layout elements in the blog posts.
+I made some custom blocks for layout elements not supported by markdown syntax natively.
 
 The implementation uses [`remark-custom-blocks`](https://github.com/zestedesavoir/zmarkdown/tree/master/packages/remark-custom-blocks) and its [Gatsby plugin](https://www.gatsbyjs.com/plugins/gatsby-remark-custom-blocks/).
 
@@ -35,6 +35,17 @@ Example:
 [[fig | 黑盒性质：控制流流入 → [黑盒] → 控制流流出，复刻自[njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
 | ![Structured Programming](./structured-programming.svg)
 ```
+
+## 📰 Font combinations
+
+- heading: `Roboto Slab`, `Noto Sans SC Black`
+- text: `Noto Serif SC`
+- Code: `JetBrains Mono`
+- blockquote: `Zilla Slab` (italic)
+
+`Zilla Slab` is a bit too small to mix with `Noto Serif SC`.
+
+`Roboto Slab` does not have italic version.
 
 ## 🚀 Develop
 

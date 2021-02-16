@@ -51,7 +51,7 @@ body {
 }
 
 a {
-  color: var(--primary);
+  color: var(--textNormal);
 }
 
 .github-corner .bg {
@@ -135,7 +135,6 @@ a {
 
 figcaption {
   text-align: center;
-  margin-bottom: 1.75rem;
   font-size: 0.8rem;
   color: var(--textSecondary);
   font-family: sans-serif;
@@ -162,20 +161,15 @@ a.anchor.before {
   padding-right: 8px;
 }
 
-.monospace {
-  font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono,
-    monospace !important;
-}
-
 .tip {
   position: relative;
   border-top: 1.25px solid var(--hr);
   border-bottom: 1.25px solid var(--hr);
   padding: 1rem 0 1rem 0;
-  margin: 1rem;
   margin-left: -4.75rem;
   font-family: "JetBrains Mono", "Noto Serif SC", sans-serif;
 }
+
 .tip p {
   margin: 0;
 }
