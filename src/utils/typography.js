@@ -2,12 +2,13 @@ import Typography from "typography"
 import Wordpress2016 from "typography-theme-wordpress-2016"
 import './global.css'
 
-Wordpress2016.overrideThemeStyles = () => {
+Wordpress2016.overrideThemeStyles = ({ rhythm }) => {
   return {
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
     h1: { fontFamily: ["Roboto Slab", "Noto Sans SC", "sans-serif"].join(",") },
     blockquote: { fontFamily: ["Zilla Slab", "serif"].join(",") },
     cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
+    ".custom-block": { marginBottom: rhythm(1) },
     ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
   }
 }
