@@ -4,18 +4,15 @@ import "./style.scss"
 import Hamburger from "hamburger-react"
 
 const Fab = ({ isOpen, setOpen }) => (
-  <>
-    <div className="fab">
-      <Hamburger
-        size={24}
-        color="white"
-        rounded
-        toggled={isOpen}
-        toggle={setOpen}
-      />
-    </div>
-    <div className={`fab-bg ${isOpen ? "" : "hide"}`} />
-  </>
+  <div className="fab">
+    <Hamburger
+      size={24}
+      color="white"
+      rounded
+      toggled={isOpen}
+      toggle={setOpen}
+    />
+  </div>
 )
 
 Fab.propTypes = {

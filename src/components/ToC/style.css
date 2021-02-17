@@ -50,6 +50,7 @@
     width: 100%;
     left: 0;
     right: 0;
+    position: static;
   }
   .ToCs li {
     margin-bottom: 0.75rem;

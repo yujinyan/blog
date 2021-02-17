@@ -1,0 +1,19 @@
+.sidebar {
+  padding-top: 5rem; // leave space for toggler
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: var(--bg);
+  z-index: 20;
+  overflow-y: auto;
+  opacity: 1;
+  transform: translate(0px, 0px);
+  transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
+  &.hide {
+    opacity: 0;
+    transform: translate(0px, 40px);
+    transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
+  }
+}

@@ -10,7 +10,7 @@ import ToC from "../components/ToC"
 import Fab from "../components/Fab"
 import { UtterancesComments } from "../components/utterances"
 import GithubCorner from "../components/GithubCorner"
-import Helmet from "react-helmet"
+import "./blog-post.scss"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
@@ -48,7 +48,10 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             {post.frontmatter.date}
           </p>
         </header>
-        {post.tableOfContents && <ToC html={post.tableOfContents} showOnMobile={menuIsOpen} />}
+        {post.tableOfContents &&
+          <div class={`sidebar ${menuIsOpen ? "" : "hide"}`}>
+            <ToC html={post.tableOfContents} showOnMobile={menuIsOpen} />
+          </div>}
         {post.frontmatter.translate &&
           TranslateInfo(post.frontmatter.translate)}
         <section dangerouslySetInnerHTML={{ __html: post.html }} />
