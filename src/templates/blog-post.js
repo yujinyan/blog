@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link, graphql } from "gatsby"
 
 import Bio from "../components/bio"
@@ -16,6 +16,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
+  const [menuIsOpen, setMenuOpen] = useState(false)
 
   return (
     <Layout location={location} title={siteTitle}>
@@ -47,7 +48,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             {post.frontmatter.date}
           </p>
         </header>
-        {post.tableOfContents && <ToC html={post.tableOfContents} />}
+        {post.tableOfContents && <ToC html={post.tableOfContents} showOnMobile={menuIsOpen} />}
         {post.frontmatter.translate &&
           TranslateInfo(post.frontmatter.translate)}
         <section dangerouslySetInnerHTML={{ __html: post.html }} />
@@ -68,7 +69,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
           "https://github.com/yujinyan/blog"
       } />
-      <Fab />
+      <Fab isOpen={menuIsOpen} setOpen={setMenuOpen} />
       <nav style={{ marginTop: rhythm(2) }}>
         <ul
           style={{

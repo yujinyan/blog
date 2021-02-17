@@ -1,14 +1,31 @@
+$size: 3.75rem;
 .fab {
   position: fixed;
   bottom: 1.25rem;
   right: 1.25rem;
-  width: 3rem;
-  height: 3rem;
+  width: $size;
+  height: $size;
   border-radius: 3rem;
   background: var(--primary);
-  box-shadow: 0px 8px 12px #8b8b8b50;
+  box-shadow: 0px 8px 12px #2b2b2b50;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 200;
+  -webkit-tap-highlight-color: transparent;
 }
-
+.fab-bg {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: var(--bg);
+  z-index: 20;
+  &.hide {
+    display: none;
+  }
+}
+.dark .fab {
+  // backdrop-filter: blur(8px);
+}

@@ -4,9 +4,9 @@
   right: 0;
   /* magic number */
   width: calc(50vw - 400px);
-  font-size: .675rem;
+  font-size: 0.675rem;
   border-left: 0.5px solid var(--hr);
-  padding-left: 2rem;
+  padding: 0 2rem;
 }
 .ToCs ul {
   list-style: none;
@@ -39,7 +39,19 @@
 }
 
 @media (max-width: 1268px) {
-  .ToCs {
+  .ToCs.mobile-hide {
     display: none;
+  }
+  .ToCs {
+    /* display: none; */
+    font-size: 1rem;
+    display: inline-block;
+    z-index: 50;
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+  .ToCs li {
+    margin-bottom: 0.75rem;
   }
 }
