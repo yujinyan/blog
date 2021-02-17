@@ -11,8 +11,10 @@
   opacity: 1;
   transform: translate(0px, 0px);
   transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
+  pointer-events: auto;
   &.hide {
     opacity: 0;
+    pointer-events: none;
     transform: translate(0px, 40px);
     transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
   }
