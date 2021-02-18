@@ -6,27 +6,20 @@ $size: 3.75rem;
   width: $size;
   height: $size;
   border-radius: 3rem;
-  background: var(--primary);
+  // background: var(--primary);
+  background: #007acc;
   box-shadow: 0px 8px 12px #2b2b2b50;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
   -webkit-tap-highlight-color: transparent;
-}
-.fab-bg {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  background: var(--bg);
-  z-index: 20;
-  overflow-y: auto;
-  &.hide {
-    display: none;
+  &:active {
+    background: #0063ac;
+    box-shadow: 0px 2px 12px #2b2b2b50;
   }
 }
+
 .dark .fab {
   // backdrop-filter: blur(8px);
 }

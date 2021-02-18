@@ -4,7 +4,7 @@ import DarkModeToggle from "./DarkModeToggle"
 
 import { rhythm, scale } from "../utils/typography"
 
-const Layout = ({ location, title, children }) => {
+const Layout = ({ location, title, children, aside }) => {
   const rootPath = `${__PATH_PREFIX__}/`
   let header
 
@@ -68,6 +68,7 @@ const Layout = ({ location, title, children }) => {
         <DarkModeToggle style={{ position: "fixed", right: rhythm(1), top: rhythm(1.250), zIndex: 100 }} />
       </header>
       <main>{children}</main>
+      {aside}
       <footer>© {new Date().getFullYear()} yujinyan.me</footer>
     </div>
   )

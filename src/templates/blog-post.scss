@@ -1,5 +1,5 @@
 .sidebar {
-  padding-top: 5rem; // leave space for toggler
+  padding-top: 5rem; // leave space for toggle
   position: fixed;
   width: 100vw;
   height: 100vh;
@@ -7,15 +7,43 @@
   left: 0;
   background: var(--bg);
   z-index: 20;
-  overflow-y: auto;
+  // overflow-y: auto;
   opacity: 1;
   transform: translate(0px, 0px);
   transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
   pointer-events: auto;
-  &.hide {
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(0px, 40px);
-    transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
+  padding-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  @media (max-width: 1268px) {
+    // mobile
+    &.hide {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(0px, 40px);
+      transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
+    }
+  }
+}
+
+.sidebar .ToCs {
+  overflow-y: scroll;
+}
+
+@media (min-width: 1268px) {
+  // desktop
+  .sidebar {
+    right: 0;
+    // 50vw + main width + extra padding
+    left: calc(50vw + 21rem + 2rem);
+    // magic number
+    width: calc(50vw - 400px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .hide-on-desktop {
+    visibility: hidden;
   }
 }

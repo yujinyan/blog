@@ -9,7 +9,7 @@ TableOfContents.propTypes = {
 }
 
 // https://stackoverflow.com/questions/60833907/gatsby-syncing-the-table-of-contents-with-the-page-scroll-and-style-the-active-l
-export default function TableOfContents({ html, showOnMobile }) {
+export default function TableOfContents({ html }) {
   const isSSR = typeof window === "undefined"
   let targetedIds = useMemo(() => {
     if (isSSR) return []
@@ -45,7 +45,7 @@ export default function TableOfContents({ html, showOnMobile }) {
 
   return (
     <div
-      className={`ToCs ${showOnMobile ? "" : "mobile-hide"}`}
+      className="ToCs"
       dangerouslySetInnerHTML={{ __html: html }} />
   )
 }

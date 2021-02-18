@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link, graphql } from "gatsby"
 
 import Bio from "../components/bio"
@@ -18,8 +18,23 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
   const { previous, next } = pageContext
   const [menuIsOpen, setMenuOpen] = useState(false)
 
+  useEffect(() => {
+    document.body.style.overflow = menuIsOpen ? 'hidden' : 'auto'
+  })
+
   return (
-    <Layout location={location} title={siteTitle}>
+    <Layout
+      location={location}
+      title={siteTitle}
+      aside={
+        // should make child sibling of main scrolllable content
+        // https://stackoverflow.com/a/20028988/6627776 
+        post.tableOfContents &&
+        <aside className={`sidebar ${menuIsOpen ? "" : "hide"}`}>
+          <ToC html={post.tableOfContents} />
+        </aside>
+      }
+    >
       <SEO
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}
@@ -48,10 +63,6 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             {post.frontmatter.date}
           </p>
         </header>
-        {post.tableOfContents &&
-          <div class={`sidebar ${menuIsOpen ? "" : "hide"}`}>
-            <ToC html={post.tableOfContents} showOnMobile={menuIsOpen} />
-          </div>}
         {post.frontmatter.translate &&
           TranslateInfo(post.frontmatter.translate)}
         <section dangerouslySetInnerHTML={{ __html: post.html }} />
@@ -72,7 +83,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
           "https://github.com/yujinyan/blog"
       } />
-      <Fab isOpen={menuIsOpen} setOpen={setMenuOpen} />
+      <Fab className="hide-on-desktop" isOpen={menuIsOpen} setOpen={setMenuOpen} />
       <nav style={{ marginTop: rhythm(2) }}>
         <ul
           style={{
