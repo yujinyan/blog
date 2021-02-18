@@ -5,6 +5,7 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import GithubCorner from "../components/GithubCorner"
+import AdobeFont from "../components/AdobeFont"
 import { rhythm } from "../utils/typography"
 import { TranslateMark } from "../components/translate"
 import get from "lodash/get"
@@ -17,6 +18,7 @@ const BlogIndex = ({ data, location }) => {
   return (
     <Layout location={location} title={siteTitle}>
       <SEO title="All posts | Yu Jinyan's Blog" />
+      <AdobeFont />
       <GithubCorner url="https://github.com/yujinyan/blog" />
       <Bio />
       {posts.map(({ node }) => {

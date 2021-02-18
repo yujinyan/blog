@@ -4,6 +4,7 @@ import { Link, graphql } from "gatsby"
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import AdobeFont from "../components/AdobeFont"
 import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
 import ToC from "../components/ToC"
@@ -22,6 +23,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}
       />
+      <AdobeFont />
       <article>
         <header>
           <h1

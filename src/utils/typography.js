@@ -2,7 +2,8 @@ import Typography from "typography"
 import Wordpress2016 from "typography-theme-wordpress-2016"
 import './global.css'
 
-Wordpress2016.overrideThemeStyles = ({ rhythm }) => {
+Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
+  styles.body.fontFeatureSettings += `, "palt"` // 标点挤压
   return {
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
     h1: { fontFamily: ["Roboto Slab", "Noto Sans SC", "sans-serif"].join(",") },
@@ -14,16 +15,16 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }) => {
 }
 
 Wordpress2016.googleFonts = [
-  { name: "Noto Serif SC", styles: [400, 900] },
-  { name: "Noto Sans SC", styles: [900] },
+  // { name: "Noto Serif SC", styles: [400, 900] },
+  // { name: "Noto Sans SC", styles: [900] },
 ]
 
 Wordpress2016.bodyFontFamily = [
-  "Noto Serif SC", "Georgia", "serif"
+  "source-han-serif-sc", "Georgia", "serif"
 ]
 
 Wordpress2016.headerFontFamily = [
-  "Roboto Slab", "Noto Sans SC", "sans-serif"
+  "Roboto Slab", "source-han-sans-simplified-c", "sans-serif"
 ]
 
 const typography = new Typography(Wordpress2016)
