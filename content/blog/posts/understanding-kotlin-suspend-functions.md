@@ -136,7 +136,7 @@ fun postItem(item: Item, cont: Continuation) {
 编译器将 `suspend` 编译成带有 continuation 参数的方法叫做 CPS (Continuation-Passing-Style) 变换。
 
 [[tip | 💡]]
-| 我们可以写一段简单的 `suspend` 函数，然后通过 IntelliJ IDEA / Android Studio 的 Tools -> Kotlin -> Show Kotlin Bytecode (Decompile) 查看 Kotlin 生成的状态机代码。尝试写一下这个状态机代码对理解 `suspend` 函数非常有益。可以在[这里](https://github.com/yujinyan/kotlin-playground/blob/master/src/main/kotlin/coroutine/continuation/ManualContinuationExercise.kt)查看笔者写的一个例子。
+| 我们可以写一段简单的 `suspend` 函数，然后通过 IntelliJ IDEA / Android Studio 的 Tools → Kotlin → Show Kotlin Bytecode (Decompile) 查看 Kotlin 生成的状态机代码。尝试写一下这个状态机代码对理解 `suspend` 函数非常有益。可以在[这里](https://github.com/yujinyan/kotlin-playground/blob/master/src/main/kotlin/coroutine/continuation/ManualContinuationExercise.kt)查看笔者写的一个例子。
 
 ## 使用 `suspend` 函数无须关心线程切换
 
