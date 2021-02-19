@@ -11,6 +11,7 @@ import Fab from "../components/Fab"
 import { UtterancesComments } from "../components/utterances"
 import GithubCorner from "../components/GithubCorner"
 import "./blog-post.scss"
+import DarkModeToggle from "../components/DarkModeToggle"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
@@ -23,6 +24,13 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
     document.body.style.overflow = overflowValue
     document.documentElement.style.overflow = overflowValue
   })
+
+  const darkModeToggle = <DarkModeToggle style={{
+    zIndex: `${menuIsOpen ? 100 : 0}`,
+    position: `${menuIsOpen ? "fixed" : "absolute"}`,
+    right: rhythm(1),
+    top: rhythm(1.25)
+  }} />
 
   return (
     <Layout
@@ -38,6 +46,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             linkClicked={() => setMenuOpen(false)} />
         </aside>
       }
+      darkModeToggleOverride={darkModeToggle}
     >
       <SEO
         title={post.frontmatter.title}
