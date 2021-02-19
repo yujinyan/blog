@@ -25,12 +25,15 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
     document.documentElement.style.overflow = overflowValue
   })
 
-  const darkModeToggle = <DarkModeToggle style={{
-    zIndex: `${menuIsOpen ? 100 : 0}`,
-    position: `${menuIsOpen ? "fixed" : "absolute"}`,
-    right: rhythm(1),
-    top: rhythm(1.25)
-  }} />
+  const darkModeToggle = <DarkModeToggle
+    className="fixed-on-desktop"
+    style={{
+      zIndex: 50,
+      position: `${menuIsOpen ? "fixed" : "absolute"}`,
+      right: rhythm(1),
+      top: rhythm(1.25)
+    }}
+  />
 
   return (
     <Layout

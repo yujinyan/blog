@@ -1,4 +1,16 @@
-// prevent mobile menu a tag unclickable issue 
+@mixin desktop {
+  @media (min-width: 1268px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: 1268px) {
+    @content;
+  }
+}
+
+// prevent mobile menu a tag unclickable issue
 // when menu is open on Android Chrome mobile
 body {
   height: 100%;
@@ -31,8 +43,7 @@ body {
     width: 100%;
   }
 
-  @media (max-width: 1268px) {
-    // mobile
+  @include mobile {
     &.hide {
       opacity: 0;
       pointer-events: none;
@@ -77,7 +88,7 @@ body {
   }
 }
 
-@media (min-width: 1268px) {
+@include desktop {
   // desktop
   .sidebar {
     right: 0;
@@ -91,5 +102,11 @@ body {
   }
   .hide-on-desktop {
     visibility: hidden;
+  }
+}
+
+@include desktop {
+  .fixed-on-desktop {
+    position: fixed !important;
   }
 }
