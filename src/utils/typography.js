@@ -2,7 +2,9 @@ import Typography from "typography"
 import Wordpress2016 from "typography-theme-wordpress-2016"
 import './global.css'
 
-Wordpress2016.overrideThemeStyles = ({ rhythm }) => {
+Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
+  // Fix scrolling main content when mobile menu is open.
+  delete styles.html.overflowY
   return {
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
     h1: { fontFamily: ["Roboto Slab", "Noto Sans SC", "sans-serif"].join(",") },

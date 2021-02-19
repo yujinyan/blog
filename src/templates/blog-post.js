@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link, graphql } from "gatsby"
 
 import Bio from "../components/bio"
@@ -7,17 +7,44 @@ import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
 import ToC from "../components/ToC"
+import Fab from "../components/Fab"
 import { UtterancesComments } from "../components/utterances"
 import GithubCorner from "../components/GithubCorner"
-import Helmet from "react-helmet"
+import "./blog-post.scss"
+import DarkModeToggle from "../components/DarkModeToggle"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
+  const [menuIsOpen, setMenuOpen] = useState(false)
+
+  const darkModeToggle = <DarkModeToggle
+    className="fixed-on-desktop"
+    style={{
+      zIndex: 50,
+      position: `${menuIsOpen ? "fixed" : "absolute"}`,
+      right: rhythm(1),
+      top: rhythm(1.25)
+    }}
+  />
 
   return (
-    <Layout location={location} title={siteTitle}>
+    <Layout
+      location={location}
+      title={siteTitle}
+      aside={
+        // should make child sibling of main scrolllable content
+        // https://stackoverflow.com/a/20028988/6627776 
+        post.tableOfContents &&
+        <aside className={`sidebar ${menuIsOpen ? "" : "hide"}`}>
+          <ToC
+            html={post.tableOfContents}
+            linkClicked={() => setMenuOpen(false)} />
+        </aside>
+      }
+      darkModeToggleOverride={darkModeToggle}
+    >
       <SEO
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}
@@ -46,7 +73,6 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             {post.frontmatter.date}
           </p>
         </header>
-        {post.tableOfContents && <ToC html={post.tableOfContents} />}
         {post.frontmatter.translate &&
           TranslateInfo(post.frontmatter.translate)}
         <section dangerouslySetInnerHTML={{ __html: post.html }} />
@@ -67,6 +93,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
           "https://github.com/yujinyan/blog"
       } />
+      <Fab className="hide-on-desktop" isOpen={menuIsOpen} setOpen={setMenuOpen} />
       <nav style={{ marginTop: rhythm(2) }}>
         <ul
           style={{

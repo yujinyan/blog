@@ -3,13 +3,20 @@ import { Icon } from "@iconify/react"
 import { ThemeToggler } from "gatsby-plugin-dark-mode"
 import moonIcon from "@iconify/icons-feather/moon"
 import sunIcon from "@iconify/icons-feather/sun"
-import "./style-feather.scss"
+import "./toggle.scss"
+import Helmet from "react-helmet"
 
 const DarkModeToggle = (props) => (
   <ThemeToggler>
     {({ theme, toggleTheme }) =>
       theme && (
         <label {...props}>
+          <Helmet meta={[
+            {
+              name: "theme-color",
+              content: theme === "light" ? "#fff" : "#282c35"
+            }
+          ]} />
           <input
             className="toggle-checkbox"
             checked={theme === "dark"}

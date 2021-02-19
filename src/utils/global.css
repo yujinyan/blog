@@ -31,7 +31,7 @@ body.dark {
 
 /* get rid of ugly scrollbar on Windows */
 *::-webkit-scrollbar {
-  width: 16px;
+  /* width: 16px; */
 }
 
 .excalidraw {
@@ -104,7 +104,7 @@ a {
 @media (max-width: 42rem) {
   .light pre[class*="language-"] {
     border-radius: 0;
-    box-shadow: 0 2px 8px 0px rgb(0 0 0 / 25%);
+    box-shadow: 0 0px 6px 0px rgb(0 0 0 / 25%);
   }
   .gatsby-highlight {
     margin-bottom: 1.75rem;
