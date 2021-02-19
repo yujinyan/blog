@@ -167,7 +167,6 @@ a.anchor.before {
   border-bottom: 1.25px solid var(--hr);
   padding: 1rem 0 1rem 0;
   margin-left: -4.75rem;
-  font-family: "JetBrains Mono", "Noto Serif SC", sans-serif;
 }
 
 .tip p {
