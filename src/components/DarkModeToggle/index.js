@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react"
 import { ThemeToggler } from "gatsby-plugin-dark-mode"
 import moonIcon from "@iconify/icons-feather/moon"
 import sunIcon from "@iconify/icons-feather/sun"
-import "./style-feather.scss"
+import "./toggle.scss"
 import Helmet from "react-helmet"
 
 const DarkModeToggle = (props) => (
