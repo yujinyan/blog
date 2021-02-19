@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Link, graphql } from "gatsby"
 
 import Bio from "../components/bio"
@@ -18,20 +18,6 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
   const [menuIsOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => {
-    const overflowValue = menuIsOpen ? 'hidden' : 'auto'
-    document.body.style.overflow = overflowValue
-    document.documentElement.style.overflow = overflowValue
-
-    // if (menuIsOpen) {
-    //   document.body.classList.add("fixed")
-    //   document.documentElement.classList.add("fixed")
-    // } else {
-    //   document.body.classList.remove("fixed")
-    //   document.documentElement.classList.remove("fixed")
-    // }
-  })
 
   const darkModeToggle = <DarkModeToggle
     className="fixed-on-desktop"
