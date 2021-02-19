@@ -8,6 +8,12 @@ html {
   overflow-y: auto;
 }
 
+/* not working */
+.fixed {
+  /* position: fixed; */
+  /* pointer-events: none; */
+}
+
 body.light {
   --primary: #007acc;
   --bg: #ffffff;

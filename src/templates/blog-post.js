@@ -23,6 +23,14 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
     const overflowValue = menuIsOpen ? 'hidden' : 'auto'
     document.body.style.overflow = overflowValue
     document.documentElement.style.overflow = overflowValue
+
+    // if (menuIsOpen) {
+    //   document.body.classList.add("fixed")
+    //   document.documentElement.classList.add("fixed")
+    // } else {
+    //   document.body.classList.remove("fixed")
+    //   document.documentElement.classList.remove("fixed")
+    // }
   })
 
   const darkModeToggle = <DarkModeToggle
