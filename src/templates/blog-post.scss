@@ -10,13 +10,6 @@
   }
 }
 
-// prevent mobile menu a tag unclickable issue
-// when menu is open on Android Chrome mobile
-body {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-}
 
 .sidebar {
   padding-top: 7.75rem; // leave space for toggle

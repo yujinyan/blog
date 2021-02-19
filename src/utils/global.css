@@ -1,3 +1,13 @@
+/* prevent mobile menu a tag unclickable issue
+ when menu is open on Android Chrome mobile */
+body,
+html {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  overflow-y: auto;
+}
+
 body.light {
   --primary: #007acc;
   --bg: #ffffff;
@@ -28,7 +38,6 @@ body.dark {
   --inlineCode-text: #e6e6e6;
   --form-shadow: 0 2px 15px 0 rgba(26, 26, 27, 0.637);
 }
-
 
 /* get rid of ugly scrollbar on Windows */
 *::-webkit-scrollbar {
