@@ -87,6 +87,8 @@ module.exports = {
         start_url: `/`,
         background_color: `#ffffff`,
         theme_color: `#007acc`,
+        // https://www.gatsbyjs.com/plugins/gatsby-plugin-manifest/#remove-theme-color-meta-tag
+        theme_color_in_head: false,
         display: `minimal-ui`,
         icon: `content/assets/fish.png`,
       },

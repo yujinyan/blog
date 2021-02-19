@@ -4,6 +4,10 @@ import './global.css'
 
 Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
   styles.body.fontFeatureSettings += `, "palt"` // 标点挤压
+
+  // Fix scrolling main content when mobile menu is open.
+  delete styles.html.overflowY
+
   return {
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
     h1: { fontFamily: ["Roboto Slab", "Noto Sans SC", "sans-serif"].join(",") },
