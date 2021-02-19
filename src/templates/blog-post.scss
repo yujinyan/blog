@@ -1,34 +1,80 @@
-.sidebar {
-  padding-top: 5rem; // leave space for toggle
+// prevent mobile menu a tag unclickable issue 
+// when menu is open on Android Chrome mobile
+body {
+  height: 100%;
+  width: 100%;
   position: fixed;
-  width: 100vw;
+}
+
+.sidebar {
+  padding-top: 7.75rem; // leave space for toggle
+  padding-bottom: 1.75rem;
+  position: fixed;
+  width: 100%;
   height: 100vh;
   top: 0;
   left: 0;
+  bottom: 0;
+  right: 0;
   background: var(--bg);
   z-index: 20;
-  // overflow-y: auto;
+  margin: 0;
   opacity: 1;
   transform: translate(0px, 0px);
   transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
   pointer-events: auto;
-  padding-bottom: 1.75rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  overflow-y: auto;
+
+  .ToCs {
+    display: flex;
+    margin: 0;
+    width: 100%;
+  }
+
   @media (max-width: 1268px) {
     // mobile
     &.hide {
       opacity: 0;
       pointer-events: none;
       transform: translate(0px, 40px);
-      transition: opacity 0.25s ease 0s, transform 0.3s ease 0s;
+      transition: opacity 0.25s ease 0s, transform 0.25s ease 0s;
+    }
+
+    .ToCs {
+      font-size: 1em !important;
+    }
+
+    .ToCs a {
+      color: var(--textNormal);
+
+      &.isActive {
+        color: var(--textNormal);
+        font-weight: 400;
+        border-bottom: 1px dotted var(--textSecondary);
+      }
+    }
+
+    .ToCs > ul > li {
+      font-weight: bold;
+
+      a {
+        // first level
+        font-family: "Noto Sans SC", sans-serif !important;
+      }
+
+      & ul {
+        list-style-type: circle;
+        list-style-position: inside;
+        margin-left: 0;
+
+        & a {
+          // second level
+          font-family: "Noto Serif SC", serif !important;
+          font-weight: 400;
+        }
+      }
     }
   }
-}
-
-.sidebar .ToCs {
-  overflow-y: scroll;
 }
 
 @media (min-width: 1268px) {

@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo } from "react"
 import PropTypes from "prop-types"
 import { useActiveHash } from "./use-active-hash"
-import "./style.css"
+import "./toc.scss"
 
 TableOfContents.propTypes = {
   html: PropTypes.string.isRequired,
-  showOnMobile: PropTypes.bool
+  linkClicked: PropTypes.func
 }
 
 // https://stackoverflow.com/questions/60833907/gatsby-syncing-the-table-of-contents-with-the-page-scroll-and-style-the-active-l
-export default function TableOfContents({ html }) {
+export default function TableOfContents({ html, linkClicked }) {
   const isSSR = typeof window === "undefined"
   let targetedIds = useMemo(() => {
     if (isSSR) return []
@@ -46,6 +46,14 @@ export default function TableOfContents({ html }) {
   return (
     <div
       className="ToCs"
-      dangerouslySetInnerHTML={{ __html: html }} />
+      dangerouslySetInnerHTML={{ __html: html }}
+      onClick={
+        (evt) => {
+          if (linkClicked && evt.target.tagName == "A") {
+            linkClicked()
+          }
+        }
+      }
+    />
   )
 }

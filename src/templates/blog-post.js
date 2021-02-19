@@ -19,7 +19,9 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
   const [menuIsOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    document.body.style.overflow = menuIsOpen ? 'hidden' : 'auto'
+    const overflowValue = menuIsOpen ? 'hidden' : 'auto'
+    document.body.style.overflow = overflowValue
+    document.documentElement.style.overflow = overflowValue
   })
 
   return (
@@ -31,7 +33,9 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         // https://stackoverflow.com/a/20028988/6627776 
         post.tableOfContents &&
         <aside className={`sidebar ${menuIsOpen ? "" : "hide"}`}>
-          <ToC html={post.tableOfContents} />
+          <ToC
+            html={post.tableOfContents}
+            linkClicked={() => setMenuOpen(false)} />
         </aside>
       }
     >
