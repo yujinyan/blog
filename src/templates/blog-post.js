@@ -34,13 +34,6 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
     }}
   />
 
-  const githubCorner = <GithubCorner
-    url={
-      post.frontmatter.issueId ?
-        `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
-        "https://github.com/yujinyan/blog"
-    } />
-
   return (
     <Layout
       location={location}
