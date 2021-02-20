@@ -14,7 +14,7 @@ export const UtterancesComments = (props) => (
       >this GitHub issue</a> directly.</p>
     <section
       ref={elem => {
-        if (!elem) {
+        if (!elem || elem.childElementCount > 0) {
           return;
         }
         const scriptElem = document.createElement("script");
