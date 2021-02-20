@@ -45,6 +45,8 @@ module.exports = {
           },
           // need to put before `gatsby-remark-prismjs`
           `gatsby-remark-autolink-headers`,
+          // need to put after `gatsby-remark-autolink-headers`
+          `gatsby-remark-hanzi-nowrap`,
           `gatsby-remark-prismjs`,
           `gatsby-remark-copy-linked-files`,
           `gatsby-remark-smartypants`,
@@ -65,7 +67,7 @@ module.exports = {
               }
             }
           },
-          `gatsby-remark-figure-block`
+          `gatsby-remark-figure-block`,
         ],
         excerpt_separator:  `<!-- excerpt end -->`
       },

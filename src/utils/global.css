@@ -29,6 +29,10 @@ body.dark {
   --form-shadow: 0 2px 15px 0 rgba(26, 26, 27, 0.637);
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
 /* get rid of ugly scrollbar on Windows */
 *::-webkit-scrollbar {
   /* width: 16px; */

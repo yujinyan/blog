@@ -1,0 +1,9 @@
+{
+  "name": "gatsby-remark-hanzi-nowrap",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
