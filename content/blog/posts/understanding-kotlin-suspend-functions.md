@@ -383,6 +383,9 @@ println(depth(deepTree)) // 100_000
 
 Roman 是 Kotlin 协程的主要设计者，现在担任 Kotlin Project Lead，他在 [Medium](https://elizarov.medium.com/) 上有一系列介绍 Kotlin 和协程的文章，可以帮助我们学习和理解 Kotlin 的一些设计思想。
 
+[[tip | 🔗]]
+| 欢迎阅读本文的「姊妹篇」：[《谈谈 Kotlin 协程的 Context 和 Scope》](/posts/kotlin-coroutine-context-scope/)
+
 ## 题外话：Kotlin 的异常处理
 
 本文提到了 Λrrow `Either` 这个 ADT 来做异常处理，这是笔者认为比较好的异常处理方式。Kotlin 在类型系统区分了 null 和非 null 的值，解决了 `NullPointerException` 的问题，但是在异常处理这一块却干掉了 Checked Exception，可以说是开了倒车。我们调用一个函数不去了解其实现很难确定是否会抛出异常。这在客户端使用协程的情况下尤其糟糕，异常抛出的规律不容易掌握，稍有不慎便会让应用崩溃。异常处理在其他现代编程语言比如 Swift 和 Rust 就要好得多。不过可以理解 Kotlin 这一设计或许更多是 Java 生态的包袱造成的。

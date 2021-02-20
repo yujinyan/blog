@@ -239,7 +239,7 @@ suspend fun loadAndCombineImage(name1: String, name2: String): Image {
 fun process(stream: InputStream): Unit { /**/ }
 
 File("foo.txt").inputStream().use {
-  processFile(it)
+  process(it)
 }
 ```
 
@@ -433,7 +433,7 @@ fun fibonacci(n: Int): Int = if (n <= 1)
   n else fibonacci(n - 1) + fibonacci(n - 2)
 ```
 
-如果要在封装出的 suspend 函数内部支持取消， return 是不行的，必须抛 `CancellationException`。因为 return 以后，控制流正常退回上层函数，可能会继续执行后面的同步语句。当协程被取消后，整个调用链应该立即回退。而 `launch` 的协程块不同于 suspend 函数内部，是协程调用树的根节点，因此可以直接 return 结束协程。
+**在封装出的 suspend 函数内部支持取消， return 是不行的，必须抛 `CancellationException`**。因为 return 以后，控制流正常退回上层函数，可能会继续执行后面的同步语句。当协程被取消后，整个调用链应该立即回退。而 `launch` 的协程块不同于 suspend 函数内部，是协程调用树的根节点，因此可以直接 return 结束协程。
 
 所有 `kotlinx.coroutines` 中的 suspend 函数都支持取消。如果 Job 已取消则会抛出 `CancellationException` 。 
 
@@ -601,7 +601,7 @@ suspend fun main() {
 使用结构化并发，在 `process` 外面包一个 `coroutineScope` 块以后，调用方可以控制所调用函数内开启的协程的生命周期。我们可以确定 `coroutineScope` 块结束以后意味着 `process` 开启的全部异步任务都已经顺利结束。
 
 - 定义在 `CoroutineScope` 上的扩展函数提供了这样的约定（Convention）：这个函数会立即返回，但是函数会开启异步任务，可以理解为这个函数内的子程序和调用方的的代码并发执行。
-- 本文的姊妹篇 [理解 Kotlin 的 suspend 函数](https://blog.yujinyan.me/posts/understanding-kotlin-suspend-functions/#%E5%8F%AF%E4%BB%A5-suspend-%E7%9A%84%E4%B8%8D%E4%BB%85%E4%BB%85%E6%98%AF-io) 介绍了 suspend 函数提供的约定：调用这个函数不会阻塞线程，函数内的子程序执行完毕以后函数才会返回，控制流回到调用方。suspend 函数不应该有开启异步任务的副作用。
+- 本文的姊妹篇 [《理解 Kotlin 的 suspend 函数》](/posts/understanding-kotlin-suspend-functions/#%E5%8F%AF%E4%BB%A5-suspend-%E7%9A%84%E4%B8%8D%E4%BB%85%E4%BB%85%E6%98%AF-io) 介绍了 suspend 函数提供的约定：调用这个函数不会阻塞线程，函数内的子程序执行完毕以后函数才会返回，控制流回到调用方。suspend 函数不应该有开启异步任务的副作用。
 
 > Suspend functions are sequential by default. Concurrency is hard, and its launch must be explicit.
 
@@ -649,14 +649,23 @@ public interface Continuation<in T> {
 }
 ```
 
-笔者在写作本文的时候意识到，这两篇介绍 Kotlin 协程的文章正好对应 `Continuation` interface 的两个组成部分：`CoroutineContext` 和 `resumeWith` 方法。这一两分也体现在本文提到的 suspend 函数和 `CoroutineContext` 的扩展函数在类型系统上的区别。两篇文章正好形成姊妹两篇，互相补充。
+笔者在写作本文的时候意识到，这两篇关于 Kotlin 协程的文章分别介绍了 suspend 函数和 coroutine builder，正好对应 `Continuation` interface 的两个组成部分：`CoroutineContext` 和 `resumeWith` 方法。这一两分还体现在：
+
+- suspend 函数和 coroutine builder 在类型系统上的区别；
+- Kotlin 标准库提供的 CPS 变换基础设施 / `kotlinx.coroutines` 协程的实现；
+- suspend 函数与 coroutine builder 内取消协程的差异等。
+
+两篇文章正好形成姊妹两篇，互相补充。
+
+[[tip | 🔗]]
+| 欢迎阅读本文的「姊妹篇」：[《理解 Kotlin 的 suspend 函数》](/posts/understanding-kotlin-suspend-functions/)
 
 ### 国内对 Kotlin 协程的介绍
 
-笔者最早学习 Kotlin 协程主要是看其主要设计者 Roman Elizarov 的演讲以及在 Medium 上发表的文章。Roman 的介绍非常 high-level，着重问题、概念、思想和设计。并发实践匮乏会导致有时候难以领会 Kotlin 协程要解决的问题，造成不好理解。这两篇介绍协程的文章补充解释了笔者学习过程中产生的一些困惑，或许可以当作 Roman 演讲和文章的注脚。
+笔者最早学习 Kotlin 协程主要是看其主要设计者 Roman Elizarov 先生的演讲以及在 Medium 上发表的文章。Roman 的介绍非常 high-level，着重问题、概念、思想和设计。并发实践匮乏会导致有时候难以领会 Kotlin 协程要解决的问题，造成不好理解。这两篇介绍协程的文章补充解释了笔者学习过程中产生的一些困惑，或许可以当作 Roman 演讲和文章的注脚。
 
 在学习、写作的过程中笔者也看了一些国内对 Kotlin 协程的介绍，感觉对协程重要概念的介绍相对较少，比如本文提到的 Structured Concurrency、两个 Conventions 等。很多介绍协程的文章对协程的实现细节情有独钟，想要「破解」协程，或者「扒了协程的皮」。其他分析原理的文章摘录大量源码，翻译一些源码里面的注释，读起来「不明觉厉」。但仔细看的话会发现，由于缺少对一些重要的高层概念的把握，很多对源码的解读其实是片面甚至错误的。
 
 我想，学习一个库或者框架，直接看它的实现原理并不是最高效的方式。即使源码看明白了也不一定用得对。把握设计思想和理念更加重要。所有这些框架类库都为了解决某个问题而诞生。有了解决问题的 idea 以后，作者可能采取各种奇技淫巧甚至 hack 达成目的，同时在不断发展成熟的过程中会加入很多优化。所有这些细节都有可能掩盖问题和 idea 的本质。不先学习 idea 很容易被实现细节绕得晕头转向，更不要说在前人的基础上进行创新。
 
-当然学习源码是非常重要。有一些书叫 「×× 设计和实现」，我觉得这种写作思路是很棒的。当然这会对作者的功力有更高的要求。
+当然学习源码是非常重要。有一些书叫 「×× 设计和实现」，是非常有价值的思路，不过对作者的功力有很高的要求。

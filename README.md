@@ -36,16 +36,17 @@ Example:
 | ![Structured Programming](./structured-programming.svg)
 ```
 
-## 📰 Font combinations
+## 📰 Typography
 
+Font combination
 - heading: `Roboto Slab`, `Noto Sans SC Black`
 - text: `Noto Serif SC`
 - Code: `JetBrains Mono`
 - blockquote: `Zilla Slab` (italic)
 
-`Zilla Slab` is a bit too small to mix with `Noto Serif SC`.
-
-`Roboto Slab` does not have italic version.
+Notes
+- `Zilla Slab` is a bit too small to mix with `Noto Serif SC`.
+- `Roboto Slab` does not have italic version.
 
 ## 🚀 Develop
 
