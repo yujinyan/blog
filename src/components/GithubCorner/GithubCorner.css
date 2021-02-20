@@ -1,0 +1,9 @@
+.github-corner .bg {
+  fill: #282c35;
+}
+.dark .github-corner .bg {
+  fill: white;
+}
+.github-corner .octocat {
+  fill: var(--bg);
+}

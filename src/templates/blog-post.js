@@ -20,6 +20,10 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
   const { previous, next } = pageContext
   const [menuIsOpen, setMenuOpen] = useState(false)
 
+  const githubUrl = post.frontmatter.issueId ?
+    `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
+    "https://github.com/yujinyan/blog"
+
   const darkModeToggle = <DarkModeToggle
     className="fixed-on-desktop"
     style={{
@@ -30,6 +34,13 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
     }}
   />
 
+  const githubCorner = <GithubCorner
+    url={
+      post.frontmatter.issueId ?
+        `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
+        "https://github.com/yujinyan/blog"
+    } />
+
   return (
     <Layout
       location={location}
@@ -39,6 +50,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         // https://stackoverflow.com/a/20028988/6627776 
         post.tableOfContents &&
         <aside className={`sidebar ${menuIsOpen ? "" : "hide"}`}>
+          <GithubCorner className="hide-on-desktop" url={githubUrl} />
           <ToC
             html={post.tableOfContents}
             linkClicked={() => setMenuOpen(false)} />
@@ -90,11 +102,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       {post.frontmatter.issueId &&
         <UtterancesComments issueId={post.frontmatter.issueId} />
       }
-      <GithubCorner url={
-        post.frontmatter.issueId ?
-          `https://github.com/yujinyan/blog/issues/${post.frontmatter.issueId}` :
-          "https://github.com/yujinyan/blog"
-      } />
+      <GithubCorner url={githubUrl} />
       <Fab className="hide-on-desktop" isOpen={menuIsOpen} setOpen={setMenuOpen} />
       <nav style={{ marginTop: rhythm(2) }}>
         <ul

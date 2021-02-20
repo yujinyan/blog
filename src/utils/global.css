@@ -58,15 +58,6 @@ a {
   color: var(--textNormal);
 }
 
-.github-corner .bg {
-  fill: #282c35;
-}
-.dark .github-corner .bg {
-  fill: white;
-}
-.github-corner .octocat {
-  fill: var(--bg);
-}
 /* We don't have enough space for .github-corner on smaller screen. */
 @media (max-width: 768px) {
   .github-corner {

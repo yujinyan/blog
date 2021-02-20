@@ -10,7 +10,6 @@
   }
 }
 
-
 .sidebar {
   padding-top: 7.75rem; // leave space for toggle
   padding-bottom: 1.75rem;
@@ -81,8 +80,13 @@
   }
 }
 
+@include mobile {
+  .sidebar .github-corner {
+    visibility: visible;
+  }
+}
+
 @include desktop {
-  // desktop
   .sidebar {
     right: 0;
     // 50vw + main width + extra padding
@@ -93,6 +97,7 @@
     flex-direction: column;
     justify-content: flex-end;
   }
+
   .hide-on-desktop {
     visibility: hidden;
   }

@@ -1,8 +1,10 @@
 import React from "react"
 import PropTypes from "prop-types"
+import "./GithubCorner.css"
 
-const GithubCorner = ({ url }) => (
+const GithubCorner = ({ url, className }) => (
   <div // https://github.com/facebook/react/issues/12014
+    className={className}
     dangerouslySetInnerHTML={{
       __html: `
       <a href="${url}" class="github-corner" aria-label="View source on GitHub" target="_blank" rel="noopener noreferrer">
