@@ -53,7 +53,7 @@
       &.isActive {
         color: var(--textNormal);
         font-weight: 400;
-        border-bottom: 1px dotted var(--textSecondary);
+        box-shadow: 0 1px 0 0 currentColor;
       }
     }
 
