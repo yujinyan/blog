@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JOOQ Presentation</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <textarea id="source"></textarea>
+    <script src="/remark-latest.min.js"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script>
+      var slideshow = remark.create({
+        sourceUrl: "doc/presentation-jooq.md",
+        highlightLines: true,
+        highlightStyle: "tomorrow",
+        ratio: "16:9"
+      }, () => {
+        twemoji.parse(document.body, {
+          // size: "36x36"
+        })
+      });
+    </script>
+    <script>
+    </script>
+  </body>
+</html>
