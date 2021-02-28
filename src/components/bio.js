@@ -59,11 +59,8 @@ const Bio = () => {
       />
       <p className="subtitle" style={{ margin: 0, lineHeight: "1.5em" }}>
         Written by{" "}
-        <strong>
-          <a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a>
-        </strong>
-        .
-        <br/>
+        <strong><a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a></strong>.<br/>
+        Web, JVM, Android. Kotlin enthusiast.<br/>
         Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>.
         I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>.
         {/* {author.summary} */}
