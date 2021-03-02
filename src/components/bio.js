@@ -8,6 +8,9 @@
 import React from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import Image from "gatsby-image"
+import telegram from "./Bio/telegram.svg"
+import twitter from "./Bio/twitter.svg"
+import "./Bio/bio.css"
 
 import { rhythm } from "../utils/typography"
 
@@ -59,10 +62,13 @@ const Bio = () => {
       />
       <p className="subtitle" style={{ margin: 0, lineHeight: "1.5em" }}>
         Written by{" "}
-        <strong><a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a></strong>.<br/>
-        Web, JVM, Android. Kotlin enthusiast.<br/>
-        Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>.
-        I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>.
+        <strong><a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a></strong>.
+        <a className="social-icon " href="https://twitter.com/yujinyan92"><img src={twitter} /></a>
+        <a className="social-icon" href="https://t.me/fish_study_plz"><img src={telegram} /></a>
+        <br />
+        Web, JVM, Android. Kotlin enthusiast.<br />
+        {/* Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>. */}
+        {/* I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>. */}
         {/* {author.summary} */}
       </p>
     </div>

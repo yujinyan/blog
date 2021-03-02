@@ -1,0 +1,9 @@
+a.social-icon {
+  box-shadow: none;
+}
+.social-icon img {
+  width: 24px;
+  vertical-align: middle;
+  margin: 0;
+  margin-left: 0.5em;
+}
