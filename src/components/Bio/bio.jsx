@@ -10,7 +10,7 @@ import { useStaticQuery, graphql } from "gatsby"
 import Image from "gatsby-image"
 import telegram from "./telegram.svg"
 import twitter from "./twitter.svg"
-import "./bio.css"
+import "./bio.scss"
 
 import { rhythm } from "../../utils/typography"
 
@@ -64,8 +64,8 @@ const Bio = () => {
         Written by{" "}
         <strong><a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a></strong>.
         <span class="nowrap">
-          <a className="social-icon " href="https://twitter.com/yujinyan92"><img src={twitter} /></a>
-          <a className="social-icon" href="https://t.me/fish_study_plz"><img src={telegram} /></a>
+          <a className="social-icon" href="https://twitter.com/yujinyan92" title="Find me on Twitter"><img src={twitter} /></a>
+          <a className="social-icon" href="https://t.me/fish_study_plz" title="I also chat on Telegram"><img src={telegram} /></a>
         </span>
         <br />
         Web, JVM, Android. Kotlin enthusiast.<br />
