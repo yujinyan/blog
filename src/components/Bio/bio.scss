@@ -1,5 +1,5 @@
 .dark .social-icon {
-  filter: brightness(2.5);
+  filter: brightness(2.5) sepia(25%);
 
   &:active,
   &:hover {
