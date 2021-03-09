@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Jetpack DataStore"
+title: "Jetpack DataStore Analysis"
 date: "2021-03-09T17:09:03.284Z"
 ---
 
@@ -12,7 +12,7 @@ MMKV uses `mmap`, a Unix system call that maps files into memory. Since most hea
 Jetpack DataStore, currently in alpha, is Android team's latest remedy for drawbacks of SharedPreferences. Google currently [advocates](https://android-developers.googleblog.com/2020/09/prefer-storing-data-with-jetpack.html) that Android developers prefer storing simple data with DataStore in place of SharedPreferences.
 
 [[tip | ☕]]
-| DataStore provides an artifact without Android dependency, making it a viable simple file-based persistence mechanism for the JVM. This post also has little to do with Android.
+| DataStore provides an artifact without Android dependency, making it a viable simple file-based persistence solution for the JVM. This post also has little to do with Android.
 
 DataStore and SharedPreferences work similarly in that they both keep an in-memory cache of the key-value pairs and write out all the data on commit. DataStore mainly improves upon the API design. In particular, it leverages Kotlin's suspend functions to highlight the potentially long-running nature of IO operations. Developers can safely call these functions on the main thread and forget about ANRs that haunt SharedPreferences. DataStore also uses Protocol Buffers, a more efficient binary encoding format than SharedPreferences' XML.
 
@@ -47,7 +47,7 @@ This particular counter issue can be solved on the JVM using an `AtomicInteger`.
 
 If you implement this simple counter naively with SharedPreferences or other persistence mechanisms without atomicity guarantee, it won't work correctly. When we say SharedPreferences is thread-safe, it only means that the class has proper internal synchronization to prevent data structure corruption when its methods are called concurrently. It does not necessarily protect against *lost update* anomaly, which is about multiple operations that should be treated as a single unit.
 
-[This question](https://github.com/Kotlin/kotlinx.coroutines/issues/87#issuecomment-634697788) also shows similar confusion. The following two snippets implements a counter using an actor and a StateFlow. Can you spot the difference between the two?
+[This question](https://github.com/Kotlin/kotlinx.coroutines/issues/87#issuecomment-634697788) also shows similar confusion. The following two snippets implement a counter with an actor and a StateFlow. Can you spot the incorrect one?
 
 ```kotlin
 fun CoroutineScope.counterActor() = actor<CounterMsg> {
@@ -138,7 +138,7 @@ class SimpleDataStore(coroutineScope: CoroutineScope) {
 
 Note that in this example, both read and write methods are modeled as suspend functions. This is necessary because readers and writers should block each other. If either a read or write operation is in process, other concurrent operations must wait until their request gets processed by the actor. The actor notifies the caller through `CompletableDeffered` after processing their messages.
 
-In effect, Kotlin's actor uses a channel under the hood to synchronize access to its state. Channel is a synchronization primitive and synchronization comes at a cost. I did a cursory experiment that measures the overhead of using actors.
+In effect, Kotlin's actor uses a channel under the hood to synchronize access to its state. Channel is a synchronization primitive, and synchronization comes at a cost. I did a cursory experiment that measures the overhead of using actors.
 
 ```kotlin
 val testSeq = (1..1000).asSequence()
@@ -187,7 +187,7 @@ Mere docs and comments probably won't stop developers from making this error. Ve
 val Context.myDataStore by preferencesDataStore("my_store")
 ```
 
-Note that we can only use property delegates in a file as top-level declarations or in a class. This means it's impossible to use this helper in a loop or a function. Since we can still create multiple class instances, the correct way is to put these declarations in a file. Such API enforces developers to statically declare the DataStore they want to use in their project. It makes accidentally creating multiple DataStore instances on the same file much harder.
+Note that we can only use property delegates in a file as top-level declarations or in a class as member properties. This means it's impossible to use this helper in a loop or a function. Since we can still create multiple class instances, the correct way is to put these declarations in a file. Such API enforces developers to statically declare the DataStore they want to use in their project. It makes accidentally creating multiple DataStore instances on the same file much harder.
 
 But this method is not completely bullet-proof. Besides declaring the DataStores in a class, developers could mistakenly reuse the same file name. In this version, DataStore also checks this presumption and fails fast at run time.
 
