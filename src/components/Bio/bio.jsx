@@ -8,8 +8,11 @@
 import React from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import Image from "gatsby-image"
+import telegram from "./telegram.svg"
+import twitter from "./twitter.svg"
+import "./bio.scss"
 
-import { rhythm } from "../utils/typography"
+import { rhythm } from "../../utils/typography"
 
 const Bio = () => {
   const data = useStaticQuery(graphql`
@@ -57,15 +60,17 @@ const Bio = () => {
           borderRadius: `50%`,
         }}
       />
-      <p className="subtitle" style={{ margin: 0, lineHeight: "1.5em" }}>
+      <p className="subtitle" style={{ margin: 0, lineHeight: "1.5em", fontSize: "1rem" }} lang="en">
         Written by{" "}
-        <strong>
-          <a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a>
-        </strong>
-        .
-        <br/>
-        Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>.
-        I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>.
+        <strong><a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a></strong>.
+        <span class="nowrap">
+          <a className="social-icon" href="https://twitter.com/yujinyan92" title="Find me on Twitter"><img src={twitter} /></a>
+          <a className="social-icon" href="https://t.me/fish_study_plz" title="I also chat on Telegram"><img src={telegram} /></a>
+        </span>
+        <br />
+        Web, JVM, Android. Kotlin enthusiast.<br />
+        {/* Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>. */}
+        {/* I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>. */}
         {/* {author.summary} */}
       </p>
     </div>
