@@ -1,6 +1,7 @@
 ---
-title: "Jetpack DataStore Analysis"
+title: "Analysis of Jetpack DataStore"
 date: "2021-03-09T17:09:03.284Z"
+english: true
 ---
 
 ## Introduction
