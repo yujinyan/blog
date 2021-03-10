@@ -1,4 +1,5 @@
 import React from "react"
+import Helmet from "react-helmet"
 import { Link, graphql } from "gatsby"
 
 import Bio from "../components/Bio"
@@ -18,6 +19,7 @@ const BlogIndex = ({ data, location }) => {
   return (
     <Layout location={location} title={siteTitle}>
       <SEO title="All posts | Yu Jinyan's Blog" />
+      <Helmet htmlAttributes={{ lang: "zh-cmn-Hans" }} />
       <AdobeFont />
       <GithubCorner url="https://github.com/yujinyan/blog" />
       <Bio />
