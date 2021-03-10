@@ -65,7 +65,9 @@ fun CoroutineScope.counterActor() = actor<CounterMsg> {
 ```kotlin
 class CounterModel {
   private val _counter = MutableStateFlow(0)
-  val counter: StateFlow<Int> get() = _counter
+  val counter: StateFlow<Int> 
+    get() = _counter
+
   fun inc() {
       _counter.value++
   }
@@ -179,13 +181,15 @@ On my computer, the baseline took about 8.89ms while the actor variation 33.1ms.
 As previous discussions suggest, DataStore depends on the fact that there is only one actor processing state changes. Before DataStore version 1.0.0-alpha07, we used the `createDataStore` extension function to get an instance of DataStore. The library warned us in API doc that we must make a DataStore instance singleton or we break all its functionality.
 
 ```kotlin
-fun Context.createDataStore(name: String): DataStore<Preferences>
+fun Context.createDataStore(name: String)
+  : DataStore<Preferences>
 ```
 
 Mere docs and comments probably won't stop developers from making this error. Version 1.0.0-alpha07 came up with an interesting API change. The `createDataStore` function was removed and replaced with a property delegate. This is how we currently get a `DataStore` instance.
 
 ```kotlin
-val Context.myDataStore by preferencesDataStore("my_store")
+val Context.myDataStore 
+  by preferencesDataStore("my_store")
 ```
 
 Note that we can only use property delegates in a file as top-level declarations or in a class as member properties. This means it's impossible to use this helper in a loop or a function. Since we can still create multiple class instances, the correct way is to put these declarations in a file. Such API enforces developers to statically declare the DataStore they want to use in their project. It makes accidentally creating multiple DataStore instances on the same file much harder.
@@ -212,10 +216,10 @@ In order to read from the DataStore, we need to collect the `data` flow. This is
 
 ```kotlin
 class MainContentActivity : Context {
-  val selectedCity: Flow<String> = myDataStore.data
-		.distinctUntilChanged { old, new ->
-		   old[cityKey] == new[cityKey]
-		}
+  val selectedCity: Flow<String> = 
+    myDataStore.data.distinctUntilChanged { old, new ->
+      old[cityKey] == new[cityKey]
+    }
 }
 ```
 
@@ -223,14 +227,16 @@ Often, we only care about the current value in the store. When I first saw this 
 
 ```kotlin
 class WrappedDataStore(private val ds: DataStore<Preferences>) : CoroutineScope {
-    private val scopeJob = Job()
-    override val coroutineContext: CoroutineContext = scopeJob
-    private val deferredData = async {
-        // important: must `stateIn` a separate coroutine
-        ds.data.stateIn(this + Job(parent = scopeJob)) // highlight-line
-    }
+  private val scopeJob = Job()
+  override val coroutineContext: CoroutineContext = scopeJob
 
-    suspend fun data(): StateFlow<Preferences> = deferredData.await()
+  private val deferredData = async {
+    // important: must `stateIn` a separate coroutine
+    ds.data.stateIn(this + Job(parent = scopeJob)) // highlight-line
+  }
+
+  suspend fun data(): StateFlow<Preferences> = 
+    deferredData.await()
 }
 ```
 
@@ -245,8 +251,10 @@ val cached = WrappedDataStore(dataStore)
 
 suspend fun increment(key: String) {
   dataStore.edit {
-    it[intPreferenceKey(key)] = 
-      (cached.data().value[intPreferencesKey(key)] ?: 0 + 1)
+    val value = cached.data()
+      .value[intPreferencesKey(key)] ?: 0
+
+    it[intPreferenceKey(key)] = value + 1
   }
 }
 
