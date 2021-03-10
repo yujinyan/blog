@@ -43,6 +43,13 @@ module.exports = {
               wrapperStyle: `margin-bottom: 1.0725rem`,
             },
           },
+          {
+
+            resolve: `gatsby-remark-smallcaps`,
+            options: {
+              className: "smcp"
+            }
+          },
           // need to put before `gatsby-remark-prismjs`
           `gatsby-remark-autolink-headers`,
           // need to put after `gatsby-remark-autolink-headers`
@@ -69,7 +76,7 @@ module.exports = {
           },
           `gatsby-remark-figure-block`,
         ],
-        excerpt_separator:  `<!-- excerpt end -->`
+        excerpt_separator: `<!-- excerpt end -->`
       },
     },
     `gatsby-transformer-sharp`,

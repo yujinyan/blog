@@ -67,8 +67,8 @@
 
       & ul {
         list-style-type: circle;
-        list-style-position: inside;
-        margin-left: 0;
+        list-style-position: outside;
+        margin-left: 1em;
 
         & a {
           // second level

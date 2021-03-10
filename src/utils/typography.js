@@ -6,18 +6,33 @@ const SourceHanSerif = "source-han-serif-sc"
 const SourceHanSans = "source-han-sans-simplified-c"
 
 Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
-  styles.body.fontFeatureSettings += `, "palt"` // 标点挤压
+  // palt: 半宽标点（SourceHanSerif）
+  // onum: 老式数字（SourceSerif）
+  styles.body.fontFeatureSettings += `, "palt", "dlig", "onum"`
+  styles.body.textRendering = "optimizelegibility"
 
   // Fix scrolling main content when mobile menu is open.
   delete styles.html.overflowY
 
   return {
-    "a.gatsby-resp-image-link": { boxShadow: `none`, },
-    h1: { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
-    blockquote: { fontFamily: ["Zilla Slab", SourceHanSerif, "serif"].join(",") },
+    // larger line-height for english-language blog post
+    "html[lang=en]": { lineHeight: "1.5", fontSize: `18px` },
+
+    // inline styles
     cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
-    ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
+    "a.gatsby-resp-image-link": { boxShadow: `none`, },
+    ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
+
+    // block styles
     ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
+    h1: { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
+    blockquote: { fontFamily: ["source-serif-4", "Zilla Slab", SourceHanSerif, "serif"].join(",") },
+    ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
+
+    // code blocks
+    code: { fontFamily: `"JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace !important` },
+    // smaller size for inline code
+    ":not(pre) > code": { fontStyle: "normal", fontSize: "0.8em!important" },
   }
 }
 
@@ -27,7 +42,9 @@ Wordpress2016.googleFonts = [
 ]
 
 Wordpress2016.bodyFontFamily = [
-  SourceHanSerif, "Georgia", "serif"
+  // "merriweather", SourceHanSerif, "Georgia", "serif"
+  // "lora", SourceHanSerif, "Georgia", "serif"
+  "source-serif-4", SourceHanSerif, "Georgia", "serif"
 ]
 
 Wordpress2016.headerFontFamily = [

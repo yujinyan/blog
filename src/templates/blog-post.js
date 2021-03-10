@@ -13,6 +13,7 @@ import { UtterancesComments } from "../components/utterances"
 import GithubCorner from "../components/GithubCorner"
 import "./blog-post.scss"
 import DarkModeToggle from "../components/DarkModeToggle"
+import Helmet from "react-helmet"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
@@ -55,6 +56,8 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}
       />
+      {/* Currently, blog posts are either in English or Simplified Han */}
+      <Helmet htmlAttributes={{ lang: post.frontmatter.english ? "en" : "zh-cmn-Hans" }} />
       <AdobeFont />
       <article>
         <header>
@@ -147,6 +150,7 @@ export const pageQuery = graphql`
         title
         date(formatString: "MMMM DD, YYYY")
         issueId
+        english
         translate {
           title
           url
