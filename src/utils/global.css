@@ -74,11 +74,6 @@ a {
   display: none;
 }
 
-code {
-  font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono,
-    monospace !important;
-}
-
 .light pre[class*="language-"] {
   border-radius: 3px;
   /* inspiration https://evan.tatarka.me/blog/2020-03-02-you-dont-need-to-null-out-views */

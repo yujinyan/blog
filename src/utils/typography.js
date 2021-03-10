@@ -15,15 +15,24 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
   delete styles.html.overflowY
 
   return {
+    // larger line-height for english-language blog post
+    "html[lang=en]": { lineHeight: "1.5", fontSize: `18px` },
+
+    // inline styles
+    cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
+    ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
+
+    // block styles
+    ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
     h1: { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
     blockquote: { fontFamily: ["source-serif-4", "Zilla Slab", SourceHanSerif, "serif"].join(",") },
-    ":not(pre) > code": { fontStyle: "normal", fontSize: "0.8em!important" },
-    cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
     ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
-    ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
-    ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
-    "html[lang=en]": { lineHeight: "1.5", fontSize: `18px` }
+
+    // code blocks
+    code: { fontFamily: `"JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace !important` },
+    // smaller size for inline code
+    ":not(pre) > code": { fontStyle: "normal", fontSize: "0.8em!important" },
   }
 }
 
