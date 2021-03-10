@@ -214,7 +214,7 @@ public interface DataStore<T> {
 }
 ```
 
-In order to read from the DataStore, we need to collect the `data` flow. This is like having a free event bus for our preferences store. For example, suppose we persist user's selected city in the store and we need to update main content after user makes a change. We could filter and collect this data flow directly.
+In order to read from DataStore, we need to collect the `data` flow. This is like having a free event bus for our preferences store. For example, suppose we persist user's selected city in the store and need to update our app's content after the user makes a change. The `data` flow could be filtered and transformed into a stream of update events.
 
 ```kotlin
 class MainContentActivity : Context {
@@ -271,9 +271,9 @@ Note that inside the `DataStore` edit block, we can also read data from the `Pre
 
 ## Conclusion
 
-It occurs to me that the Chinese Android community is rushing to replace Jetpack DataStore with MMKV. MMKV seems great, but it exposes only low-level APIs. Without proper abstraction in place, people could easily mess up their codebases. 
+It occurs to me that the Chinese Android community is rushing to replace SharedPreferences with MMKV. MMKV seems great, but it exposes only low-level APIs. Without proper abstraction in place, people could easily mess up their codebases.
 
-I hope this post does justice to Jetpack DataStore by highlighting its atomicity guarantee and nice suspending APIs that promote correctness and thread-safety. Even if you don't use DataStore, I would recommend learning from its API design. It's also instructive to study its source and see how Kotlin coroutines and flows help us solve concurrency issues.
+I hope this post does justice to Jetpack DataStore by highlighting its transactional and suspending APIs that promote correctness and thread-safety. Even if you don't use DataStore, I would recommend learning from its API design. It's also instructive to study its source and see how Kotlin coroutine and flow help us solve concurrency issues.
 
 ## Remaining questions
 
@@ -285,6 +285,7 @@ I hope this post does justice to Jetpack DataStore by highlighting its atomicity
 
 - [`SharedPreferencesImpl.java` source code](https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/app/SharedPreferencesImpl.java)
 - [`SingleProcessDataStore.kt` source code](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:datastore/datastore-core/src/main/java/androidx/datastore/core/SingleProcessDataStore.kt)
+- [Prefer Storing Data with Jetpack DataStore](https://android-developers.googleblog.com/2020/09/prefer-storing-data-with-jetpack.html)
 - <cite>[Designing Data-Intensive Applications](https://dataintensive.net/)</cite> has an excellent presentation of various concurrency pitfalls in the context of database transactions.
 - [《反思｜官方也无力回天？ Android SharedPreferences 的设计与实现》](https://juejin.cn/post/6884505736836022280) is a nice post that calls attention to the rationale behind some of SharedPreferences' API, as well as its shortcomings.
 - <cite>[Actor-based Concurrency](https://berb.github.io/diploma-thesis/original/054_actors.html)</cite>
