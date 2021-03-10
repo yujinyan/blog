@@ -1,6 +1,7 @@
 ---
 title: God objects, Kotlin to the rescue
 date: "2020-03-07T22:12:03.284Z"
+english: true
 ---
 
 In our Laravel backend project, there is a `User` class, which is among one of the first classes created. Over the years, it has accumulated all sorts of business-related methods, degenerating into thousands of lines of unmanageable mess. This is a typical example of an all-knowing [god object](https://en.wikipedia.org/wiki/God_object).

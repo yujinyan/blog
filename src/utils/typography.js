@@ -15,7 +15,7 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
   return {
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
     h1: { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
-    blockquote: { fontFamily: ["source-serif-pro", "Zilla Slab", SourceHanSerif, "serif"].join(",") },
+    blockquote: { fontFamily: ["source-serif-4", "Zilla Slab", SourceHanSerif, "serif"].join(",") },
     cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
     ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
     ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
