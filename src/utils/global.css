@@ -33,6 +33,10 @@ body.dark {
   white-space: nowrap;
 }
 
+.smcp {
+  font-variant-caps: all-small-caps;
+}
+
 .excalidraw {
   width: 100%;
   margin: 0 auto;
@@ -70,7 +74,7 @@ a {
   display: none;
 }
 
-.gatsby-highlight code {
+code {
   font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono,
     monospace !important;
 }
