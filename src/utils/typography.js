@@ -16,11 +16,12 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
     h1: { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
     blockquote: { fontFamily: ["source-serif-4", "Zilla Slab", SourceHanSerif, "serif"].join(",") },
+    "blockquote code, p code": { fontStyle: "normal", fontSize: "0.75em!important" },
     cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
     ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
     ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
     ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
-    "html[lang=en]": { lineHeight: "1.5" }
+    "html[lang=en]": { lineHeight: "1.5", fontSize: `18px` }
   }
 }
 

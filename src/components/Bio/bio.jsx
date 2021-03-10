@@ -41,10 +41,11 @@ const Bio = () => {
   const { author, social } = data.site.siteMetadata
   return (
     <div
+      className="bio"
       style={{
         display: `flex`,
         marginBottom: rhythm(2.5),
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <Image
@@ -60,15 +61,35 @@ const Bio = () => {
           borderRadius: `50%`,
         }}
       />
-      <p className="subtitle" style={{ margin: 0, lineHeight: "1.5em", fontSize: "1rem" }} lang="en">
+      <p
+        className="subtitle"
+        style={{ margin: 0, lineHeight: "1.5em", fontSize: "1rem" }}
+        lang="en"
+      >
         Written by{" "}
-        <strong><a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a></strong>.
-        <span class="nowrap">
-          <a className="social-icon" href="https://twitter.com/yujinyan92" title="Find me on Twitter"><img src={twitter} /></a>
-          <a className="social-icon" href="https://t.me/fish_study_plz" title="I also chat on Telegram"><img src={telegram} /></a>
+        <strong>
+          <a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a>
+        </strong>
+        .
+        <span className="nowrap">
+          <a
+            className="social-icon"
+            href="https://twitter.com/yujinyan92"
+            title="Find me on Twitter"
+          >
+            <img src={twitter} />
+          </a>
+          <a
+            className="social-icon"
+            href="https://t.me/fish_study_plz"
+            title="I also chat on Telegram"
+          >
+            <img src={telegram} />
+          </a>
         </span>
         <br />
-        Web, JVM, Android. Kotlin enthusiast.<br />
+        Web, JVM, Android. Kotlin enthusiast.
+        <br />
         {/* Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>. */}
         {/* I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>. */}
         {/* {author.summary} */}
