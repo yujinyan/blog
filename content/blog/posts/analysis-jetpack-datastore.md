@@ -26,7 +26,7 @@ After some study, I believe DataStore's relatively slow performance is due to it
 
 Its documentation reads:
 
-> DataStore provides ACID guarantees ... Updates the data transactionally in an atomic read-modify-write operation. All operations are serialized ...
+> DataStore provides ACID guarantees... Updates the data transactionally in an atomic read-modify-write operation. All operations are serialized...
 
 A classic example in point is incrementing a counter concurrently.
 
