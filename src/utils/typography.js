@@ -6,7 +6,9 @@ const SourceHanSerif = "source-han-serif-sc"
 const SourceHanSans = "source-han-sans-simplified-c"
 
 Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
-  styles.body.fontFeatureSettings += `, "palt", "dlig"` // 标点挤压
+  // palt: 半宽标点（SourceHanSerif）
+  // onum: 老式数字（SourceSerif）
+  styles.body.fontFeatureSettings += `, "palt", "dlig", "onum"`
   styles.body.textRendering = "optimizelegibility"
 
   // Fix scrolling main content when mobile menu is open.
