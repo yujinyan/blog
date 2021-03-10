@@ -7,6 +7,7 @@ const SourceHanSans = "source-han-sans-simplified-c"
 
 Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
   styles.body.fontFeatureSettings += `, "palt", "dlig"` // 标点挤压
+  styles.body.textRendering = "optimizelegibility"
 
   // Fix scrolling main content when mobile menu is open.
   delete styles.html.overflowY
@@ -18,7 +19,8 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
     cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
     ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
     ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
-    ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") }
+    ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
+    "html[lang=en]": { lineHeight: "1.5" }
   }
 }
 
@@ -30,7 +32,7 @@ Wordpress2016.googleFonts = [
 Wordpress2016.bodyFontFamily = [
   // "merriweather", SourceHanSerif, "Georgia", "serif"
   // "lora", SourceHanSerif, "Georgia", "serif"
-  "source-serif-pro", SourceHanSerif, "Georgia", "serif"
+  "source-serif-4", SourceHanSerif, "Georgia", "serif"
 ]
 
 Wordpress2016.headerFontFamily = [
