@@ -2,11 +2,13 @@
 title: "Analysis of Jetpack DataStore"
 date: "2021-03-09T17:09:03.284Z"
 english: true
+issueId: "32"
 ---
 
 ## Introduction
 
 Recently a friend helped migrate Android's SharedPreferences to Tencent's MMKV for their app at work. He also compared how these persistence libraries perform in terms of reads and writes, including SharedPreferences, MMKV, Jetpack DataStore, and SQLite.
+<!-- excerpt end -->
 
 MMKV uses `mmap`, a Unix system call that maps files into memory. In this way, most of the heavy lifting is handed off to the operating system. Since the library is just reading/writing memory, it comes as no surprise that MMKV appears to perform the best among the four.
 
@@ -281,7 +283,8 @@ I hope this post does justice to Jetpack DataStore by highlighting its atomicity
 
 ## References
 
+- [`SharedPreferencesImpl.java` source code](https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/app/SharedPreferencesImpl.java)
+- [`SingleProcessDataStore.kt` source code](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:datastore/datastore-core/src/main/java/androidx/datastore/core/SingleProcessDataStore.kt)
 - <cite>[Designing Data-Intensive Applications](https://dataintensive.net/)</cite> has an excellent presentation of various concurrency pitfalls in the context of database transactions.
 - [《反思｜官方也无力回天？ Android SharedPreferences 的设计与实现》](https://juejin.cn/post/6884505736836022280) is a nice post that calls attention to the rationale behind some of SharedPreferences' API, as well as its shortcomings.
 - <cite>[Actor-based Concurrency](https://berb.github.io/diploma-thesis/original/054_actors.html)</cite>
-- [`SharedPreferencesImpl.java` source code](https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/app/SharedPreferencesImpl.java)
