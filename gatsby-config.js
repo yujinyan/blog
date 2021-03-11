@@ -50,6 +50,7 @@ module.exports = {
               className: "smcp"
             }
           },
+          `gatsby-remark-katex`,
           // need to put before `gatsby-remark-prismjs`
           `gatsby-remark-autolink-headers`,
           // need to put after `gatsby-remark-autolink-headers`
