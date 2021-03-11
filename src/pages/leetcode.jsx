@@ -18,7 +18,7 @@ const BlogIndex = ({ data, location }) => {
 
   return (
     <Layout location={location} title={siteTitle}>
-      <SEO title="All posts | Yu Jinyan's Blog" />
+      <SEO title="LeetCode Notes | Yu Jinyan's Blog" />
       <Helmet htmlAttributes={{ lang: "zh-cmn-Hans" }} />
       <AdobeFont />
       <GithubCorner url="https://github.com/yujinyan/blog" />
@@ -42,12 +42,6 @@ const BlogIndex = ({ data, location }) => {
               </h3>
               <small className="subtitle"><i>{node.frontmatter.date}</i></small>
             </header>
-            <section
-              className="excerpt"
-              dangerouslySetInnerHTML={{
-                __html: node.frontmatter.description || node.excerpt,
-              }}>
-            </section>
           </article>
         )
       })}
@@ -66,7 +60,7 @@ export const pageQuery = graphql`
     }
     allMarkdownRemark(
       sort: { fields: [frontmatter___date], order: DESC },
-      filter: { fileAbsolutePath: { regex: "/posts/" }}
+      filter: { fileAbsolutePath: { regex: "/leetcode/" }}
     ) {
       edges {
         node {

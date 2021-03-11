@@ -14,6 +14,7 @@ import GithubCorner from "../components/GithubCorner"
 import "./blog-post.scss"
 import DarkModeToggle from "../components/DarkModeToggle"
 import Helmet from "react-helmet"
+import "katex/dist/katex.min.css"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
