@@ -7,11 +7,15 @@ english: true
 
 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 
+Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+A subsequence is a sequence that can be derived from an array by deleting some or no elements without changing the order of the remaining elements. For example, `[3,6,2,7]` is a subsequence of the array `[0,3,1,6,2,2,7]`.
+
 ## Key Intuition
 
 To build the recurrence relation, we could ask ourselves whether the answer for $n - 1$ elements help us solve the entire sequence.
 
-Suppose we know the longest increasing sequence in $(S_0, S_1, ..., S_{n-1})$ was of length $5$, and that $S_n = 8$. Will the longest increasing subsequence of $S$ be $5$ or $6$? It depends on whether the length-$5$ sequence ends with a value less than $8$.
+Suppose we know the longest increasing sequence in $(S_0, S_1, ..., S_{n-1})$ is of length $5$, and that $S_n = 8$. Will the longest increasing subsequence of $S$ be $5$ or $6$? It depends on whether the length-$5$ sequence ends with a value less than $8$.
 
 Therefore, we really need to check every number $(S_0, S_1,...S_j)$ where $j < n$ and see whether $S_n > S_j$.
 
