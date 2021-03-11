@@ -13,7 +13,7 @@ To build the recurrence relation, we could ask ourselves whether the answer for 
 
 Suppose we know the longest increasing sequence in $(S_0, S_1, ..., S_{n-1})$ was of length $5$, and that $S_n = 8$. Will the longest increasing subsequence of $S$ be $5$ or $6$? It depends on whether the length-$5$ sequence ends with a value less than $8$.
 
-Therefore, we really need to check every number $(S_0, S_1,...S_j)$ where $j < n - 1$ and see whether $S_n > S_j$.
+Therefore, we really need to check every number $(S_0, S_1,...S_j)$ where $j < n$ and see whether $S_n > S_j$.
 
 ## Code
 
