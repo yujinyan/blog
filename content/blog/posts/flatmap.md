@@ -5,14 +5,14 @@ date: "2017-11-25T22:12:03.284Z"
 
 ## 引例
 
-https://twitter.com/sindresorhus/status/927805562124775424
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">I never thought I would find flatMap useful, but I&#39;ve used it a lot lately in Swift.</p>&mdash; Sindre Sorhus (@sindresorhus) <a href="https://twitter.com/sindresorhus/status/927805562124775424?ref_src=twsrc%5Etfw">November 7, 2017</a></blockquote>
 
 在 Swift 中可以通过 `flatMap` 过滤掉 `nil`
 
 ```swift
 // view.subviews(ofType: BoxView.self)
 fun subviews<T: NSView>(ofType type: T.Type) -> [T] {
-    return subviews.flatMap { $0 as? T}
+  return subviews.flatMap { $0 as? T}
 }
 ```
 
@@ -25,7 +25,7 @@ fun subviews<T: NSView>(ofType type: T.Type) -> [T] {
 💡 简而言之，flatMap 就是两个步骤，先 map 再 flatten：
 ```swift
 let nested = [
-    [1, 2], [3, 4], [5, 6]
+  [1, 2], [3, 4], [5, 6]
 ]
 let flattened = nested.flatMap { return $0.map { $0 * $0 } }
 // [2, 4, 9, 16, 25, 36]
@@ -46,8 +46,8 @@ numbers.flatMap { $0 } // [1, 2, 3]，如果闭包函数不返回数组类型则
 JS 的数组比较遗憾地没有提供 flatMap 方法，需要自己实现：
 ```javascript
 Array.prototype.flatMap = function(f) {
-    // 先 map，然后再 concat 结果
-    return Array.prototype.concat.apply([], this.map(f));
+  // 先 map，然后再 concat 结果
+  return Array.prototype.concat.apply([], this.map(f));
 };
 ```
  
@@ -86,7 +86,7 @@ public static void main(String[] args) {
 }
 ```
  
-这里的 Optional 是一个通过泛型包裹其他类型的容器。Optional<T> 可以包裹类型为 T 的对象，也可以是空。
+这里的 Optional 是一个通过泛型包裹其他类型的容器。`Optional<T>` 可以包裹类型为 `T` 的对象，也可以是空。
  
 `flatMap` 在这套 api 里起到了传递 Optional 的作用。观察 `flatMap` 接受的函数的类型都是 `T->Optional<U>` ，也就是说这个操作符拿到 Optional 容器内的值，然后返回了一个新的 Optional 容器，其中包含的值的类型未必和原先的一致。由于空对象不再以 `null` 的形式出现，而是被包在了 Optional 容器之中，这样就可以链式调用，避免空指针异常。如果在调用的过程中有一个 Optional 中为空值，则最终返回通过 `orElse` 提供的默认值。
  
