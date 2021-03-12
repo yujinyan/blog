@@ -33,7 +33,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       zIndex: 50,
       position: `${menuIsOpen ? "fixed" : "absolute"}`,
       right: rhythm(1),
-      top: rhythm(1.25)
+      top: rhythm(1.25),
     }}
   />
 
@@ -48,7 +48,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         <aside className={`sidebar ${menuIsOpen ? "" : "hide"}`}>
           <GithubCorner className="hide-on-desktop" url={githubUrl} />
           <ToC
-            html={post.tableOfContents}
+            data={post.tableOfContents}
             linkClicked={() => setMenuOpen(false)} />
         </aside>
       }
@@ -79,14 +79,14 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
               ...scale(-1 / 5),
               display: `block`,
               marginBottom: rhythm(1),
-              fontFamily: "Georgia, serif"
+              fontFamily: "Georgia, serif",
             }}
           >
             {post.frontmatter.date}
           </p>
         </header>
         {post.frontmatter.translate &&
-          TranslateInfo(post.frontmatter.translate)}
+        TranslateInfo(post.frontmatter.translate)}
         <MDXRenderer>{post.body}</MDXRenderer>
         <hr
           style={{
@@ -98,7 +98,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         </footer>
       </article>
       {post.frontmatter.issueId &&
-        <UtterancesComments issueId={post.frontmatter.issueId} />
+      <UtterancesComments issueId={post.frontmatter.issueId} />
       }
       <GithubCorner url={githubUrl} />
       <Fab className="hide-on-desktop" isOpen={menuIsOpen} setOpen={setMenuOpen} />
