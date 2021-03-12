@@ -27,10 +27,13 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-transformer-remark`,
+      resolve: `gatsby-plugin-mdx`,
       options: {
-        plugins: [
-          `gatsby-remark-embed-svg`,
+        extensions: [".md", ".mdx"],
+        gatsbyRemarkPlugins: [
+          { // https://github.com/gatsbyjs/gatsby/issues/21592
+            resolve: require.resolve("./plugins/gatsby-remark-embed-svg"),
+          },
           {
             resolve: `gatsby-remark-images`,
             options: {
@@ -47,14 +50,16 @@ module.exports = {
 
             resolve: `gatsby-remark-smallcaps`,
             options: {
-              className: "smcp"
-            }
+              className: "smcp",
+            },
           },
           `gatsby-remark-katex`,
           // need to put before `gatsby-remark-prismjs`
           `gatsby-remark-autolink-headers`,
           // need to put after `gatsby-remark-autolink-headers`
-          `gatsby-remark-hanzi-nowrap`,
+          {
+            resolve: require.resolve("./plugins/gatsby-remark-hanzi-nowrap"),
+          },
           `gatsby-remark-prismjs`,
           `gatsby-remark-copy-linked-files`,
           `gatsby-remark-smartypants`,
@@ -64,20 +69,22 @@ module.exports = {
               blocks: {
                 tip: {
                   classes: "tip",
-                  title: "optional"
+                  title: "optional",
                 },
                 fig: {
                   classes: "svg",
                   title: "optional",
-                  containerElement: 'figure',
-                  titleElement: 'figcaption'
-                }
-              }
-            }
+                  containerElement: "figure",
+                  titleElement: "figcaption",
+                },
+              },
+            },
           },
-          `gatsby-remark-figure-block`,
+          {
+            resolve: require.resolve(`./plugins/gatsby-remark-figure-block`),
+          },
         ],
-        excerpt_separator: `<!-- excerpt end -->`
+        excerpt_separator: `<!-- excerpt end -->`,
       },
     },
     `gatsby-transformer-sharp`,
