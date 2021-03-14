@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import React from "react"
-import useScrollSpy2 from "./scroll-spy-hook"
+import useScrollSpy from "./scroll-spy-hook"
 import "./toc.scss"
 
 TableOfContents.propTypes = {
@@ -10,7 +10,7 @@ TableOfContents.propTypes = {
 
 export default function TableOfContents({ data, linkClicked }) {
   const urls = getUrls(data.items)
-  const isActive = useScrollSpy2(urls)
+  const isActive = useScrollSpy(urls)
 
   if (urls.length === 0) return null
 
