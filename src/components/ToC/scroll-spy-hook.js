@@ -25,9 +25,7 @@ function useScrollSpy(ids) {
     })
 
     ids.forEach((id) => {
-      console.log(`id is ${id}`)
       const node = document.getElementById(id)
-      console.log(`node is ${node}`)
       node && observer.observe(node)
     })
   }, ids)
