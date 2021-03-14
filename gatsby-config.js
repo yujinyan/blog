@@ -27,9 +27,13 @@ module.exports = {
       },
     },
     {
+      // https://github.com/gatsbyjs/gatsby/issues/21866
       resolve: `gatsby-plugin-mdx`,
       options: {
         extensions: [".md", ".mdx"],
+        remarkPlugins: [
+          require(`remark-math`), require("remark-html-katex"),
+        ],
         gatsbyRemarkPlugins: [
           { // https://github.com/gatsbyjs/gatsby/issues/21592
             resolve: require.resolve("./plugins/gatsby-remark-embed-svg"),
@@ -49,12 +53,11 @@ module.exports = {
           // need to put before `gatsby-remark-prismjs`
           `gatsby-remark-autolink-headers`,
           {
-            resolve: `gatsby-remark-smallcaps`,
+            resolve: `gatsby-remark-katex`,
             options: {
-              className: "smcp",
+              strict: `ignore`,
             },
           },
-          `gatsby-remark-katex`,
           // need to put after `gatsby-remark-autolink-headers`
           {
             resolve: require.resolve("./plugins/gatsby-remark-hanzi-nowrap"),
@@ -83,7 +86,11 @@ module.exports = {
             resolve: require.resolve(`./plugins/gatsby-remark-figure-block`),
           },
         ],
-        excerpt_separator: `<!-- excerpt end -->`,
+        rehypePlugins: [
+          // require(`rehype-katex`),
+          require(`./plugins/rehype-smallcap`),
+        ],
+        // excerpt_separator: `<!-- excerpt end -->`,
       },
     },
     `gatsby-transformer-sharp`,
