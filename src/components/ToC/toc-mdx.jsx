@@ -12,6 +12,8 @@ export default function TableOfContents({ data, linkClicked }) {
   const urls = getUrls(data.items)
   const isActive = useScrollSpy2(urls)
 
+  if (urls.length === 0) return null
+
   return <div
     className="ToCs"
     onClick={
@@ -49,6 +51,7 @@ function buildItem(item, isActive) {
 
 function getUrls(items) {
   const result = []
+  if (!items) return result
 
   function walk(items) {
     items.forEach(it => {
