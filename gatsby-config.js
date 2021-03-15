@@ -87,8 +87,8 @@ module.exports = {
           },
         ],
         rehypePlugins: [
-          // require(`rehype-katex`),
           require(`./plugins/rehype-smallcap`),
+          require(`./plugins/rehype-leetcode`),
         ],
         // excerpt_separator: `<!-- excerpt end -->`,
       },

@@ -286,6 +286,6 @@ I hope this post does justice to Jetpack DataStore by highlighting its transacti
 - [`SharedPreferencesImpl.java` source code](https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/app/SharedPreferencesImpl.java)
 - [`SingleProcessDataStore.kt` source code](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:datastore/datastore-core/src/main/java/androidx/datastore/core/SingleProcessDataStore.kt)
 - [Prefer Storing Data with Jetpack DataStore](https://android-developers.googleblog.com/2020/09/prefer-storing-data-with-jetpack.html)
-- <cite>[Designing Data-Intensive Applications](https://dataintensive.net/)</cite> has an excellent presentation of various concurrency pitfalls in the context of database transactions.
+- [<cite>Designing Data-Intensive Applications</cite>](https://dataintensive.net/) has an excellent presentation of various concurrency pitfalls in the context of database transactions.
 - [《反思｜官方也无力回天？ Android SharedPreferences 的设计与实现》](https://juejin.cn/post/6884505736836022280) is a nice post that calls attention to the rationale behind some of SharedPreferences' API, as well as its shortcomings.
-- <cite>[Actor-based Concurrency](https://berb.github.io/diploma-thesis/original/054_actors.html)</cite>
+- [<cite>Actor-based Concurrency</cite>](https://berb.github.io/diploma-thesis/original/054_actors.html)
