@@ -17,6 +17,8 @@ module.exports = () => {
         },
         children: [{ type: "text", value: match }],
       }
+    }, {
+      ignore: [...findAndReplace.ignore, "code"],
     })
   }
 }
