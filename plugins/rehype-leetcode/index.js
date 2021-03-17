@@ -11,9 +11,9 @@ const problems = {
   _data: data.stat_status_pairs,
   _length: data.stat_status_pairs.length,
   getById: function(id) {
-    console.log(`length is ${this._length}`)
+    // console.log(`length is ${this._length}`)
     const position = this._length - id
-    console.log(`id is ${id}, position is ${this._length}`)
+    // console.log(`id is ${id}, position is ${this._length}`)
     const _data = this._data[position]
     const idInData = _data.stat.question_id
     if (idInData != id) {
@@ -44,7 +44,6 @@ module.exports = () => {
         propertyStr += `${key}="${value}" `
       })
       node.value = `<${tag} ${propertyStr} />`
-      console.log(node.value)
     })
   }
 }

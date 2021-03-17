@@ -43,11 +43,17 @@ exports.createPages = async ({ graphql, actions }) => {
       component: blogPost,
       context: {
         slug: post.node.fields.slug,
-        previous,
-        next,
+        previous: excludingLeetCodePosts(previous),
+        next: excludingLeetCodePosts(next),
       },
     })
   })
+}
+
+function excludingLeetCodePosts(post) {
+  if (!post) return post
+  if (post.fields.slug.includes("leetcode")) return null
+  return post
 }
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
