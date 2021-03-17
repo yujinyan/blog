@@ -14,7 +14,7 @@ import "./index.css"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata.title
-  const posts = data.allMarkdownRemark.edges
+  const posts = data.allMdx.edges
 
   return (
     <Layout location={location} title={siteTitle}>
@@ -64,13 +64,13 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMarkdownRemark(
+    allMdx(
       sort: { fields: [frontmatter___date], order: DESC },
       filter: { fileAbsolutePath: { regex: "/posts/" }}
     ) {
       edges {
         node {
-          excerpt(format: HTML)
+          excerpt
           fields {
             slug
           }

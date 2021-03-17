@@ -3,6 +3,9 @@ title: Reverse Linked List
 date: 2021-02-11T15:49:03.284Z
 url: https://leetcode-cn.com/problems/reverse-linked-list
 ---
+import LeetCode from "components/LeetCode"
+
+<LeetCode.ProblemCard id={206} />
 
 Given the head of a singly linked list, reverse the list, and return the reversed list.
 
