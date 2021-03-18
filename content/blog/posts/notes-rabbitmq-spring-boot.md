@@ -47,7 +47,7 @@ the [Spring AMQP reference documentation](https://docs.spring.io/spring-amqp/doc
 AMQP (Advanced Message Queuing Protocol) is an application layer protocol for messaging middleware. RabbitMQ primarily
 supports the AMQP 0-9-1 model. It mainly revolves around the following three *AMQP entities*.
 
-### Exchange, queue and binding
+### Exchange, queue, and binding
 
 Messages are published to an *exchange* and consumed from a *queue*. A queue can subscribe to exchanges by using *
 bindings*. When a message arrives at an exchange, it will be routed to different queues based on:
@@ -64,15 +64,13 @@ The four basic types of exchange are:
 - Topic exchange
 - Headers exchange
 
-In this way, the publisher and subscriber are further decoupled from each other, and can be adapted to different
-workflows flexibly. The routing mechanism may look overwhelming at first sight, so we are sticking with the simplest
-Direct Exchange for the time being. In this case, the message will be routed to subscribing queues with the same routing
-key.
+The routing mechanism further decouples the publisher and subscriber, making it easy to adapt to different workflows. It may look overwhelming at first sight, so we are sticking with the simplest Direct Exchange for the time being. In this case, the message will be routed to subscribing queues with the same routing key.
+
+To learn more about RabbitMQ and AMQP, I would recommend [<cite>RabbitMQ in Depth</cite>](https://www.manning.com/books/rabbitmq-in-depth). Its clear explanation and illustration make it easier to grasp the concepts.
 
 ### Declarative configuration with Spring AMQP
 
-With Spring AMQP, we can configure the required AMQP entities in the message broker by registering them as beans in the
-application context. At runtime, Spring AMQP will issue requests to the broker and create them.
+With Spring AMQP, we can configure the required AMQP entities in the message broker by registering them as beans in the application context. At runtime, Spring AMQP will issue requests to the broker and create them.
 
 I like this declarative approach. In some way, it's like Kubernetes without the nasty YAML configurations.
 
@@ -113,22 +111,18 @@ Note that:
 1. We can declare multiple AMQP entities in a `Declarables`. They don't need to be the same type.
 2. `durable` means the created entity will survive broker restart.
 
-## `MessageListenerContainer`
+## Listener container
 
-So far we only declared desired entities in the broker, but haven't yet wired up our `DomainEventListener`’s to consume
-messages from it and perform business logic. To do so, we need to wrap our event handlers
-inside `MessageListenerContainer`’s.
+So far we declared desired entities in the broker, but haven't yet wired up our `DomainEventListener`’s to consume messages from it and perform business logic. To do so, we need to wrap our event handlers inside `MessageListenerContainer`’s.
 
-A `MessageListenerContainer` represents *active* or *hot* component. It handles connection to the message broker and
-provides methods for starting and stopping as a lifecycle component. When connection is
-broken, `SimpleMessageListenerConainer` will try to restart the listener.
+A `MessageListenerContainer` represents an *active* or *hot* component. It handles the connection to the message broker and provides methods for starting and stopping as a lifecycle component. When the connection is broken, `SimpleMessageListenerConainer` will try to restart the listener.
 
-To programmatically register our domain listeners, we can use the `RabbitListenerEndpointRegistrar` like this:
+To programmatically register our domain listeners, we can implement `RabbitListenerConfigurer` and use the `RabbitListenerEndpointRegistrar` like this:
 
 ```kotlin
 @Configuration
 @EnableRabbit
-class ContainerRegistrar(
+class ContainerConfig(
   val listeners: List<DomainEventListener>,
   val containerFactory: SimpleRabbitListenerContainerFactory
 ): RabbitListenerConfigurer {
@@ -136,7 +130,7 @@ class ContainerRegistrar(
   override fun configureRabbitListeners(
     registrar: RabbitListenerEndpointRegistrar
   ) {
-    registrar.setContainerFactory(containerFactory)
+    registrar.setContainerFactory(containerFactory) // highlight-line
     listeners.forEach { listener ->
       val endpoint = SimpleRabbitListenerEndpoint().apply {
         id = listener::class.simpleName!!
@@ -145,12 +139,13 @@ class ContainerRegistrar(
           listener.handle(message.toDomainEvent())
         }
       }
-      registrar.registerEndpoint(endpoint)
+      registrar.registerEndpoint(endpoint) // highlight-line
     }
   }
 }
-
 ```
+
+Spring AMQP will take care of creating the listener containers at runtime. Note that we passed an instance of `RabbitListenerContainerFactory` to the registrar. We will see that we can configure some common properties of the containers through the container factory.
 
 Check out more details at: 
 - [Spring AMQP Reference: Containers](https://docs.spring.io/spring-amqp/docs/current/reference/html/#container)
@@ -158,45 +153,36 @@ Check out more details at:
 
 ## Messages are ephemeral
 
-It's important to realize that in the AMQP model, the message broker just acts as a postman between sender and receiver. It
-holds on to the messages only temporarily. On successful delivery to all consumers, usually the message is no longer
-available from the broker.
+It's important to realize that in the AMQP model, the message broker just acts as a postman between sender and receiver. It holds on to the messages only temporarily. On successful delivery to all consumers, usually, the message is no longer available from the broker.
 
 In contrast, Redis Stream and Kafka are more like databases.
 
 Some repercussions:
 
-- It's easy to lose messages if something is misconfigured. For example, a message published to an exchange with no
-  bound queues will be dropped. Conceptually, it seems only queues in AMQP has a *memory*.
-- No first-class support for doing CRUD on messages. For example, the web UI does not have a list screen to page through the messages. It's possible to retrieve a few ones in the queue detail page, but it has a warning that says "getting
-  messages from a queue is a destructive action." Although not necessarily always "destructive", the action will probably cause side effect on the message.
-- Spring AMQP shares this kind of mindset. For example, it is important to configure a `MessageRecoverer` in
-  a `RetryInterceptor`. By default, Spring AMQP will drop the message after retrying for configured times and issue a warning.
+- *It's easy to lose messages if something is misconfigured.* For example, a message published to an exchange with no
+  bound queues will be dropped. Conceptually, it seems only queues in AMQP have *memory*.
+- *No first-class support for doing CRUD on messages.* For example, the web UI does not have a list screen to page through the messages. It's possible to retrieve a few ones in the queue detail page, but it has a warning that says "getting
+  messages from a queue is a destructive action." Although not necessarily always "destructive", the action will probably cause side effects on the message.
+- *Spring AMQP shares this kind of mindset.* For example, it is important to configure a `MessageRecoverer` in a `RetryInterceptor`. By default, Spring AMQP will drop the message after retrying for configured times and issue a warning.
 
 ## Resilience
 
-### Acknowledgement
+[Spring AMQP Reference: Resilience: Recovering from Errors and Broker Failures](https://docs.spring.io/spring-amqp/docs/current/reference/html/#resilience-recovering-from-errors-and-broker-failures)
 
-Message consumers can fail at any time (due to business exception, dropped connection, application crash, etc). To
-prevent losing messages in this way, message brokers use acknowledgements: a message is removed from the broker only
-after the client acknowledges that it has processed it.
+### Acknowledgment
+
+Message consumers can fail at any time (due to business exceptions, dropped connections, application crash, etc). To prevent losing messages in this way, message brokers use acknowledgments: a message is removed from the broker only after the client explicitly acknowledges that it has processed it.
 
 [[tip | 💡]]
-| In Laravel, when a job is taken from the queue, it's placed at `myqueue:reserved` key at the same time. These two steps form an atomic operation with Lua scripting.
+| In Laravel, when a job is taken from the queue, it's placed at `myqueue:reserved` key at the same time. These two steps form an atomic operation by using Lua scripting. This can also be seen as a form of acknowledgment.
 
 ### Dead letter exchange
 
-[[tip | 💡]]
-| Laravel's [failed jobs](https://laravel.com/docs/8.x/queues#dealing-with-failed-jobs) table is the same concept.
+[RabbitMQ Dead Letter Documentation](https://www.rabbitmq.com/dlx.html)
 
-Suppose there is a mal-formed message. In our Spring application, if our message handlers throw an exception, by
-default, the message will be requeued and delivered again, resulting in an infinite loop. A viable approach would be
-sending the bad message to other places for inspection after a few retries.
+Suppose there is a mal-formed message. In our Spring application, if our message handlers throw an exception, by default, the message will be requeued and delivered again, resulting in an infinite loop. A viable approach would be sending the bad message to other places for inspection after a few retries.
 
-RabbitMQ can handle this situation by using [dead letter exchanges](https://www.rabbitmq.com/dlx.html). When our
-consumer negatively acknowledges a message, the queue will "dead-letter" the message (annotate with some information
-about the failure) and route it to the configured dead letter exchange. This configuration can be applied globally in
-the broker with a policy, or specified when creating a queue.
+RabbitMQ can handle this situation by using [dead letter exchanges](https://www.rabbitmq.com/dlx.html). When our consumer negatively acknowledges a message, the queue will "dead-letter" the message (annotate with some information about the failure) and route it to the configured dead letter exchange. This configuration can be applied globally in the broker with a policy or specified when creating a queue.
 
 ```bash
 rabbitmqctl set_policy DLX ".*" '{"dead-letter-exchange":"my-dlx"}' --apply-to queues
@@ -207,7 +193,7 @@ You can also apply a policy in the RabbitMQ web UI under the "admin" tag.
 Note that the dead letter exchange is just a regular exchange. If you specify a non-existent exchange, RabbitMQ does not
 create it automatically. This is the type of misconfiguration that can cause lost messages.
 
-Configuration in Spring:
+AMQP entity declaration in Spring:
 
 ```kotlin
 @Bean
@@ -229,10 +215,9 @@ fun deadLetterQueues(
 )
 ```
 
-We create a dead letter queue, and it's binding to the configured `deadLetterExchange` for each listener. By properly
-configuring listening queues and bindings, we ensure dead letters don't get lost.
+We create a dead letter queue and it's binding to the configured `deadLetterExchange` for each listener. By properly configuring listening queues and bindings, we ensure dead letters don't get lost.
 
-Also, we need to update our `queues()` code to configure the queues' dead letter exchange.
+Then, update our `queues()` code to configure the queues' dead letter exchange.
 
 ```kotlin
 @Bean
@@ -251,7 +236,22 @@ private fun QueueBuilder.withDeadLetterExchange(exchange: Exchange): QueueBuilde
   withArgument("x-dead-letter-exchange", exchange.name) // highlight-line
 ```
 
+We also need to set up our listener containers to instruct RabbitMQ not to requeue rejected messages. If a dead letter exchange is configured on the queue, the message will be routed to it. Otherwise, the message will be dropped.
+
+```kotlin
+SimpleRabbitListenerContainerFactory().apply {
+  setDefaultRequeueRejected(false)
+  setConnectionFactory(connectionFactory)
+}
+```
+
+[[tip | 💡]]
+| Laravel's [failed jobs](https://laravel.com/docs/8.x/queues#dealing-with-failed-jobs) table is the same concept.
+
+
 ### Retry
+
+It may be helpful to retry a few times before routing a failed message to the dead letter exchange. Spring provides some retry helpers and we can configure them in the container factory like this:
 
 ```kotlin
 @Bean
@@ -261,8 +261,10 @@ fun retryInterceptor() = RetryInterceptorBuilder()
   .backOffOptions(1000, 2.0, 10_000)
   .recoverer(RejectAndDontRequeueRecoverer())
   .build()
+
+SimpleRabbitListenerContainerFactory().apply {
+  setDefaultRequeueRejected(false)
+  setConnectionFactory(connectionFactory)
+  setAdviceChain(retryInterceptor())
+}
 ```
-
-## References
-
-Manning RabbitMQ in Depth
