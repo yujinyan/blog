@@ -153,7 +153,7 @@ Check out more details at:
 
 ## Messages are ephemeral
 
-It's important to realize that in the AMQP model, the message broker just acts as a postman between sender and receiver. It holds on to the messages only temporarily. On successful delivery to all consumers, usually, the message is no longer available from the broker.
+It's important to realize that in the AMQP model, the message broker just acts as a postman between sender and receiver. It holds on to the messages only temporarily. After successful delivery to all consumers, usually, the message is no longer available from the broker.
 
 In contrast, Redis Stream and Kafka are more like databases.
 
