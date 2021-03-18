@@ -2,6 +2,7 @@
 title: Notes on RabbitMQ with Spring Boot 
 date: "2021-03-17T20:44:17.284Z"
 english: true
+issueId: "40"
 ---
 
 ## Context
@@ -182,7 +183,7 @@ Message consumers can fail at any time (due to business exceptions, dropped conn
 
 Suppose there is a mal-formed message. In our Spring application, if our message handlers throw an exception, by default, the message will be requeued and delivered again, resulting in an infinite loop. A viable approach would be sending the bad message to other places for inspection after a few retries.
 
-RabbitMQ can handle this situation by using [dead letter exchanges](https://www.rabbitmq.com/dlx.html). When our consumer negatively acknowledges a message, the queue will "dead-letter" the message (annotate with some information about the failure) and route it to the configured dead letter exchange. This configuration can be applied globally in the broker with a policy or specified when creating a queue.
+RabbitMQ can handle this situation with [dead letter exchanges](https://www.rabbitmq.com/dlx.html). When our consumer negatively acknowledges a message, the queue will "dead-letter" the message (annotate with some information about the failure) and route it to the configured dead letter exchange. This configuration can be applied globally in the broker with a policy or specified when creating a queue.
 
 ```bash
 rabbitmqctl set_policy DLX ".*" '{"dead-letter-exchange":"my-dlx"}' --apply-to queues
