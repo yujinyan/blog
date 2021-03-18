@@ -52,7 +52,7 @@ supports the AMQP 0-9-1 model. It mainly revolves around the following three *AM
 Messages are published to an *exchange* and consumed from a *queue*. A queue can subscribe to exchanges by using *
 bindings*. When a message arrives at an exchange, it will be routed to different queues based on:
 
-- the routing key in the message, and
+- the *routing key* in the message, and
 - the type of the addressed exchange.
 
 ### Routing
@@ -66,7 +66,7 @@ The four basic types of exchange are:
 
 The routing mechanism further decouples the publisher and subscriber, making it easy to adapt to different workflows. It may look overwhelming at first sight, so we are sticking with the simplest Direct Exchange for the time being. In this case, the message will be routed to subscribing queues with the same routing key.
 
-To learn more about RabbitMQ and AMQP, I would recommend [<cite>RabbitMQ in Depth</cite>](https://www.manning.com/books/rabbitmq-in-depth). Its clear explanation and illustration make it easier to grasp the concepts.
+To learn more about RabbitMQ and AMQP, I would recommend [<cite>RabbitMQ in Depth</cite>](https://www.manning.com/books/rabbitmq-in-depth). Its clear explanation and illustration make it easier to grasp these concepts.
 
 ### Declarative configuration with Spring AMQP
 
@@ -104,7 +104,7 @@ class RabbitMqConfig {
 }
 ```
 
-In this code snippet, we first declare the application-wide `domainEventExchange`. Then, we loop over the `DomainEventListener`s present in the application context and create the necessary queues and bindings.
+In this code snippet, we first declare the application-wide `domainEventExchange`. Then, we loop over the `DomainEventListener`'s present in the application context and create the necessary queues and bindings.
 
 Note that:
 
@@ -113,9 +113,9 @@ Note that:
 
 ## Listener container
 
-So far we declared desired entities in the broker, but haven't yet wired up our `DomainEventListener`’s to consume messages from it and perform business logic. To do so, we need to wrap our event handlers inside `MessageListenerContainer`’s.
+So far we have declared desired entities in the broker, but haven't yet wired up our `DomainEventListener`’s to consume messages from it and perform business logic. To do so, we need to wrap our event handlers inside `MessageListenerContainer`’s.
 
-A `MessageListenerContainer` represents an *active* or *hot* component. It handles the connection to the message broker and provides methods for starting and stopping as a lifecycle component. When the connection is broken, `SimpleMessageListenerConainer` will try to restart the listener.
+A `MessageListenerContainer` represents an *active* or *hot* component. It handles the connection to the message broker. When the connection is broken, `SimpleMessageListenerConainer` will try to restart the listener. As a lifeycle component, it provides methods for starting and stopping.
 
 To programmatically register our domain listeners, we can implement `RabbitListenerConfigurer` and use the `RabbitListenerEndpointRegistrar` like this:
 
@@ -145,7 +145,7 @@ class ContainerConfig(
 }
 ```
 
-Spring AMQP will take care of creating the listener containers at runtime. Note that we passed an instance of `RabbitListenerContainerFactory` to the registrar. We will see that we can configure some common properties of the containers through the container factory.
+Spring AMQP will take care of creating the listener containers at runtime. Note that we passed an instance of `RabbitListenerContainerFactory` to the registrar. We will see that we can configure common properties of the containers through the container factory.
 
 Check out more details at: 
 - [Spring AMQP Reference: Containers](https://docs.spring.io/spring-amqp/docs/current/reference/html/#container)
@@ -163,7 +163,7 @@ Some repercussions:
   bound queues will be dropped. Conceptually, it seems only queues in AMQP have *memory*.
 - *No first-class support for doing CRUD on messages.* For example, the web UI does not have a list screen to page through the messages. It's possible to retrieve a few ones in the queue detail page, but it has a warning that says "getting
   messages from a queue is a destructive action." Although not necessarily always "destructive", the action will probably cause side effects on the message.
-- *Spring AMQP shares this kind of mindset.* For example, it is important to configure a `MessageRecoverer` in a `RetryInterceptor`. By default, Spring AMQP will drop the message after retrying for configured times and issue a warning.
+- *Spring AMQP shares this kind of mindset.* For example, it is important to configure a `MessageRecoverer` in a `RetryInterceptor`. By default, Spring AMQP will drop the message after retrying for configured times and issue a warning. Retry is discussed in the following section.
 
 ## Resilience
 
@@ -259,12 +259,12 @@ fun retryInterceptor() = RetryInterceptorBuilder()
   .stateless()
   .maxAttemtps(2)
   .backOffOptions(1000, 2.0, 10_000)
-  .recoverer(RejectAndDontRequeueRecoverer())
+  .recoverer(RejectAndDontRequeueRecoverer()) // highlight-line
   .build()
 
 SimpleRabbitListenerContainerFactory().apply {
   setDefaultRequeueRejected(false)
   setConnectionFactory(connectionFactory)
-  setAdviceChain(retryInterceptor())
+  setAdviceChain(retryInterceptor()) // highlight-line
 }
 ```
