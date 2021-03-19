@@ -21,11 +21,27 @@ Output: 5
     "bag".length + 1,
     "babgbag".length + 1,
   ]}
-  compute={
-    (dp, i, j) => {
+  horizontalHeader={(j) => j === 0 ? `""` : "babgbag".charAt(j - 1)}
+  verticalHeader={(i) => i === 0 ? `""` : "bag".charAt(i - 1)}
+  compute={(dp) => {
+    const s = "babgbag", t = "bag"
 
-      return i + j
+    const S = s.length
+    const T = t.length
+
+    for (let j = 0; j <= S; j++) {
+      dp[0][j] = 1;
     }
+    for (let i = 1; i <= T; i++) {
+      for (let j = 1; j <= S; j++) {
+        if (s.charAt(i - 1) === t.charAt(j - 1)) {
+          dp[i][j] = dp[i - 1][j - 1] + dp[i][j - 1]
+        } else {
+          dp[i][j] = dp[i][j - 1];
+        }
+      }
+    }
+  }
   }
 />
 
