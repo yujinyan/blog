@@ -1,0 +1,34 @@
+---
+title: Distinct Subsequences
+date: 2021-02-11T15:49:03.284Z
+english: true
+---
+
+import LeetCode from "components/LeetCode"
+import DpTable from "components/DpTable"
+
+<LeetCode.ProblemCard id={115} />
+
+Example:
+
+```
+Input: s = "babgbag", t = "bag"
+Output: 5
+```
+
+<DpTable
+  dimension={[
+    "bag".length + 1,
+    "babgbag".length + 1,
+  ]}
+  compute={
+    (dp, i, j) => {
+
+      return i + j
+    }
+  }
+/>
+
+
+
+
