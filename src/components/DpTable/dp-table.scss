@@ -29,10 +29,19 @@
   }
 
   .is-comparing {
-    background: #007acc;
+    background: #E3F2FD
+  ;
   }
 
   .is-active {
     color: firebrick;
   }
+}
+
+.explanation {
+  p {
+    text-align: center;
+  }
+
+  margin-top: 1.75em;
 }

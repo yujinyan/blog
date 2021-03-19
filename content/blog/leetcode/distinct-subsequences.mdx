@@ -16,25 +16,28 @@ Input: s = "babgbag", t = "bag"
 Output: 5
 ```
 
+export const s = "babgbag"
+export const t = "bag"
+
 <DpTable
   dimension={[
     "bag".length + 1,
     "babgbag".length + 1,
   ]}
-  horizontalHeader={(j) => j === 0 ? `""` : "babgbag".charAt(j - 1)}
-  verticalHeader={(i) => i === 0 ? `""` : "bag".charAt(i - 1)}
+  horizontalHeader={(j) => j === 0 ? `""` : s.charAt(j - 1)}
+  verticalHeader={(i) => i === 0 ? `""` : t.charAt(i - 1)}
   compute={
     (dp, marker) => {
-      const s = "babgbag", S = s.length
-      const t = "bag", T = t.length
+      const S = s.length, T = t.length
       for (let j = 0; j <= S; j++) dp[0][j] = 1
       for (let i = 1; i <= T; i++) {
         for (let j = 1; j <= S; j++) {
           const $ = marker(i, j)
-          $.comparing([[i, j - 1], [i - 1, j]])
           if (s.charAt(j - 1) === t.charAt(i - 1)) {
+            $.comparing([[i, j - 1], [i - 1, j - 1]])
             dp[i][j] = dp[i][j - 1] + dp[i - 1][j - 1]
           } else {
+            $.comparing([[i, j], [i, j - 1]])
             dp[i][j] = dp[i][j - 1]
           }
         }
@@ -42,10 +45,24 @@ Output: 5
     }
   }
   explanation={
-    ({selected: [i, j]}) => <p>Hello World {i} {j}</p>
+    ({ selected: [i, j] }) => {
+      if (i < 0 || j < 0) return <section className="explanation"><p>Trying clicking on a cell.</p></section>
+      const charEquals = s.charAt(j - 1) === t.charAt(i - 1)
+      return <section className="explanation">
+        <p>
+          Does `{s.charAt(j - 1)}` equal to `{t.charAt(i - 1)}`?{` `}
+          {
+            charEquals ?
+              <span>Yes.</span> :
+              <span>No.</span>
+          }
+        </p>
+        {
+          charEquals ?
+            <p>Equals the sum of highlighted squares.</p> :
+            <p>Equals the number to the left.</p>
+        }
+      </section>
+    }
   }
 />
-
-
-
-
