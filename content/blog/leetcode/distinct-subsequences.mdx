@@ -24,12 +24,14 @@ Output: 5
   horizontalHeader={(j) => j === 0 ? `""` : "babgbag".charAt(j - 1)}
   verticalHeader={(i) => i === 0 ? `""` : "bag".charAt(i - 1)}
   compute={
-    (dp) => {
+    (dp, marker) => {
       const s = "babgbag", S = s.length
       const t = "bag", T = t.length
       for (let j = 0; j <= S; j++) dp[0][j] = 1
       for (let i = 1; i <= T; i++) {
         for (let j = 1; j <= S; j++) {
+          const $ = marker(i, j)
+          $.comparing([[i, j - 1], [i - 1, j]])
           if (s.charAt(j - 1) === t.charAt(i - 1)) {
             dp[i][j] = dp[i][j - 1] + dp[i - 1][j - 1]
           } else {
@@ -38,6 +40,9 @@ Output: 5
         }
       }
     }
+  }
+  explanation={
+    ({selected: [i, j]}) => <p>Hello World {i} {j}</p>
   }
 />
 

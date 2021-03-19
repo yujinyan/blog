@@ -1,3 +1,38 @@
 .dp-table {
+  display: block;
+  margin: 0 auto;
   font-family: "JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+  cursor: pointer;
+  width: auto;
+  text-align: center;
+
+  tbody {
+    display: inline-block;
+    margin: 0 auto;
+    width: auto;
+  }
+
+  tr {
+    display: flex;
+    width: auto;
+  }
+
+  $size: 2.5em;
+
+  td, th {
+    display: block;
+    width: $size;
+    height: $size;
+    //line-height: 24px;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .is-comparing {
+    background: #007acc;
+  }
+
+  .is-active {
+    color: firebrick;
+  }
 }
