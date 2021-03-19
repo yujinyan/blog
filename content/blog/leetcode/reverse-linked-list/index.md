@@ -28,5 +28,15 @@ public ListNode reverse(ListNode head) {
 }
 ```
 
-[[fig | Recursive call trace.]]
-| ![reverse-linked-list](./reverse-linked-list.svg)
+Recursive call trace:
+```shell
+┌ reverse (1) -> 2 -> 3 -> 4 -> 5
+│ ┌ reverse 1 -> (2) -> 3 -> 4 -> 5
+│ │ ┌ reverse 1 -> 2 -> (3) -> 4 -> 5
+│ │ │ ┌ reverse 1 -> 2 -> 3 -> (4) -> 5
+│ │ │ │  reverse 1 -> 2 -> 3 -> 4 -> (5)
+│ │ │ └ reverse 1 -> 2 -> 3 -> (4) <~ 5
+│ │ └ reverse 1 -> 2 -> (3) <~ 4 <~ 5
+│ └ reverse 1 -> (2) <~ 3 <~ 4 <~ 5
+└ reverse (1) <~ 2 <~ 3 <~ 4 <~ 5
+```
