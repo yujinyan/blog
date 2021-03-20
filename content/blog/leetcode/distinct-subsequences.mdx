@@ -11,7 +11,7 @@ import { InlineMath } from "react-katex"
 
 <LeetCode.ProblemCard id={115} />
 
-Given two strings s and t, return *the number of distinct subsequences* of `s` which equals `t`.
+Given two strings `s` and `t`, return *the number of distinct subsequences* of `s` which equals `t`.
 
 Example:
 
@@ -20,7 +20,7 @@ Input: s = "babgbag", t = "bag"
 Output: 5
 ```
 
-As shown below, there are 5 ways you can generate "bag" from S.
+As shown below, there are 5 ways you can generate `"bag"` from `s`.
 
 __ba__b__g__bag \* __ba__bgba__g__ \* __b__abgb__ag__ \* ba__b__gb__ag__ \* babg__bag__
 
@@ -120,6 +120,7 @@ Try clicking on different values to show how they are calculated.
       const charEquals = s.charAt(j - 1) === t.charAt(i - 1)
       return <section className="explanation">
         {meaning}
+        <p>We're looking for:</p>
         <ul>
           <li>number of {` `}
             <Code>"{t.substr(0, i)}"</Code> in {` `}
