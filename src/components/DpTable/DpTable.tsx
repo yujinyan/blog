@@ -47,7 +47,6 @@ const markerFactory: MarkerFactory = () => {
   }
 }
 
-
 const marker: DpMarker = (i, j) => {
   return {
     i, j,
