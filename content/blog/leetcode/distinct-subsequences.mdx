@@ -6,18 +6,67 @@ english: true
 
 import LeetCode from "components/LeetCode"
 import DpTable from "components/DpTable"
+import Code from "components/InlineCode"
+import { InlineMath } from "react-katex"
 
 <LeetCode.ProblemCard id={115} />
+
+Given two strings s and t, return *the number of distinct subsequences* of `s` which equals `t`.
 
 Example:
 
 ```
 Input: s = "babgbag", t = "bag"
 Output: 5
+
 ```
+
+As shown below, there are 5 ways you can generate "bag" from S.
+
+||
+|-----------------|-----------------|-----------------|----------------|------------|
+| __ba__b__g__bag | __ba__bgba__g__ | __b__abgb__ag__ | ba__b__gb__ag__| babg__bag__|
+
+
+
+## Code
+
+```java
+// s: babgbag -> iterated by pointer j
+// t: bag     -> iterated by pointer i
+
+public int numDistinct(String s, String t) {
+  int S = s.length(), T = t.length();
+
+  int[][] dp = new int[T + 1][S + 1];
+
+  for (int j = 0; j <= S; j++) {
+    dp[0][j] = 1;
+  }
+
+  for (int i = 1; i <= T; i++) {
+    for (int j = 1; j <= S; j++) {
+      if (s.charAt(j - 1) == t.charAt(i - 1)) {
+        dp[i][j] = dp[i - 1][j - 1] + dp[i][j - 1]; // highlight-line
+      } else {
+        dp[i][j] = dp[i][j - 1]; // highlight-line
+      }
+    }
+  }
+
+  return dp[S][T];
+}
+```
+
+## State transition
 
 export const s = "babgbag"
 export const t = "bag"
+
+Fill in the DP table *row by row*. When dealing with a row,
+assume `t` (the shorter string) is *fixed* and `s` is increasing in character.
+
+Try clicking on different values to show how they are calculated.
 
 <DpTable
   dimension={[
@@ -37,7 +86,7 @@ export const t = "bag"
             $.comparing([[i, j - 1], [i - 1, j - 1]])
             dp[i][j] = dp[i][j - 1] + dp[i - 1][j - 1]
           } else {
-            $.comparing([[i, j], [i, j - 1]])
+            $.comparing([[i, j - 1]])
             dp[i][j] = dp[i][j - 1]
           }
         }
@@ -46,23 +95,77 @@ export const t = "bag"
   }
   explanation={
     ({ selected: [i, j] }) => {
-      if (i < 0 || j < 0) return <section className="explanation"><p>Trying clicking on a cell.</p></section>
+      if (i < 0 || j < 0) return null
+      const meaning = <p>
+        Suppose we're filling this <span className="is-active">highlighted cell</span>. {` `}
+        The value inside denotes how many times {` `}
+        <Code>"{t.substr(0, i)}"</Code> can be found in {` `}
+        <Code>"{s.substr(0, j)}"</Code>.
+      </p>
+      if (i === 0) {
+        return <section className="explanation">
+          <p>
+            The first row is filled with <InlineMath>1</InlineMath>.
+            Because the empty string is subsequence of any string, but only <InlineMath>1</InlineMath> times.
+          </p>
+        </section>
+      }
+      const isCharEqualQuestion = <span>
+        Is <Code>"{s.charAt(j - 1)}"</Code> equal to <Code>"{t.charAt(i - 1)}"</Code>?
+      </span>
+      if (j === 0) {
+        return <section className="explanation">
+          <p><Code>s == ""</Code></p>
+          <p><Code>t == "{t.substr(0, i)}"</Code></p>
+          <p>
+            <Code>s</Code> won't contain <Code>t</Code>, so fill in <InlineMath>0</InlineMath>
+          </p>
+        </section>
+      }
       const charEquals = s.charAt(j - 1) === t.charAt(i - 1)
       return <section className="explanation">
-        <p>
-          Does `{s.charAt(j - 1)}` equal to `{t.charAt(i - 1)}`?{` `}
-          {
-            charEquals ?
-              <span>Yes.</span> :
-              <span>No.</span>
-          }
-        </p>
+        {meaning}
+        <ul>
+          <li>number of {` `}
+            <Code>"{t.substr(0, i)}"</Code> in {` `}
+            <Code>"{s.substr(0, j)}"</Code>
+          </li>
+        </ul>
         {
           charEquals ?
-            <p>Equals the sum of highlighted squares.</p> :
-            <p>Equals the number to the left.</p>
+            <>
+              <p>{isCharEqualQuestion} Yes.</p>
+              <p>Then the value in this cell equals <i>the sum</i> of the following two:</p>
+              <ol>
+                <li>number of {` `}
+                  <Code>"{t.substr(0, i - 1)}"</Code> in {` `}
+                  <Code>"{s.substr(0, j - 1)}"</Code>
+                </li>
+                <li>number of {` `}
+                  <Code>"{t.substr(0, i)}"</Code> in {` `}
+                  <Code>"{s.substr(0, j - 1)}"</Code>
+                </li>
+              </ol>
+              <p>In the first case, the current character <Code>{s.charAt(j - 1)}</Code> continues the matching pattern.
+              </p>
+              <p>In the second case, the pattern <Code>{t.substr(0, i)}</Code> was already fully matched.</p>
+            </> :
+            <>
+              <p>{isCharEqualQuestion} No.</p>
+              <p>
+                Therefore, we have the same number of distinct subsequences {` `}
+                as we had without the new character {` `}
+                <Code>{s.charAt(j - 1)}</Code>.
+              </p>
+            </>
         }
       </section>
     }
   }
 />
+
+
+
+
+## Reference
+[Easy to understand DP in Java](https://leetcode.com/problems/distinct-subsequences/discuss/37327/Easy-to-understand-DP-in-Java)

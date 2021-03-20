@@ -76,7 +76,7 @@ export default (props: DpTableProp) => {
 
   return (
     <>
-      <table className="dp-table">
+      <table className="dp-table dp">
         <tbody>
         {
           props.horizontalHeader &&
@@ -108,7 +108,11 @@ export default (props: DpTableProp) => {
         }
         </tbody>
       </table>
-      {props.explanation?.({ selected })}
+      {
+        props.explanation && <div className="dp">
+          {props.explanation?.({ selected })}
+        </div>
+      }
     </>
   )
 }
