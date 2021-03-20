@@ -29,6 +29,10 @@ body.dark {
   --form-shadow: 0 2px 15px 0 rgba(26, 26, 27, 0.637);
 }
 
+.dark th, td {
+  border-bottom-color: var(--hr);
+}
+
 .nowrap {
   white-space: nowrap;
 }

@@ -2,12 +2,28 @@
   .is-active {
     background: #E3F2FD;
   }
+
   .explanation .is-active {
     font-size: .875em;
     padding: .25em;
     border-radius: 6px;
   }
+
+  .is-comparing {
+    color: #D81B60;
+    font-weight: bold;
+  }
 }
+
+.dark {
+  .is-active {
+    background: #1976D2
+  }
+  .is-comparing {
+    color: #F06292;
+  }
+}
+
 .dp-table {
   display: block;
   margin: 0 auto;
@@ -15,6 +31,7 @@
   cursor: pointer;
   width: auto;
   text-align: center;
+  overflow-x: scroll;
 
   tbody {
     display: inline-block;
@@ -38,10 +55,6 @@
     text-align: center;
   }
 
-  .is-comparing {
-    color: firebrick;
-    font-weight: bold;
-  }
 
 }
 
