@@ -127,6 +127,7 @@ module.exports = {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
         trackingId: `UA-117949087-1`,
+        head: true,
       },
     },
     `gatsby-plugin-dark-mode`,
