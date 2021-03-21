@@ -6,7 +6,7 @@ interface DpTableProp {
   compute: (dp: Array<Array<number>>, marker: DpMarker) => void,
   horizontalHeader?: (j) => number,
   verticalHeader?: (i) => number,
-  explanation?: React.FC<{ selected: Coordinates }>
+  explanation?: React.FC<{ selected: Coordinates, dp: Array<Array<number>> }>
 }
 
 type Coordinates = [number, number]
@@ -64,7 +64,7 @@ export default (props: DpTableProp) => {
   const [dp, factory] = useMemo(() => {
     const _dp = Array(m)
     const _factory = markerFactory()
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < m; i++) {
       _dp[i] = Array(n).fill(0)
     }
     props.compute(_dp, _factory.marker)
@@ -80,7 +80,7 @@ export default (props: DpTableProp) => {
         {
           props.horizontalHeader &&
           <tr>
-            {<th />}
+            {props.verticalHeader && <th />}
             {[...Array(n)].map((_, j) => <th key={j}>{props.horizontalHeader(j)}</th>)}
           </tr>
         }
@@ -109,7 +109,7 @@ export default (props: DpTableProp) => {
       </table>
       {
         props.explanation && <div className="dp">
-          {props.explanation?.({ selected })}
+          {props.explanation?.({ selected, dp })}
         </div>
       }
     </>
