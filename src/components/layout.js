@@ -1,6 +1,7 @@
 import React from "react"
 import { graphql, Link, useStaticQuery } from "gatsby"
 import DarkModeToggle from "./DarkModeToggle"
+import SiteNav from "./SiteNav"
 
 import { rhythm, scale } from "../utils/typography"
 
@@ -74,6 +75,7 @@ const Layout = ({
         color: "var(--textNormal)",
       }}
     >
+      <SiteNav location={location} style={{ marginBottom: rhythm(1) }} />
       <header
         style={{
           display: "flex",
@@ -81,9 +83,12 @@ const Layout = ({
         }}
       >
         {header}
-        {darkModeToggleOverride || <DarkModeToggle style={{ position: "absolute", right: rhythm(1), top: rhythm(1.25) }} />}
+        {darkModeToggleOverride ||
+        <DarkModeToggle style={{ position: "absolute", right: rhythm(1), top: rhythm(1.25) }} />}
       </header>
-      <main>{children}</main>
+      <main>
+        {children}
+      </main>
       {aside}
       <footer>© {new Date().getFullYear()} yujinyan.me</footer>
     </div>
