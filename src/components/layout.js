@@ -1,6 +1,7 @@
 import React from "react"
-import { Link } from "gatsby"
+import { graphql, Link, useStaticQuery } from "gatsby"
 import DarkModeToggle from "./DarkModeToggle"
+import SiteNav from "./SiteNav"
 
 import { rhythm, scale } from "../utils/typography"
 
@@ -12,6 +13,16 @@ const Layout = ({
   darkModeToggleOverride
 }) => {
   const rootPath = `${__PATH_PREFIX__}/`
+  const data = useStaticQuery(graphql`
+    query HeaderQuery {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+    }
+  `)
+
   let header
 
   if (location.pathname === rootPath) {
@@ -48,7 +59,7 @@ const Layout = ({
           }}
           to={`/`}
         >
-          {title}
+          {title || data.site.siteMetadata.title}
         </Link>
       </h3>
     )
@@ -64,6 +75,7 @@ const Layout = ({
         color: "var(--textNormal)",
       }}
     >
+      <SiteNav location={location} style={{ marginBottom: rhythm(1) }} />
       <header
         style={{
           display: "flex",
@@ -71,9 +83,12 @@ const Layout = ({
         }}
       >
         {header}
-        {darkModeToggleOverride || <DarkModeToggle style={{ position: "absolute", right: rhythm(1), top: rhythm(1.25) }} />}
+        {darkModeToggleOverride ||
+        <DarkModeToggle style={{ position: "absolute", right: rhythm(1), top: rhythm(1.25) }} />}
       </header>
-      <main>{children}</main>
+      <main>
+        {children}
+      </main>
       {aside}
       <footer>© {new Date().getFullYear()} yujinyan.me</footer>
     </div>
