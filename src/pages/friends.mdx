@@ -1,44 +1,40 @@
----
-title: Friends
-date: 2021-03-22T15:49:03.284Z
-english: true
-issueId: 46
----
-
 import Layout from "../components/layout"
 import GithubCorner from "../components/GithubCorner"
 import AdobeFont from "../components/AdobeFont"
 import { UtterancesComments } from "../components/utterances"
+import Helmet from "react-helmet"
+import "./friends.scss"
 
 <AdobeFont />
 <GithubCorner url="https://github.com/yujinyan/blog" />
-
+<Helmet htmlAttributes={{ lang: "en" }} />
 <Layout location="friends">
 
   # Friends
 
   Most authors nowadays publish their articles on platforms like WeChat, Juejin, or Medium.
-  Unfortunately, their content sometimes get lost in a sea of clickbaity ads
-  that try to sell you programming tutorials by exploiting people's anxiety.
+  Unfortunately, their content sometimes gets lost in a sea of clickbaity ads
+  that try to sell you programming tutorials by exploiting people's anxieties.
   Even worse, many articles are locked inside a [walled garden](https://en.wikipedia.org/wiki/Closed_platform).
 
-  Therefore, it's delightful to see there are still people our there,
+  Therefore, it's delightful to see there are still people out there,
   tinkering with technologies of the Open Web and presenting their passion with a personal touch.
 
   This is a compilation of such personal blog sites that I have come across and found inspiring.
   I hope this list can help you discover more sites like this one.
 
   ### [Stay Hungry Stay Foolish - Edward Elric's Blog](https://edward40.com/)
-  Rust, Web development.
-  I am a simple person.
-  Whenever I see a site with that beautiful Novela theme, I try to add it to this list ;-).
+  *Web Development, Rust, Programming Languages.*
+  I am a simple person. Whenever I see a site with that gorgeous Novela theme, 
+  I try to add it to this list ;-).
 
-  ### [PRIN BLOG](https://printempw.github.io/friends/)
-  Fullstack dev. The author says he's obsessed with layout and typography. I can testify to that.
+  ### [Prin Blog](https://printempw.github.io/friends/)
+  *Fullstack Development.*
+  Prin says he's obsessed with layout and typography. I can testify to that.
 
   ***
 
-  Feel your site also belongs to this list? Contact me or leave a comment below.
+  Feel your site belongs to this list? Contact me or leave a comment below.
 
   <UtterancesComments issueId={46} />
 </Layout>
