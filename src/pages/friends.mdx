@@ -2,6 +2,7 @@ import Layout from "../components/layout"
 import GithubCorner from "../components/GithubCorner"
 import AdobeFont from "../components/AdobeFont"
 import { UtterancesComments } from "../components/utterances"
+import Bio from "../components/Bio"
 import Helmet from "react-helmet"
 import "./friends.scss"
 
@@ -9,6 +10,7 @@ import "./friends.scss"
 <GithubCorner url="https://github.com/yujinyan/blog" />
 <Helmet htmlAttributes={{ lang: "en" }} />
 <Layout location="friends">
+  <Bio />
 
   # Friends
 
@@ -25,16 +27,18 @@ import "./friends.scss"
 
   ### [Stay Hungry Stay Foolish - Edward Elric's Blog](https://edward40.com/)
   *Web Development, Rust, Programming Languages.*
-  I am a simple person. Whenever I see a site with that gorgeous Novela theme, 
+  I am a simple person. Whenever I see a site with that gorgeous Novela theme,
   I try to add it to this list ;-).
 
-  ### [Prin Blog](https://printempw.github.io/friends/)
+  ### [Prin Blog](https://printempw.github.io)
   *Fullstack Development.*
   Prin says he's obsessed with layout and typography. I can testify to that.
 
   ***
 
   Feel your site belongs to this list? Contact me or leave a comment below.
+  You can also edit [this page](https://github.com/yujinyan/blog/blob/master/src/pages/friends.mdx)
+  and send a PR directly.
 
   <UtterancesComments issueId={46} />
 </Layout>
