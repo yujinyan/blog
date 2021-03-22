@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "gatsby"
+import { graphql, Link, useStaticQuery } from "gatsby"
 import DarkModeToggle from "./DarkModeToggle"
 
 import { rhythm, scale } from "../utils/typography"
@@ -12,6 +12,16 @@ const Layout = ({
   darkModeToggleOverride
 }) => {
   const rootPath = `${__PATH_PREFIX__}/`
+  const data = useStaticQuery(graphql`
+    query HeaderQuery {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+    }
+  `)
+
   let header
 
   if (location.pathname === rootPath) {
@@ -48,7 +58,7 @@ const Layout = ({
           }}
           to={`/`}
         >
-          {title}
+          {title || data.site.siteMetadata.title}
         </Link>
       </h3>
     )
