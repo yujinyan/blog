@@ -16,11 +16,11 @@ const isActive = (location, link): boolean => {
 const SiteNav = (props) => <nav {...props} className="site-nav">
   {
     data.map((it, index) =>
-      <>
-        <Link to={it.link} key={it.link}
+      <span key={it.link}>
+        <Link to={it.link}
               className={isActive(props.location, it.link) ? "active" : ""}>{it.title.toUpperCase()}</Link>
         {index === data.length - 1 ? undefined : " | "}
-      </>,
+      </span>,
     )
   }
 </nav>
