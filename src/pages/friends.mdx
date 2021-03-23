@@ -3,16 +3,18 @@ import GithubCorner from "../components/GithubCorner"
 import AdobeFont from "../components/AdobeFont"
 import { UtterancesComments } from "../components/utterances"
 import Bio from "../components/Bio"
+import SEO from "../components/seo"
+import { rhythm } from "../utils/typography"
 import Helmet from "react-helmet"
 import "./friends.scss"
 
 <AdobeFont />
 <GithubCorner url="https://github.com/yujinyan/blog" />
 <Helmet htmlAttributes={{ lang: "en" }} />
+<SEO title="Friends 友链 | Yu Jinyan's Blog" />
 <Layout location="friends">
-  <Bio />
 
-  # Friends
+  # Friends | <span lang="zh-cmn-Hans">友链</span>
 
   Most authors nowadays publish their articles on platforms like WeChat, Juejin, or Medium.
   Unfortunately, their content sometimes gets lost in a sea of clickbaity ads
@@ -34,11 +36,15 @@ import "./friends.scss"
   *Fullstack Development.*
   Prin says he's obsessed with layout and typography. I can testify to that.
 
-  ***
 
-  Feel your site belongs to this list? Contact me or leave a comment below.
-  You can also edit [this page](https://github.com/yujinyan/blog/blob/master/src/pages/friends.mdx)
-  and send a PR directly.
+  <hr style={{ marginBottom: rhythm(2.5) }} />
+
+  > Feel your site belongs to this list? Contact me or leave a comment below.
+  > You can also edit [this page](https://github.com/yujinyan/blog/blob/master/src/pages/friends.mdx)
+  > and send a PR directly.
+
+  <Bio />
 
   <UtterancesComments issueId={46} />
 </Layout>
+

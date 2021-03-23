@@ -16,7 +16,7 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
 
   return {
     // larger line-height for english-language blog post
-    "html[lang=en]": { lineHeight: "1.5", fontSize: `18px` },
+    "html[lang=en] main": { lineHeight: "1.5", fontSize: `18px` },
 
     // inline styles
     cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
@@ -25,7 +25,7 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
 
     // block styles
     ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
-    h1: { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
+    h1: { fontFamily: ["Roboto Slab", SourceHanSerif, "sans-serif"].join(",") },
     blockquote: { fontFamily: ["source-serif-4", "Zilla Slab", SourceHanSerif, "serif"].join(",") },
     ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
 
