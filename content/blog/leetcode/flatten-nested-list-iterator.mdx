@@ -22,14 +22,15 @@ public interface NestedInteger {
 
 Example:
 
-```java
+```js
 Input: [[1,1],2,[1,1]]
 Output: [1,1,2,1,1]
+```
 
 Explanation:
-By calling next repeatedly until hasNext returns false,
-the order of elements returned by next should be: [1,1,2,1,1].
-```
+
+By calling `next` repeatedly until `hasNext` returns false,
+the order of elements returned by next should be: `[1,1,2,1,1]`.
 
 Answer scaffold:
 
@@ -124,17 +125,17 @@ If it's unable to do so, there is no more data to iterate.
 
 At first blush, the solution looks wrong to me since it changes state in `hasNext`.
 `Iterator.hasNext` should be idempotent.
-The client should be able to call `hasNext` as many times as they like and still get the right answer when they call `next`.
+Clients should be able to call `hasNext` as many times as they like and still get the right answer when they call `next`.
 
-What will happen if we call `hasNext` times multiple times with the official solution?
+What will happen if we call `hasNext` multiple times with the official solution?
 The stack would have already been adjusted and the top of the stack is an iterator with one leaf-node item.
 After calling `iter.hasNext`, the iterator is consumed and will be cleared off the stack during the next iteration.
 So the implementation is correct, but has this undesirable effect that multiple `hasNext` calls may leave these empty iterators on the stack.
 This might be fixed by introducing some extra state to the class.
 
-## `generator` pattern
+## Generator pattern
 
-Using languages with generators, the pattern is a perfect match for the problem.
+The generator pattern is a perfect match for the problem. In Kotlin, we can use a [sequence](https://kotlinlang.org/docs/sequences.html).
 
 ```kotlin
 class NestedIterator(nestedList: List<NestedInteger>) {
@@ -152,4 +153,5 @@ class NestedIterator(nestedList: List<NestedInteger>) {
 ```
 
 Note that we express the recursive traversal algorithm naturally just like we would have done using the eager approach,
-*yielding* an elegant solution. Laziness is handled by Kotlin language features. I talked about this [in this post](/posts/understanding-kotlin-suspend-functions/#深递归).
+*yielding* an elegant solution. Laziness is handled by Kotlin language features.
+I talked about this [in this post](/posts/understanding-kotlin-suspend-functions/#深递归).
