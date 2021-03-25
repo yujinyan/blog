@@ -1,0 +1,52 @@
+---
+title: LeetCode Methodology
+date: 2021-03-25T11:38:03.284Z
+english: true
+---
+
+import LeetCode from "components/LeetCode"
+
+
+LeetCode is hard. Once, I tried to work out problems on my own without looking at the solutions.
+It was a laborious and frustrating journey.
+I could only work on at most one or two problems a day.
+Often, after many hours of head-scratching, my solution turned out wrong in the end.
+When I returned to the same problem after a few days, I would still forget how to solve it.
+
+Recently, I came across this advice and found it particularly helpful.
+
+Original Twitter thread:
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">The way i prepared for coding interviews before i got my job at Facebook is a bit different from what most people suggest. I never forced myself to solve problems without using google. I would google the answer after i was stuck even for 1 minute</p>&mdash; Aaron Abramov (@aarondjents) <a href="https://twitter.com/aarondjents/status/1266149438554169344?ref_src=twsrc%5Etfw">May 28, 2020</a></blockquote>
+
+Text version (with typo fixed):
+> The way I prepared for coding interviews before I got my job at Facebook is a bit different from what most people suggest.
+> I never forced myself to solve problems without using google.
+> I would google the answer after I was stuck even for 1 minute
+> If I tried to solve it myself I'd easily spend 2-3 hours on one question and that seemed like a waste of time.
+>
+> My process involved saving a bunch of interview questions in a folder and going through them as fast as possible.
+  Don't know how the answer right away? No problem, Google the solution and code it out (no copypasta tho).
+>
+> This way I was able to go through a lot of questions every day. Twenty, maybe thirty per day. After 100 or so, I would delete all my solution and go through the same list again. Most solution I already remembered, some of them I forgot and had to Google again.
+> I would go through the same list again and again until I can solve 100% of those question without using google. This way, instead of wasting time on staring at the question and trying to find the solution yourself I coded **a lot**.
+> What I found is that after 200-300 questions most of them start repeating themselves in different shape. The question might be different, but underlying problem is the same array sorting or tree traversal.
+>
+> Eventually it got to the point where I couldn't find any questions that would surprise me. Every new question was "the same sorting but numbers are negative" or "instead of packing the backpack we're counting coins".
+>
+> Coding a lot also makes you more familiar with the programming language you chose. It becomes almost like a native language. You don't spend minutes trying to figure out how to write that "for" loop. You just write it.
+
+J. Li also gives similar advice in his blog post [<cite>How I leetcode for 6 months and land a job in FANG</cite>](https://kylelix7.github.io/How-I-leetcode-for-6-months-and-land-a-job-at-Amazon/).
+
+I feel doing LeetCode is a lot like doing math, which boils down to pattern matching on what you have already learned and memorized.
+It simply takes a lot of practice and repetition.
+
+Also, based on my own experience, LeetCode's *easy-medium-hard* classification refers to the complexity of the code,
+not necessarily how difficult it actually is to solve it on your own.
+This is especially true for dynamic-programming problem like this one.
+
+<LeetCode.ProblemCard id={53} />
+
+I wrote about this problem [in this post](/leetcode/maximum-subarray). It has an interactive table that shows how the numbers are calculated.
+Once you know the algorithm, the code is not difficult to write.
+But the algorithm itself is not easy to think up at all.
+So don't be frustrated when you feel you can't even solve some "easy" problems.
