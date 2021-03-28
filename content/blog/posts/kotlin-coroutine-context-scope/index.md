@@ -631,19 +631,18 @@ suspend fun CoroutineScope.foo()
 
 Structured Concurrency
 
-- <cite>[Nathaniel J. Smith: Notes on structured concurrency, or: Go statement considered harmful](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/)</cite>
+- [<cite>Nathaniel J. Smith: Notes on structured concurrency, or: Go statement considered harmful</cite>](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/)
 - Kotlin 协程引入 Structured Concurrency 的 [issue](https://github.com/Kotlin/kotlinx.coroutines/issues/410)
 - Nathaniel J. Smith 维护了一个 Structured Concurrency [资源汇总](https://trio.discourse.group/t/structured-concurrency-resources/21)
 
 Roman Elizarov 有多篇文章和视频介绍 Kotlin 的 Structured Concurrency：
 
-- <cite>[Structured concurrency](https://elizarov.medium.com/structured-concurrency-722d765aa952)</cite>
-- <cite>[Hydra Conf - Structured concurrency](https://www.youtube.com/watch?v=Mj5P47F6nJg)</cite>
-- <cite>[The reason to avoid GlobalScope](https://elizarov.medium.com/the-reason-to-avoid-globalscope-835337445abc)</cite>
+- [<cite>Structured concurrency</cite>](https://elizarov.medium.com/structured-concurrency-722d765aa952)
+- [<cite>Hydra Conf - Structured concurrency</cite>](https://www.youtube.com/watch?v=Mj5P47F6nJg)
+- [<cite>The reason to avoid GlobalScope</cite>](https://elizarov.medium.com/the-reason-to-avoid-globalscope-835337445abc)
+- [Roman Elizarov: <cite>Coroutine Context and Scope</cite>](https://elizarov.medium.com/coroutine-context-and-scope-c8b255d59055)
 
-<cite>[Roman Elizarov: Coroutine Context and Scope](https://elizarov.medium.com/coroutine-context-and-scope-c8b255d59055)</cite>
-
-Goroutine 和 Context 部分内容参考了 [Go 语言设计和实现](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/) 和 <cite>[The Go Programming Language](https://www.gopl.io/)</cite> 。
+Goroutine 和 Context 部分内容参考了 [《Go 语言设计和实现》](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/) 和 <cite>[The Go Programming Language](https://www.gopl.io/)</cite> 。
 
 ## 后记
 

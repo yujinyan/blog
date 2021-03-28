@@ -19,9 +19,9 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
     "html[lang=en] main": { lineHeight: "1.5", fontSize: `18px` },
 
     // inline styles
-    cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
+    // cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
+    // ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
-    ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
 
     // block styles
     ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
