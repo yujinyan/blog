@@ -61,6 +61,16 @@ a {
   color: var(--textNormal);
 }
 
+blockquote cite {
+  position: relative;
+  color: var(--textNormal)
+}
+
+blockquote cite:before {
+  top: -1.5em;
+  position: absolute
+}
+
 /* We don't have enough space for .github-corner on smaller screen. */
 @media (max-width: 768px) {
   .github-corner {

@@ -24,9 +24,11 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
     "a.gatsby-resp-image-link": { boxShadow: `none`, },
 
     // block styles
-    ".subtitle": { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
+    ".subtitle": { fontFamily: ["Zilla Slab", "Georgia", "serif"].join(","), fontSize: "1.125em" },
     h1: { fontFamily: ["Roboto Slab", SourceHanSerif, "sans-serif"].join(",") },
-    blockquote: { fontFamily: ["source-serif-4", "Zilla Slab", SourceHanSerif, "serif"].join(",") },
+    "article h1": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
+    blockquote: { fontFamily: ["source-serif-4", "Georgia", SourceHanSerif, "serif"].join(",") },
+    "blockquote cite": { fontFamily: ["Zilla Slab", "Georgia", "serif"].join(","), fontStyle: "normal" },
     ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
 
     // code blocks

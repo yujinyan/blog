@@ -606,6 +606,8 @@ Kotlin 协程抽象复用的机制除了 `CoroutineScope` 上的扩展函数之�
 - suspend 函数提供的约定：调用这个函数不会阻塞线程，函数内的子程序执行完毕以后函数才会返回，控制流回到调用方。suspend 函数不应该有开启异步任务的副作用。
 
 > Suspend functions are sequential by default. Concurrency is hard, and its launch must be explicit.
+>
+> <cite>Roman Elizarov, Project Lead for Kotlin</cite>
 
 可以看到，Kotlin 在类型系统对这两种不同性质的函数作了区分：
 
