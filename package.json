@@ -72,6 +72,7 @@
     "unist-util-visit-parents": "^3.1.1"
   },
   "devDependencies": {
+    "jest": "^26.6.3",
     "prettier": "^1.19.1"
   },
   "homepage": "https://blog.yujinyan.me",
