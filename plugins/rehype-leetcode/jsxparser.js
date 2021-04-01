@@ -1,8 +1,3 @@
-// interface ReactElement {
-//   tag: string,
-//   props: { [key: string]: any }
-// }
-
 const REMOVE_BRACKETS_RE = /<(.+) \/>/
 const ATTRIBUTE_RE = /(\w+)={(.+)}/
 
