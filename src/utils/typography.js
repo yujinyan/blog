@@ -34,7 +34,7 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
 
     // code blocks
     code: { fontFamily: monoFonts("JetBrains Mono") },
-    "code .comment": { fontFamily: monoFonts("Victor Mono"), fontStyle: "italic", opacity: ".65" },
+    "code .comment": { fontFamily: monoFonts("Victor Mono"), fontStyle: "italic", opacity: ".75" },
     // smaller size for inline code
     ":not(pre) > code": { fontStyle: "normal", fontSize: "0.8em!important" },
   }
