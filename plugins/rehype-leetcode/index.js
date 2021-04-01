@@ -1,4 +1,5 @@
 const visit = require("unist-util-visit")
+const jsxparser = require("./jsxparser")
 
 const data = require("../../content/blog/leetcode/data.json")
 
@@ -29,18 +30,19 @@ const problems = {
   },
 }
 
-
 module.exports = () => {
   return tree => {
     visit(tree, "jsx", (node) => {
-      const result = node.value.match(LEETCODE_RE)
-      if (!result) return
-      const tag = result[1]
-      const id = result[2]
+      const jsx = jsxparser(node.value)
+      if (!jsx?.tag?.startsWith("LeetCode")) return
+
+      const tag = jsx.tag
+      const id = jsx.props["id"]
       const problem = problems.getById(id)
+      const props = { ...jsx.props, ...problem }
 
       let propertyStr = ""
-      Object.entries(problem).forEach(([key, value]) => {
+      Object.entries(props).forEach(([key, value]) => {
         propertyStr += `${key}="${value}" `
       })
       node.value = `<${tag} ${propertyStr} />`
