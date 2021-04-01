@@ -30,7 +30,6 @@ fun subsets(nums: IntArray): List<List<Int>> {
   val ret = mutableListOf<List<Int>>()
   val list = mutableListOf<Int>()
 
-  // highlight-next-line
   fun dfs(i: Int) {
     // `i` also corresponds with the current level
     // of the search tree.
@@ -45,8 +44,8 @@ fun subsets(nums: IntArray): List<List<Int>> {
     list.add(nums[i])
     dfs(i + 1)
 
-    // We undo the previous choice
-    list.removeAt(list.size - 1)
+    // Backtrack: undo the previous choice
+    list.removeAt(list.size - 1) // highlight-line
     dfs(i + 1)
   }
 
@@ -58,15 +57,46 @@ fun subsets(nums: IntArray): List<List<Int>> {
 Notice the two recursive calls in the `dfs` procedure
 correspond with the two branches on each level of the decision tree.
 
+## Permutations
+
+<LeetCode.ProblemCard id={46} />
+
+[[fig | Search tree enumerating all permutations.]]
+| ![Permutations Tree](./assets/permutations-tree.svg)
+
+```kotlin
+fun permute(nums: IntArray): List<List<Int>> {
+  val ret = mutableListOf<List<Int>>()
+  val list = mutableListOf<Int>()
+
+  fun dfs() {
+    if (list.size == nums.size) {
+      ret += list.toList()
+      return
+    }
+    for (n in nums) {
+      if (n in list) continue
+      list += n
+      dfs()
+      list.removeAt(list.size - 1) // highlight-line
+    }
+  }
+
+  dfs()
+  return ret
+}
+```
+
 <CustomBlock heading={<img src={KotlinLogo} alt="Kotlin" />}>
 
   I usually stick with Java for LeetCode problems. Recently, I feel Kotlin also shines in this area.
-  For example, the Java solution of this question requires
+  For example, the Java solutions of these backtracking problems require
   either storing some of the inputs in class fields, which, IMO, is poor programming style,
   or passing a long list of arguments to the `dfs` method, which obscures the algorithm a bit.
   With Kotlin, while the code is concise and full of substance, it's not as gimmicky as Python.
 
 </CustomBlock>
+
 
 ## References
 
