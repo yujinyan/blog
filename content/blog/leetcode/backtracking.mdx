@@ -7,6 +7,8 @@ english: true
 
 import LeetCode from "components/LeetCode"
 import { TheAlgorithmDesignManual } from "components/Citations"
+import CustomBlock from "components/CustomBlock"
+import KotlinLogo from "~/assets/kotlin.svg"
 
 ## Subsets
 
@@ -23,7 +25,7 @@ Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
 [[fig | Search tree enumerating all subsets.]]
 | ![Subsets Tree](./assets/subsets-tree.svg)
 
-```kotlin{numberLines: 5}
+```kotlin
 fun subsets(nums: IntArray): List<List<Int>> {
   val ret = mutableListOf<List<Int>>()
   val list = mutableListOf<Int>()
@@ -55,6 +57,16 @@ fun subsets(nums: IntArray): List<List<Int>> {
 
 Notice the two recursive calls in the `dfs` procedure
 correspond with the two branches on each level of the decision tree.
+
+<CustomBlock heading={<img src={KotlinLogo} alt="Kotlin" />}>
+
+  I usually stick with Java for LeetCode problems. Recently, I feel Kotlin also shines in this area.
+  For example, the Java solution of this question requires
+  either storing some of the inputs in class fields, which, IMO, is poor programming style,
+  or passing a long list of arguments to the `dfs` method, which obscures the algorithm a bit.
+  With Kotlin, while the code is concise and full of substance, it's not as gimmicky as Python.
+
+</CustomBlock>
 
 ## References
 

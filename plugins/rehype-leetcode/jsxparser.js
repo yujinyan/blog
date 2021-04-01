@@ -10,7 +10,11 @@ const parse = (input) => {
   for (let i = 1; i < pairs.length; i++) {
     const match = pairs[i].match(ATTRIBUTE_RE)
     if (!match) continue
-    props[match[1]] = eval(match[2])
+    try {
+      props[match[1]] = eval(match[2])
+    } catch (e) {
+      return undefined
+    }
   }
 
   return {

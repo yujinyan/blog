@@ -15,3 +15,8 @@ test("legal jsx 1 props", () => {
       props: { id: 191 },
     })
 })
+
+test("skip if cannot resolve identifier", () => {
+  expect(parse(`<img src={Kotlin} alt="Kotlin" />`))
+    .toBe(undefined)
+})
