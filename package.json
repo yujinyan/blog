@@ -69,7 +69,8 @@
     "unist-util-inspect": "^6.0.1",
     "unist-util-select": "^3.0.4",
     "unist-util-visit": "^2.0.3",
-    "unist-util-visit-parents": "^3.1.1"
+    "unist-util-visit-parents": "^3.1.1",
+    "victormono": "^1.4.2"
   },
   "devDependencies": {
     "jest": "^26.6.3",
