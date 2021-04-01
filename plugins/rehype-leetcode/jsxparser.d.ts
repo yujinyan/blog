@@ -3,4 +3,4 @@ interface ReactElement {
   props: { [key: string]: any }
 }
 
-export default function parse(input: string): ReactElement
+export default function parse(input: string): ReactElement | undefined

@@ -1,9 +1,10 @@
 import Typography from "typography"
 import Wordpress2016 from "typography-theme-wordpress-2016"
-import './global.css'
+import "./global.css"
 
 const SourceHanSerif = "source-han-serif-sc"
 const SourceHanSans = "source-han-sans-simplified-c"
+const monoFonts = (fontName) => `"${fontName}", Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace !important`
 
 Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
   // palt: 半宽标点（SourceHanSerif）
@@ -21,7 +22,7 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
     // inline styles
     // cite: { fontFamily: ["Zilla Slab", "serif"].join(","), fontSize: "1.125em" },
     // ".dark strong": { fontFamily: ["Roboto Slab", SourceHanSans, "sans-serif"].join(",") },
-    "a.gatsby-resp-image-link": { boxShadow: `none`, },
+    "a.gatsby-resp-image-link": { boxShadow: `none` },
 
     // block styles
     ".subtitle": { fontFamily: ["Zilla Slab", "Georgia", "serif"].join(","), fontSize: "1.125em" },
@@ -32,7 +33,8 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
     ".custom-block, .gatsby-highlight": { marginBottom: rhythm(1) },
 
     // code blocks
-    code: { fontFamily: `"JetBrains Mono", Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace !important` },
+    code: { fontFamily: monoFonts("JetBrains Mono") },
+    "code .comment": { fontFamily: monoFonts("Victor Mono"), fontStyle: "italic", opacity: ".75" },
     // smaller size for inline code
     ":not(pre) > code": { fontStyle: "normal", fontSize: "0.8em!important" },
   }
@@ -46,11 +48,11 @@ Wordpress2016.googleFonts = [
 Wordpress2016.bodyFontFamily = [
   // "merriweather", SourceHanSerif, "Georgia", "serif"
   // "lora", SourceHanSerif, "Georgia", "serif"
-  "source-serif-4", SourceHanSerif, "Georgia", "serif"
+  "source-serif-4", SourceHanSerif, "Georgia", "serif",
 ]
 
 Wordpress2016.headerFontFamily = [
-  "Roboto Slab", SourceHanSans, "sans-serif"
+  "Roboto Slab", SourceHanSans, "sans-serif",
 ]
 
 const typography = new Typography(Wordpress2016)
