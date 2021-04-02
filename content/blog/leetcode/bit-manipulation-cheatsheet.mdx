@@ -123,13 +123,39 @@ public int hammingWeight(int n) {
 
 <LeetCode.ProblemCard id={231} />
 
+Notice in the decimal system, we write $10^n$ as $1$ followed by $n$ zeros.
+
+By the same token, the binary representation of $2^n$ is $1$ followed by $n$ zeros.
+
 ```java
+// Check if the number would turn to 0
+// after flipping the least significant 1 bit.
 public boolean isPowerOfTwo(int n) {
   if (n == 0) return false;
   long N = (long) n;
   return (N & (N - 1)) == 0;
 }
 ```
+
+<LeetCode.ProblemCard id={342} />
+
+To check if a number is a power of $4$, we first check if it's power of $2$ by applying the $n \And (n - 1)$ trick.
+A power of $2$ number has only one $1$ bit.
+If it's power of $4$, this $1$ bit must be followed by an even number of $0$ bits.
+In other words, the $1$ bit must appear at even position of the binary representation.
+We can use a bit mask to check if the 1 bit is at odd position. If so, it's *not* power of $4$.
+
+```java
+public boolean isPowerOfFour(int n) {
+  if (n == 0) return false;
+  long N = (long) n;
+  return (N & (N - 1)) == 0
+   && (N & 0xaaaaaaaa) == 0;
+}
+```
+
+Note `0xa` is equivalent to `0b1010`.
+
 ## Reference
 
 - [5种解法，你应该背下的位操作知识](https://leetcode-cn.com/problems/power-of-two/solution/5chong-jie-fa-ni-ying-gai-bei-xia-de-wei-6x9m/)
