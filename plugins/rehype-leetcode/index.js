@@ -1,25 +1,28 @@
 const visit = require("unist-util-visit")
 const jsxparser = require("./jsxparser")
 
-const data = require("../../content/blog/leetcode/data.json")
-
-const LEETCODE_RE = /<(LeetCode.+) id={(\d+)}/
+const _data = require("./data.json")
+const problemsById = _data.stat_status_pairs.reduce((acc, item) => {
+  acc[item.stat.frontend_question_id] = item
+  return acc
+}, {})
 const LEVEL_TO_DIFFICULTY = {
   1: "easy", 2: "medium", 3: "hard",
 }
 
 const problems = {
-  _data: data.stat_status_pairs,
-  _length: data.stat_status_pairs.length,
+  // _data: data.stat_status_pairs,
+  // _length: data.stat_status_pairs.length,
   getById: function(id) {
     // console.log(`length is ${this._length}`)
-    const position = this._length - id
+    // const position = this._length - id
     // console.log(`id is ${id}, position is ${this._length}`)
-    const _data = this._data[position]
-    const idInData = _data.stat.question_id
-    if (idInData != id) {
-      throw Error(`leetcode id not match, looking for ${id}, but found ${idInData} at position ${position}`)
-    }
+    const _data = problemsById[id]
+    if (!_data) throw Error(`LeetCode problem with id ${id} not found.`)
+    // const idInData = _data.stat.question_id
+    // if (idInData != id) {
+    //   throw Error(`leetcode id not match, looking for ${id}, but found ${idInData} at position ${position}`)
+    // }
     return {
       id,
       title: _data.stat.question__title,

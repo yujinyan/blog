@@ -8,7 +8,8 @@ import LeetCode from "@/components/LeetCode"
 The *calculator* problems require us to evaluate an arithmetic expression given in a string.
 
 For example:
-```
+
+```javascript
 Input: s = "(2+6*3+5-(3*14/7+2)*5)+3"
 Output: -12
 ```
@@ -22,6 +23,7 @@ Spaces, brackets, $+$ $-$.
 
 Spaces, no brackets, $+$  $-$  $\times$ $\div$.
 
+<LeetCode.ProblemCard id={772} />
 
 No spaces, brackets, $+$  $-$  $\times$ $\div$.
 
@@ -38,11 +40,11 @@ $$
 \end{array}
 $$
 
-Evaluating RPN with an operand stack is straightforward.
+Evaluating RPN with an *operand* stack is straightforward.
 
 <LeetCode.ProblemCard id={150} />
 
-Valid operators are +, -, *, and /. Each operand may be an integer or another expression.
+Valid operators are `+`, `-`, `*`, and `/`. Each operand may be an integer or another expression.
 
 Example:
 
@@ -82,16 +84,21 @@ How do we convert from infix notation to RPN?
 
 [Wikipedia: Shunting-yard algorithm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm)
 
-Intuitively, since operators come last in RPN, we need to stash them in a stack.
+Intuitively, since operators come last in RPN, we need to *stash* them in a stack.
 In contrast, when evaluating an RPN, we stash the operands.
 
 Iterate over the input, for every character `c`:
-- If it's an operand (numbers), add it to the output.
-- If it's an operator ($+$, $-$, etc.),
+- If it's an *operand* (numbers), add it to the output.
+- If it's an *operator* ($+$, $-$, etc.),
 pop all the operators with greater precedence than `c` off the stack and add them to the output.
 Then add `c` to the output.
 
 Last, pop the remaining operator off the stack.
+
+The algorithm was invented by Edsger Dijkstra. He named it "shunting yard" algorithm
+because its operation resembles that of a railroad shunting yard.
+
+It's helpful to keep the following picture in mind, and the code is not too hard to write.
 
 [[fig | Shunting-yard Algorithm trace for A + B * C - D]]
 | ![Shunting-yard Algorithm](./assets/Shunting_yard.svg)
@@ -111,7 +118,7 @@ fun shuntingYard(string: String): String {
   val operators = Stack<Char>()
 
   for (c in string.toCharArray()) {
-    if (Character.isLetter(c)) {
+    if (c.isLetter()) {
       ret.append(c)
     } else {
       while (
@@ -139,6 +146,16 @@ also provides a step-by-step trace of the algorithm.
 
 
 ## Handling brackets
+
+$$
+1 \times \textcolor{#EC407A}{(}2 + 3\textcolor{#EC407A}{)}
+$$
+
+To handle brackets:
+
+- Push the opening bracket `(` to the operator stack.
+- When we encounter a closing bracket `)`, keep popping the operators in the stack until we find the matching `(`.
+- We are done with this pair of brackets. Pop the `(` off the stack.
 
 ```kotlin
 fun shuntingYardWithBrackets(string: String): String {
@@ -172,16 +189,13 @@ val Char.weight
   get() = when (this) {
     '+' -> 1
     '-' -> 1
+    // Set to a small value, so other operators
+    // won't pop `(` off the stack.
+    // Only the matching `)` can do so.
     '(' -> 0 // highlight-line
     else -> TODO()
   }
 ```
-
-To handle brackets:
-
-- Push the opening bracket `(` to the operator stack.
-- When we encounter a closing bracket `)`, keep popping the operators in the stack until we find the matching `(`.
-- We are done with this pair of brackets. Pop the `(` off the stack.
 
 Two things to note about the opening bracket `(`:
 
@@ -193,11 +207,11 @@ Two things to note about the opening bracket `(`:
 Our current code cannot handle unary operators, because when evaluating RPN, we always assume there are two operands.
 
 $$
--1+2
+\textcolor{#EC407A}{-}1+2
 $$
 
 $$
-1+(-1+2)
+1+(\textcolor{#EC407A}{-}1+2)
 $$
 
 We can accommodate the unary operators $-$ and $+$ by prefixing them with a zero. Notice they can only appear:
@@ -211,7 +225,7 @@ fun toRPN(s: String): List<Any> {
   val ops = Stack<Char>();
 
   var i = 0
-  // The first char could be unary op.
+  // The first char could be an unary operator.
   var checkUnary = true // highlight-line
   while (i < s.length) {
     val c = s[i]
@@ -220,6 +234,7 @@ fun toRPN(s: String): List<Any> {
       if (c == '-' || c == '+') ret += 0
       checkUnary = false
     }
+    // The following char could be a unary operator.
     if (c == '(') checkUnary = true // highlight-line
     /* ommitted */
   }
@@ -234,8 +249,8 @@ To parse numbers with multiple digits, we can use this idiom:
 
 ```kotlin
 var n = 0
-string.toCharArray().forEach { c ->
-  n = 10 * n + (c - '0')
+string.toCharArray().forEach { c: Char ->
+  n = 10 * n + (c - '0') // highlight-line
 }
 ```
 
@@ -245,7 +260,9 @@ There is a question for exactly this operation.
 
 Atoi is a C library function that converts an ASCII string to an integer.
 
-This problem asks to implement the atoi function. The string to integer idiom is highlighted.
+This problem asks to implement the atoi function.
+Most of the code deals with edge cases like leading whitespaces and integer overflows.
+The string to integer idiom is highlighted.
 
 ```java
 public int myAtoi(String s) {
@@ -285,6 +302,8 @@ public int myAtoi(String s) {
 ```
 
 ## Complete code
+
+We can combine these building blocks to write our solution for the calculator problems.
 
 ```kotlin
 fun calculate(s: String): Int {
@@ -354,6 +373,12 @@ fun toRPN(s: String): List<Any> {
   return ret
 }
 ```
+
+## Interpreter Pattern
+
+🚧 WIP
+
+<blockquote class="twitter-tweet"><p lang="zh" dir="ltr">在LeetCode上有道编程题——实现一个简单的计算器（<a href="https://t.co/D20mQJo0TP">https://t.co/D20mQJo0TP</a>），一般来说用两个stack就可以解决问题，但是因为我对设计模式实在是太熟，所以情不自禁用Interpreter 撸了一个（<a href="https://t.co/PF9JNhg8Gk">https://t.co/PF9JNhg8Gk</a>） 大家可以看看其易读性和代码的扩展性，绝对比“双栈法”要好得多……</p>&mdash; Hao Chen (@haoel) <a href="https://twitter.com/haoel/status/1377248342921519108?ref_src=twsrc%5Etfw">March 31, 2021</a></blockquote>
 
 ## Reference
 
