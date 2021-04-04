@@ -64,10 +64,7 @@ assume `t` (the shorter string) is *fixed* and `s` is increasing in character.
 Try clicking on different values to show how they are calculated.
 
 <DpTable
-  dimension={[
-    "bag".length + 1,
-    "babgbag".length + 1,
-  ]}
+  dimension={[t.length + 1, s.length + 1]}
   horizontalHeader={(j) => j === 0 ? `""` : s.charAt(j - 1)}
   verticalHeader={(i) => i === 0 ? `""` : t.charAt(i - 1)}
   compute={
