@@ -1,0 +1,83 @@
+---
+title: Longest Common Subsequence
+date: 2021-04-04T23:25:03.284Z
+english: true
+---
+
+import DpTable from "@/components/DpTable"
+import LeetCode from "components/LeetCode"
+
+<LeetCode.ProblemCard id={1143} />
+
+Given two strings `text1` and `text2`, return the length of their longest common subsequence.
+
+A common subsequence of two strings is a subsequence that is common to both strings.
+
+```shell
+Example:
+
+Input: text1 = "abcbdab", text2 = "bdcaba"
+Output: 4
+Explanation:
+The longest common subsequence is "bcba" and its length is 4.
+```
+
+## Code
+
+```java
+public int longestCommonSubsequence(String text1, String text2) {
+  int m = text1.length(), n = text2.length();
+  int[][] dp = new int[m + 1][n + 1];
+  for (int i = 1; i <= m; i++) {
+    char c1 = text1.charAt(i - 1);
+    for (int j = 1; j <= n; j++) {
+      char c2 = text2.charAt(j - 1);
+      if (c1 == c2) {
+        dp[i][j] = dp[i - 1][j - 1] + 1; // highlight-line
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // highlight-line
+      }
+    }
+  }
+  return dp[m][n];
+}
+```
+
+## State transition
+
+$$
+dp[i][j] = \begin{cases}
+dp[i - 1][j - 1] + 1            & text1[i] = text2[j]  \\
+max(dp[i][j - 1], dp[i - 1][j]) & text1[i] \not = text2[j]
+\end{cases}
+$$
+
+export const text1 = "abcbdab"
+export const text2 = "bdcaba"
+
+<DpTable
+  dimension={[text1.length + 1, text2.length + 1]}
+  horizontalHeader={(j) => j === 0 ? `""` : text2.charAt(j - 1)}
+  verticalHeader={(i) => i === 0 ? `""` : text1.charAt(i - 1)}
+  compute={
+    (dp, marker) => {
+      const m = text1.length
+      const n = text2.length
+      for (let i = 1; i <= m; i++) {
+        const char1 = text1.charAt(i - 1)
+        for (let j = 1; j <= n; j++) {
+          const $ = marker(i, j)
+          const char2 = text2.charAt(j - 1)
+          if (char1 === char2) {
+            $.comparing([[i - 1, j - 1]])
+            dp[i][j] = dp[i - 1][j - 1] + 1
+          } else {
+            $.comparing([[i - 1, j], [i, j - 1]])
+            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+          }
+        }
+      }
+    }
+  }
+/>
+
