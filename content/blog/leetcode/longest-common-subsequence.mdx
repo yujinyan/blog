@@ -6,6 +6,7 @@ english: true
 
 import DpTable from "@/components/DpTable"
 import LeetCode from "components/LeetCode"
+import Code from "@/components/InlineCode"
 
 <LeetCode.ProblemCard id={1143} />
 
@@ -47,13 +48,15 @@ public int longestCommonSubsequence(String text1, String text2) {
 
 $$
 dp[i][j] = \begin{cases}
-dp[i - 1][j - 1] + 1            & text1[i] = text2[j]  \\
-max(dp[i][j - 1], dp[i - 1][j]) & text1[i] \not = text2[j]
+dp[i - 1][j - 1] + 1            & s[i] = s[j]  \\
+max(dp[i][j - 1], dp[i - 1][j]) & s[i] \not = s[j]
 \end{cases}
 $$
 
 export const text1 = "abcbdab"
-export const text2 = "bdcaba"
+export const text2 = "obdcaba"
+
+Try clicking on different values to see how they are calculated.
 
 <DpTable
   dimension={[text1.length + 1, text2.length + 1]}
@@ -79,5 +82,41 @@ export const text2 = "bdcaba"
       }
     }
   }
+  explanation={
+    ({ selected: [i, j] }) => {
+      if (i < 0 || j < 0) return null
+      const char1 = text1.charAt(i - 1)
+      const char2 = text2.charAt(j - 1)
+      const charIsEqual = char1 === char2
+      return <section className="explanation">
+        <p>
+          We're looking for the number of common subsequence in
+          <Code>{text1.substring(0, i)}</Code> and <Code>{text2.substring(0, j)}</Code>.
+        </p>
+        <p>
+          Notice <Code>"{text2.charAt(j - 1)}"</Code>{` `}
+          is {!charIsEqual && "not"} equal to{` `}
+          <Code>"{text1.charAt(i - 1)}"</Code>.
+        </p>
+        {
+          charIsEqual ? <p>
+            We have found another character <Code>{char1}</Code> to increase the common subsequence.{` `}
+            The answer is equal to 1 plus previous answer without this common character, located at {` `}
+            <Code>Dp[i - 1][j - 1]</Code>
+          </p> : <div>
+            <p>Since these two characters are different, we consider each of them separately.</p>
+            <ul>
+              <li>If we take <Code>{text1.charAt(i - 1)}</Code>, the answer is located in the cell to the left.</li>
+              <li>If we take <Code>{text2.charAt(j - 1)}</Code>, the answer is located in the cell on the top.</li>
+            </ul>
+            <p>The answer of the current cell is the max of the previous two.</p>
+          </div>
+        }
+      </section>
+    }
+  }
 />
 
+## Similar problem
+
+<LeetCode.ProblemCard id={115} thisSite={true} />
