@@ -71,6 +71,10 @@ blockquote cite:before {
   position: absolute
 }
 
+article .math .katex-display {
+  overflow-x: scroll;
+}
+
 /* We don't have enough space for .github-corner on smaller screen. */
 @media (max-width: 768px) {
   .github-corner {
