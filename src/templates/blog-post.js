@@ -16,6 +16,7 @@ import DarkModeToggle from "../components/DarkModeToggle"
 import Helmet from "react-helmet"
 import "katex/dist/katex.min.css"
 import { MDXRenderer } from "gatsby-plugin-mdx"
+import LeetCodeMdxLayout from "@/templates/leetcode-mdx-layout"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.mdx
@@ -87,7 +88,13 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         </header>
         {post.frontmatter.translate &&
         TranslateInfo(post.frontmatter.translate)}
-        <MDXRenderer>{post.body}</MDXRenderer>
+        {
+          post.slug.includes("leetcode") ?
+            <LeetCodeMdxLayout>
+              <MDXRenderer>{post.body}</MDXRenderer>
+            </LeetCodeMdxLayout> :
+            <MDXRenderer>{post.body}</MDXRenderer>
+        }
         <hr
           style={{
             marginBottom: rhythm(1),
@@ -146,6 +153,7 @@ export const pageQuery = graphql`
       excerpt
       body
       tableOfContents
+      slug
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
