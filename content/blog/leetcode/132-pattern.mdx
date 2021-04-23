@@ -1,0 +1,39 @@
+---
+title: 132 Pattern
+date: 2021-04-11T16:48:03.284Z
+english: true
+---
+
+import LeetCode from "@/components/LeetCode"
+import Stack from "@/components/Stack"
+import { reporter } from "@/components/Stack/Stack"
+
+
+export const nums = [4, 1, 2, 3]
+export const report = reporter()
+export const solution1 = ((nums) => {
+  const stack = []
+  let two = -Infinity
+  for (let i = nums.length - 1; i >= 0; i--) {
+    const one = nums[i]
+    if (one < two) {
+      report(stack)
+      return true
+    }
+    while (!(stack.length === 0) && stack[stack.length - 1] < one) {
+      two = stack.pop()
+      report(stack)
+    }
+    stack.push(one)
+  }
+  report(stack)
+  return false
+})(nums)
+
+<LeetCode.ProblemCard id={456} />
+
+<div>
+  <Stack report={report} />
+</div>
+
+
