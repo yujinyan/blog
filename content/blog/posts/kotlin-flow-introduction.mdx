@@ -21,14 +21,14 @@ val fibonacci = sequence {
 
 ### 终端操作符（terminal operator）
 
-我们在 Sequence builder 块中用一个无限循环，源源不断地计算序列中的元素，并通过 `yield` 将元素发送给消费者。Sequence 的消费者就是所谓的终端操作符（terminal operator）,比如 `toList()`，`sum()` 等。
+我们在 Sequence builder 块中用一个无限循环，源源不断地计算序列中的元素，并通过 `yield` 将元素发送给消费者。Sequence 的消费者就是所谓的终端操作符（terminal operator）,比如 `forEach`，`sum` 等。
 
 ```kotlin
 fibonacci.take(10).forEach { println(it) }
 fibonacci.take(10).sum()
 ```
 
-以 `forEach` 为例，每当我们 `yield` 一个新元素，便会将这个元素发送给 `forEach` 块进行处理，然后再继续 Sequence builder 中后续的逻辑，计算下一个值。而普通的 List 则会先计算出所有的元素并存在内存中。正因为如此，我们可以用 Sequence 代表无限元素的序列。但是在消费数据的时候必须使用 `take` 中间操作符限制消费的数量。
+以 `forEach` 为例，每当我们在 `sequence` 块中 `yield` 一个新元素，便会将这个元素发送给 `forEach` 块进行处理，然后再回到 `sequence` 块中执行后续的逻辑，计算下一个值。而普通的 List 则会先计算出所有的元素存在内存中。正因为如此，我们可以用 Sequence 代表无限元素的序列。但是在消费数据的时候必须使用 `take` 中间操作符限制消费的数量。
 
 ### 中间操作符（intermediate operator）
 
@@ -52,9 +52,7 @@ sequence {
 
 <LeetCode.ProblemCard id={341} />
 
-题目是这样：给你一个嵌套的整型列表。请你设计一个迭代器，使其能够遍历这个整型列表中的所有整数。
-
-整型列表由这个接口表示：
+这道力扣题目是这样：给你一个嵌套的整型列表。请你设计一个迭代器，使其能够遍历这个整型列表中的所有整数。整型列表由这个接口表示：
 
 ```kotlin
 interface NestedInteger {
@@ -73,8 +71,7 @@ interface NestedInteger {
 
 ***
 
-
-如果只需要将元素存进一个 List，那么使用递归这个问题非常简单：
+如果只需要将元素存进一个 List，那么可以用递归轻松解决这个问题：
 
 ```kotlin
 fun flatten(nestedList: List<NestedInteger>): List<Int> {
@@ -93,17 +90,20 @@ fun flatten(nestedList: List<NestedInteger>): List<Int> {
 }
 ```
 
-但是一个理想的迭代器应该是「懒」的，也就是说消费者一边消费数据，迭代器一边遍历数据源。这样的好处包括：
+拿到一个 List 以后也可以转成一个迭代器。但是迭代器应该是「懒」的，也就是说消费者一边消费数据，迭代器一边遍历数据源。这样的好处包括：
 
 - 如果消费者只需要前几条数据，而数据源又很大，那么预先计算出整个 List 做了很多无用功。
-- 消费者不用等待整个 List 计算完成后才进行下一步处理。通过并发可以加快整个数据处理流程的速度。
+- 消费者不用等待整个 List 计算完成后才进行下一步处理。通过并发处理可以加快整个数据处理流程的速度。
 
-这样我们就不方便直接递归，需要自己手动维护一个栈，原本简单的代码变得复杂了许多（easy 变成了 medium 😂）。
+这样我们就不方便直接递归，需要自己手动维护一个栈，原本简单的代码变得复杂了许多（可以在[这里](/leetcode/flatten-nested-list-iterator/#solution)查看完整代码）。
 
 借助 Sequence，我们可以用递归的算法实现懒的迭代器：
 
 ```kotlin
-suspend tailrec fun SequenceScope<Int>.walk(list: List<NestedInteger>) {
+// 为了进行递归需要封装出一个函数
+suspend tailrec fun SequenceScope<Int>.walk(
+  list: List<NestedInteger>
+) {
   for (item in list) {
     if (item.isInteger()) yield(item.getInteger())
     else walk(item.getList())
@@ -113,11 +113,13 @@ suspend tailrec fun SequenceScope<Int>.walk(list: List<NestedInteger>) {
 sequence { walk(nestedList) }.iterator() // 题目所求
 ```
 
-读者或许会想到，可以给 `walk` 函数传一个回调，这样也能实现边遍历边消费的效果。可以理解成 Sequence 就是对这一方式的封装。还记得 suspend 本质上是回调。Sequence builder 是一个 suspend 块，而 `yield` 是 suspend 函数。
+[[tip | 💡]]
+| 读者或许会想到，可以给 `walk` 函数传一个回调，这样也能实现边遍历边消费的效果。可以理解成 Sequence 就是对这一方式的封装。还记得 suspend 本质上是回调。
+| Sequence builder 是一个（受限的）suspend 块，而 `yield` 是 suspend 函数。
 
 ## Flow：可以 suspend 的 Sequence
 
-上面的例子都是纯计算的操作。实际场景中我们可能需要在中间或者终端操作符做一些耗时的操作（假设都是 suspend 函数），比如调接口、从数据库读写数据：
+上面的例子都是纯计算的操作。实际场景中我们可能需要在中间或者终端操作符做一些耗时的操作（假设都封装成了 suspend 函数），比如调接口、从数据库读写数据：
 
 ```kotlin
 suspend fun search(string: String) {/**/}
@@ -132,8 +134,8 @@ sequenceOf("foo", "bar")
 上面这个例子中我们希望依次调用接口搜索 `"foo"` 和 `"bar"` 拿到搜索结果后存入数据库，即按照这个顺序：
 
 ```kotlin
-"foo" -> search("foo") -> saveToDB(result of search "foo") ->
-"bar" -> search("bar") -> saveToDB(result of search "bar")
+yield("foo") -> search("foo") -> saveToDB(result of search "foo") ->
+yield("bar") -> search("bar") -> saveToDB(result of search "bar")
 ```
 
 然而，Sequence 的操作符都只能传入常规（非 suspend）的块，无法在其中调用 suspend 函数。
