@@ -329,9 +329,9 @@ fun <T, R> Flow<T>.map(block: suspend (value: T) -> R) =
   }
 ```
 
-和 Sequence、Iterable 一样，Flow 的中间操作符都是扩展函数。这使得 Flow 的 interface 可以只有一个方法，保持精简，同时也方便用户自定义操作符。我们在调用自定义操作符的时候和标准库自带的操作符没有什么区别，不像 RxJava 那样需要借助 `transform` 或者 `lift` 这种额外的 API（参考 [Implementing Custom Operators in RxJava](https://www.baeldung.com/rxjava-custom-operators)）。
+和 Sequence、Iterable 一样，Flow 的中间操作符都是扩展函数。这使得 Flow 的 interface 可以只有一个方法，保持精简，同时也方便用户自定义操作符。我们在调用自定义操作符的时候和标准库自带的操作符没有什么区别，不像 RxJava 那样需要借助 `compose` 或者 `lift` 这种额外的 API（参考 [Implementing Custom Operators in RxJava](https://www.baeldung.com/rxjava-custom-operators)）。
 
-「对上游数据进行变换，并返回一个新的 Flow」这个模式非常常见，于是 Kotlin 协程库提供了个 transform 方法。map 和 filter 等很多操作符的实现都使用了这个方法。在定义自己的运算符的时候也建议使用。
+「对上游数据进行变换，并返回一个新的 Flow」这个模式非常常见，于是 Kotlin 协程库提供了个 `transform` 方法来实现 map、filter 等很多操作符。在定义自己的运算符的时候也建议使用。
 
 ```kotlin
 // Kotlin 协程库内 Flow.map 的实现
@@ -380,7 +380,8 @@ suspend fun main() = FlowImpl<Int> { emit(1); emit(2) }
 如果 collect 的块运行在主线程，那么我们可以在这个块里更新 UI，这是客户端的常见场景。RxJava 可以用 `observeOn` 和 `subscribeOn` 操作符切换线程。但是我们拿到一个 Observable 以后，只看函数签名无法确定消费者会在哪个线程执行，所以一般会手动调一次 `observeOn(mainThread)` 。
 有的时候项目里会在全局的位置（比如 Retrofit 的 call adapter）统一加上了切换至主线程的操作，但是在实际调用的时候会不放心，或者习惯性地来一句 `observeOn(mainThread)` ，线程切了又切。
 
-Kotlin 协程中在 CoroutineContext 中记录线程的调度信息。Flow 提供了「上下文保存 Context preservation」这一保证：Flow 在运行时确保上游不能改变下游的 context。换句话说消费 Flow 的线程取决于调用 collect 的 CoroutineContext。在哪里 collect 就在哪里执行，所见即所得。假设我们从某个 API 拿到了一个 flow：
+Kotlin 协程中在 CoroutineContext 中记录线程的调度信息。Flow 提供了「上下文保存 Context preservation」这一保证：Flow 在运行时确保上游不能改变下游的 context。
+换句话说，消费 Flow 的线程取决于调用 collect 的 CoroutineContext。在哪里 collect 就在哪里执行，所见即所得。假设我们从某个 API 拿到了一个 flow：
 
 ```kotlin
 fun magicFlow(): Flow<String> = {/**/}
@@ -393,7 +394,9 @@ lifecycleScope.launch {
 }
 ```
 
-这个 `magicFlow` 可能有一部分切换到了某个后台线程，但对于调用方来说这些都是 `magicFlow` 的内部实现细节，无须关心。调用方因为要更新 UI，希望在主线程消费数据。由于我们在 androidx 提供的 `LifecycleScope` 上开启的协程内调用 suspend `collect` 方法，而 LifecycleScope 的 CoroutineContext 指定了主线程为协程调度器，因此我们可以确定 collect 的块会在主线程执行，不会受到上游的影响。
+这个 `magicFlow` 可能有一部分切换到了某个后台线程，但对于调用方来说这些都是 `magicFlow` 的内部实现细节，无须关心。
+调用方因为要更新 UI，希望在主线程消费数据。由于我们在 androidx 提供的 `LifecycleScope` 上开启的协程内调用 suspend `collect` 方法，
+而 LifecycleScope 的 CoroutineContext 指定了主线程为协程调度器，因此我们可以确定 collect 的块会在主线程执行。
 
 这一设计和 Kotlin 协程一脉相承。suspend 函数在哪个线程执行却决于调用 suspend 函数的 CoroutineScope，完全在调用方的控制之内。suspend 函数内部可能会切到其他线程（比如 IO 场景下需要切换线程避免阻塞主线程），但调用方无须关心。线程切换的细节对 Flow 的调用方来说也几乎是透明的。大部分客户端场景直接在主线程 `collect` Flow 即可。
 
@@ -416,20 +419,21 @@ suspend fun main() {
 
 在上面的例子中，我们在切换了协程调度器的块中 emit 数据。回想一下，emit 实际上就是在调用 collect 里的 lambda。这样上游 flow 内部实现“偷偷地”把下游调用方的 CoroutineContext 换掉了，调用方难以一眼就知道眼前消费 flow 的代码会在哪个 CoroutineContext 执行。
 
-所以，Kotlin 协程库的 Flow 实现会检查 emit 和 collect 在同一个协程里执行，否则会直接抛出异常：
+所以，**Kotlin 协程库的 Flow 实现会检查 emit 和 collect 在同一个协程里执行**，否则会直接抛出异常：
 
 ```
-Exception in thread "main" java.lang.IllegalStateException: Flow invariant is violated
+Exception in thread "main" java.lang.IllegalStateException:
+Flow invariant is violated
 ```
 
-值得注意的是，**Flow 禁止的是在不同的协程 emit 数据**，并不是说 Flow 块中不能切换 Context。比如下面的例子是可以的：
+注意，**Flow 禁止的是在不同的协程 emit 数据**，并不是说 Flow 块中不能切换 Context。比如下面的例子是可以的：
 
 ```kotlin
 suspend fun main() {
   val f = flow {
     emit(1)
-    val value = withContext(Dispatchers.IO) { 2 }
-    emit(value)
+    val value = withContext(Dispatchers.IO) { 2 } // highlight-line
+    emit(value) // highlight-line
   }
 
   f.collect {
@@ -442,7 +446,7 @@ suspend fun main() {
 
 ### 异常透明（Exception transparency）
 
-Flow 另一个保证是异常透明。根据笔者目前的观点，不太推荐在使用 Kotlin 协程的时候扔异常。对这一部分感兴趣的话可以查阅官方文档。
+Flow 另一个保证是异常透明。不过根据笔者目前的观点，不太推荐在使用 Kotlin 协程的时候扔异常。对这一部分感兴趣的话可以查阅官方文档。
 
 [Asynchronous Flow - Exception Transparency](https://kotlinlang.org/docs/flow.html#exception-transparency)
 
@@ -468,7 +472,7 @@ lifecycleScope.launch {
     .map {
       🏹 callSearchApi(it)
     }
-    .collectLatest {
+    .collectLatest { // highlight-line
       updateUi(it)
     }
 }
