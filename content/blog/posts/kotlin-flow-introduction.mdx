@@ -229,7 +229,7 @@ val myFlow: Flow<Int> = flow {/**/}
 - 如果在 `myFlow` 上调用两次 `collect` ，就好比同一个函数调用两次。
 - `myFlow` 内部含有 suspend 块，本身也应当看成 suspend 函数，在调用的时候必须提供一个 CoroutineScope。
 
-Flow 借助语言层面的 suspend 机制实现异步，而对比之下 RxJava 需要在流中的数据类型体现异步。比如使用 RxJava 做网络请求：
+Flow 借助 Kotlin 语言提供的 suspend 基础设施实现异步，而 RxJava 需要在流中的数据类型体现异步。比如使用 RxJava 做网络请求：
 
 ```kotlin
 fun callSearchApi(string: String)
@@ -241,10 +241,11 @@ Observable.just("foo", "bar")
 ```
 
 注意到 `callSearchApi` 的返回结果需要套在一个 `Observable` 里，同时数据流中的变换需要使用 `flatMap`。
-而使用协程和 Flow 的话，异步函数返回值不需要戴任何套子，数据流变换可以直接使用 `map`，更加自然。
+而使用协程和 Flow，异步函数返回值不需要戴任何套子，数据流变换可以直接使用 `map`，更加自然。
 
 ```kotlin
-suspend fun callSearchApi(string: String): SeachResult
+suspend fun callSearchApi(string: String)
+  : SeachResult
 
 scope.launch {
   flowOf("foo", "bar")
@@ -310,7 +311,7 @@ flow {
 把上面的分析落实到代码里，就得到了我们的玩具实现：
 
 ```kotlin
-class FlowImpl(
+class MyFlow(
   private val builder: suspend FlowCollector<T>.() -> Unit
 ): Flow<T> {
   override suspend fun collect(collector: FlowCollector<T>)
@@ -335,7 +336,7 @@ public suspend inline fun <T> Flow<T>.collect(
 
 ```kotlin
 fun <T, R> Flow<T>.map(block: suspend (value: T) -> R) =
-  FlowImpl<R> {
+  MyFlow<R> {
     collect { emit(block(it)) }
   }
 ```
@@ -356,21 +357,21 @@ public inline fun <T, R> Flow<T>.map(
 ### 完整代码
 
 ```kotlin
-class FlowImpl<T>(
+class MyFlow<T>(
   private val builder: suspend FlowCollector<T>.() -> Unit
 ) : Flow<T> {
   override suspend fun collect(collector: FlowCollector<T>) = collector.builder()
 }
 
-fun <T, R> Flow<T>.map(block: suspend (value: T) -> R) = FlowImpl<R> {
+fun <T, R> Flow<T>.map(block: suspend (value: T) -> R) = MyFlow<R> {
   collect { emit(block(it)) }
 }
 
-fun <T> Flow<T>.filter(block: suspend (value: T) -> Boolean) = FlowImpl<T> {
+fun <T> Flow<T>.filter(block: suspend (value: T) -> Boolean) = MyFlow<T> {
   collect { if (block(it)) emit(it) }
 }
 
-suspend fun main() = FlowImpl<Int> { emit(1); emit(2) }
+suspend fun main() = MyFlow<Int> { emit(1); emit(2) }
   .map { it * it }
   .filter {
     🏹 delay(1000)
@@ -379,7 +380,7 @@ suspend fun main() = FlowImpl<Int> { emit(1); emit(2) }
   🏹 .collect { println("collected $it") }
 ```
 
-可以看到，借助 Kotlin 已有的 suspend 基础设施，实现一个支持异步的反应式数据流不过两三行。实际上，Kotlin 协程库的 Flow 实现经过抽丝剥茧，核心代码和我们的玩具实现并没有太多区别，但提供了两个额外的保证：上下文保存（Context preservation）和异常透明（Exception transparency）。
+可以看到，借助 Kotlin 已有的 suspend 基础设施，实现一个支持异步的反应式数据流不过两三行。实际上，Kotlin 协程库的 Flow 经过抽丝剥茧，核心代码和我们的玩具实现并没有太多区别，但提供了两个额外的保证：上下文保存（Context preservation）和异常透明（Exception transparency）。
 
 [[tip | 🔗]]
 | 关于 suspend 函数，欢迎阅读[《理解 Kotlin 的 suspend 函数》](/posts/understanding-kotlin-suspend-functions/)。
@@ -416,12 +417,12 @@ lifecycleScope.launch {
 | 本文最后也提供了一个更加完善的例子。
 
 这一设计和 Kotlin 协程一脉相承。suspend 函数在哪个线程执行却决于调用 suspend 函数的 CoroutineScope，完全在调用方的控制之内。suspend 函数内部可能会切到其他线程（比如 IO 场景下需要切换线程避免阻塞主线程），但调用方无须关心。
-线程切换的细节对 Flow 的调用方来说也几乎是透明的。**大部分客户端场景直接在主线程 `collect` Flow 即可，无须手动切换线程。**
+线程切换的细节对 Flow 的调用方来说也几乎是透明的。**在 Android 客户端调用暴露 Flow 的 API 更新 UI，直接在主线程 `collect` Flow 即可，无须手动切换线程。**
 
 回看我们的玩具实现并没有提供这样的保证：
 
 ```kotlin
-fun magicFlow() = FlowImpl<Int> {
+fun magicFlow() = MyFlow<Int> {
   withContext(Dispatchers.IO) { // highlight-line
     emit(1) // highlight-line
   }
@@ -472,7 +473,7 @@ Flow 另一个保证是异常透明。不过根据笔者目前的观点，不太
 
 总结一下，相比 RxJava，Flow 的优点包括：
 
-- 依托语言层面的 suspend 基础设施，设计和实现都更加简洁优雅，操作符组合性更强；
+- 依托 Kotlin 的 suspend 基础设施，设计和实现都更加简洁优雅，操作符组合性更强；
 - 扩展函数定义操作符，自定义操作符的调用方式和协程库自带 Flow 操作符一致；
 - 提供了上下文保存等额外保证，延续协程的设计思想，使得线程切换的细节几乎完全透明。
 
@@ -488,6 +489,7 @@ RxJava 在 Android 社区非常流行，主要还是解决线程切换麻烦的�
 lifecycleScope.launch {
   binding.editText.textChanges()
     .debounce(300)
+    // 根据 LifecycleOwner 生命周期自动取消
     .flowWithLifecycle(this, Lifecycle.State.STARTED) // highlight-line
     .map {
       🏹 callSearchApi(it)
