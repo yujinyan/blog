@@ -16,6 +16,7 @@ import DarkModeToggle from "../components/DarkModeToggle"
 import Helmet from "react-helmet"
 import "katex/dist/katex.min.css"
 import { MDXRenderer } from "gatsby-plugin-mdx"
+import MyMdxLayout from "@/templates/my-mdx-layout"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.mdx
@@ -42,7 +43,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       location={location}
       title={siteTitle}
       aside={
-        // should make child sibling of main scrolllable content
+        // should make child sibling of main scrollable content
         // https://stackoverflow.com/a/20028988/6627776 
         post.tableOfContents &&
         <aside className={`sidebar ${menuIsOpen ? "" : "hide"}`}>
@@ -87,7 +88,11 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         </header>
         {post.frontmatter.translate &&
         TranslateInfo(post.frontmatter.translate)}
-        <MDXRenderer>{post.body}</MDXRenderer>
+        {
+          <MyMdxLayout>
+            <MDXRenderer>{post.body}</MDXRenderer>
+          </MyMdxLayout>
+        }
         <hr
           style={{
             marginBottom: rhythm(1),
@@ -146,6 +151,7 @@ export const pageQuery = graphql`
       excerpt
       body
       tableOfContents
+      slug
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
