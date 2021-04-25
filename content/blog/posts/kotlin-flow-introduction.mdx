@@ -81,12 +81,13 @@ feedbacks
 // 方法2：转换成 Sequence
 feedbacks
   .asSequence() // highlight-line
-  .mapNotNull { it.name }.firstOrNull()
+  .mapNotNull { it.name }
+  .firstOrNull()
 
 // 方法3：Kotlin 1.5 标准库方法
 feedbacks.firstNotNullOfOrNull { it.name }
 ```
-如果集合元素非常多，或者又需要经过很多操作符变换，这样每次变换都创建一个新集合存储中间结果，会有些浪费。
+如果集合元素非常多，或者需要经过很多操作符变换，这样每次变换都创建一个新集合存储中间结果，会有些浪费。
 这样的场景使用 Sequence 会更好一些。
 
 [[tip | ✨]]
@@ -217,7 +218,7 @@ for (item in listOf("foo", "bar")) {
 
 实际上和 Sequence 一样，Flow 的终端操作符才是驱动整个数据流的“原动力”。如果没有终端操作符，只引用了若干 map、filter 中间操作符，相当于只搭建了一个数据管道，Flow builder 中的代码不会运行，数据不会流动。
 这种 Flow 被称作「冷流」。
-**一种有益的理解是把这种 flow 的定义类比成函数定义，把终端操作符类比成（suspend）函数调用**：
+**一种有益的理解是把这种 Flow 的定义类比成函数定义，把终端操作符类比成（suspend）函数调用**：
 
 ```kotlin
 val myFlow: Flow<Int> = flow {/**/}
@@ -513,13 +514,15 @@ RxTextView.textChanges(binding.editText)
 
 注意到 Flow 的终端操作符使用了 `collectLatest`。由于 Flow 的生产者、消费者都可以 suspend，当消费者 suspend 在处理某个元素 suspend 的时候，
 此时如果生产者 emit 了新的数据，*Latest 系列操作符会取消处理前一个元素的协程块。这个行为和 RxJava 使用 `switchMap` 的逻辑相似。
-在客户端场景，似乎 `collectLatest` 更加有用。
+在客户端场景，似乎大部分情况下都应该使用 `collectLatest`。
 
-但是 Flow 不是顺序（Sequential）执行，生产者会等待消费者的吗？这是因为 *Latest 系列操作符内部有一个额外的 channel 在下游 suspend 的同时能够监听上游并作出反应。
-这就涉及到「热流」了。
+但是 Flow 不是顺序（Sequential）执行，生产者会等待消费者的吗？这是因为 *Latest 系列操作符内部有一个额外的 Channel， 在下游 suspend 的同时能够监听上游并作出反应。
+这样的 Flow 内部始终有个“激活”的部分，和本文介绍的冷流不太一样，可以写另一篇文章了。
 
 ## 参考资料
 
 - [KotlinConf 2019: Asynchronous Data Streams with Kotlin Flow](https://www.youtube.com/watch?v=tYcqn48SMT8)：
   听 Kotlin Team Lead, Kotlin 协程和 Flow 的主要设计者 Roman Elizarov 先生介绍 Flow 设计的精妙之处。
-- 本文最后介绍的 Android 函数反应式的例子比较简陋，建议参考 Jake Wharton 的 [Managing State with RxJava](https://www.youtube.com/watch?v=0IKHxjkgop4)。
+- 本文最后介绍的 Android 函数反应式的例子比较简陋。假设我们希望在调接口的时候显示加载状态，单纯地在 `onEach` 中显示、隐藏组件不是特别完善。
+  建议参考 Jake Wharton 的 [Managing State with RxJava](https://www.youtube.com/watch?v=0IKHxjkgop4)。
+- [《「正确」地使用 Kotlin Flow 进行搜索优化》](https://juejin.cn/post/6925304772383735822)介绍了一个典型的误用 Flow 的案例。我想看了本文应该完全不会犯这样的错误 ;-)
