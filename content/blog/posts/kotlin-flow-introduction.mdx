@@ -73,25 +73,25 @@ val feedbacks = listOf(
 有下面几种方式：
 
 ```kotlin
-// 方法1：生成一个中间 Collection
+// 方法1： 生成一个中间 Collection
 feedbacks
   .mapNotNull { it.name }
   .firstOrNull()
 
-// 方法2：转换成 Sequence
+// 方法2： 转换成 Sequence
 feedbacks
   .asSequence() // highlight-line
   .mapNotNull { it.name }
   .firstOrNull()
 
-// 方法3：Kotlin 1.5 标准库方法
+// 方法3： Kotlin 1.5 标准库方法
 feedbacks.firstNotNullOfOrNull { it.name }
 ```
-如果集合元素非常多，或者需要经过很多操作符变换，这样每次变换都创建一个新集合存储中间结果，会有些浪费。
+如果集合元素非常多，或者需要经过很多操作符变换，方法 1 每次变换都创建一个新集合存储中间结果，有些浪费。
 这样的场景使用 Sequence 会更好一些。
 
 [[tip | ✨]]
-| 这个例子摘自 [Kotlin 1.5.0-RC Released: Changes to the Standard and Test Libraries](https://blog.jetbrains.com/kotlin/2021/04/kotlin-1-5-0-rc-released/)
+| 这个例子摘自 *[Kotlin 1.5.0-RC Released: Changes to the Standard and Test Libraries](https://blog.jetbrains.com/kotlin/2021/04/kotlin-1-5-0-rc-released/)*。
 | 大家觉得 `firstNotNullOfNull` 这个方法怎么样？
 
 ### 应用案例：扁平化嵌套列表迭代器
@@ -222,7 +222,7 @@ for (item in listOf("foo", "bar")) {
 
 ```kotlin
 val myFlow: Flow<Int> = flow {/**/}
-  .map {/**/ }
+  .map {/**/}
 ```
 
 - 只有在 `myFlow` 上调用终端操作符的时候，`flow {}` 块以及 `map {}` 中的代码才会运行，数据才会流动。
@@ -392,7 +392,7 @@ suspend fun main() = FlowImpl<Int> { emit(1); emit(2) }
 有的时候项目里会在全局的位置（比如 Retrofit 的 call adapter）统一加上了切换至主线程的操作，但是在实际调用的时候会不放心，或者习惯性地来一句 `observeOn(mainThread)` ，线程切了又切。
 
 Kotlin 协程中在 CoroutineContext 中记录线程的调度信息。Flow 提供了「上下文保存 Context preservation」这一保证：Flow 在运行时确保上游不能改变下游的 context。
-换句话说，消费 Flow 的线程取决于调用 collect 的 CoroutineContext。在哪里 collect 就在哪里执行，所见即所得。假设我们从某个 API 拿到了一个 flow：
+换句话说，消费 Flow 的线程取决于调用 collect 的 CoroutineContext。在哪里 collect 就在哪里执行，所见即所得。假设我们从某个 API 拿到了一个 Flow：
 
 ```kotlin
 fun magicFlow(): Flow<String> = {/**/}
@@ -415,7 +415,8 @@ lifecycleScope.launch {
 | 详情可以参考 [A safer way to collect flows from Android UIs](https://medium.com/androiddevelopers/a-safer-way-to-collect-flows-from-android-uis-23080b1f8bda)。
 | 本文最后也提供了一个更加完善的例子。
 
-这一设计和 Kotlin 协程一脉相承。suspend 函数在哪个线程执行却决于调用 suspend 函数的 CoroutineScope，完全在调用方的控制之内。suspend 函数内部可能会切到其他线程（比如 IO 场景下需要切换线程避免阻塞主线程），但调用方无须关心。线程切换的细节对 Flow 的调用方来说也几乎是透明的。大部分客户端场景直接在主线程 `collect` Flow 即可。
+这一设计和 Kotlin 协程一脉相承。suspend 函数在哪个线程执行却决于调用 suspend 函数的 CoroutineScope，完全在调用方的控制之内。suspend 函数内部可能会切到其他线程（比如 IO 场景下需要切换线程避免阻塞主线程），但调用方无须关心。
+线程切换的细节对 Flow 的调用方来说也几乎是透明的。**大部分客户端场景直接在主线程 `collect` Flow 即可，无须手动切换线程。**
 
 回看我们的玩具实现并没有提供这样的保证：
 
@@ -517,7 +518,7 @@ RxTextView.textChanges(binding.editText)
 在客户端场景，似乎大部分情况下都应该使用 `collectLatest`。
 
 但是 Flow 不是顺序（Sequential）执行，生产者会等待消费者的吗？这是因为 *Latest 系列操作符内部有一个额外的 Channel， 在下游 suspend 的同时能够监听上游并作出反应。
-这样的 Flow 内部始终有个“激活”的部分，和本文介绍的冷流不太一样，可以写另一篇文章了。
+这样的 Flow 内部始终有个“激活”的部分，和本文介绍的「冷流」不同，是另一篇文章的话题了。
 
 ## 参考资料
 
