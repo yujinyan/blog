@@ -11,12 +11,12 @@ const DifficultyLevel = (difficulty) =>
 const ProblemAttributes = ({ id, difficulty, acceptance, slug, thisSite }) =>
   <div className="lc-attributes smcp">
     {DifficultyLevel(difficulty)} | {` `}
-    Acceptance {(acceptance * 100).toFixed(0)}% | {` `}
+    Accept. {(acceptance * 100).toFixed(0)}% | {` `}
     <a href={`https://leetcode-cn.com/problems/${slug}`}>力扣中文站</a>
     {
       thisSite && <>
         {` | `}
-        <a href="https://leetcode.com/problems/${props.slug}">leetcode</a>
+        <a href={`https://leetcode.com/problems/${slug}`}>LeetCode</a>
       </>
     }
   </div>
