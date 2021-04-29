@@ -3,7 +3,8 @@ title: Kotlin 协程与 Retrofit
 date: "2021-04-29T17:21:03.284Z"
 ---
 
-Retrofit 2.6.0 支持用 Kotlin suspend 函数定义接口。 本文介绍如何利用这个特性以及 Retrofit Call Adapter 和 Moshi / Gson Adapter 打造最舒适的使用体验。
+Retrofit 2.6.0 支持用 Kotlin suspend 函数定义接口。 
+本文介绍如何利用这个特性以及 Retrofit Call Adapter 和 Moshi / Gson Adapter 打造最舒适的使用体验。
 
 剧透最终效果：
 
@@ -32,6 +33,9 @@ lifecycleScope.launch {
   // 拿到非 null 的 User 继续后面的业务逻辑
 }
 ```
+
+这个方案受到了 Jake Wharton [*Making Retrofit Work for You*](https://jakewharton.com/making-retrofit-work-for-you/) 演讲的启发。
+Jake 也是 Retrofit 的维护者。 在这个演讲中，他推荐利用好 Retrofit 提供的自定义反序列化以及请求执行的 API，适应 *adapt* 自己的业务逻辑和接口。 
 
 ## 背景
 
@@ -514,6 +518,35 @@ class MoshiApiResponseTypeAdapterFactory : JsonAdapter.Factory {
       = TODO("Not yet implemented")
   }
 }
+```
+
+使用：
+
+```kotlin
+private val moshi = Moshi.Builder()
+  .add(MoshiApiResponseTypeAdapterFactory()) // highlight-line
+  .build()
+
+val retrofit = Retrofit.Builder()
+  .baseUrl(/**/)
+  .addCallAdapterFactory(CatchingCallAdapterFactory(
+    object: CatchingCallAdapterFactory.ErrorHandler {
+      // 如果是业务逻辑异常给用户展示错误信息
+      override fun onBizError(errcode: Int, msg: String) {
+        toast("$errcode - $msg")
+      }
+      // 如果是其他异常进行上报
+      override fun onOtherError(throwable: Throwable) {
+        report(throwable)
+      }
+    }  
+  .addConverterFactory( // highlight-line
+    MoshiConverterFactory.create(moshi) // highlight-line
+  )
+  // 配置 OkHttp，API 鉴权等逻辑在这里配置
+  .client(/**/)
+  .build()
+
 ```
 
 ## One More Thing：使用 Result 作为返回值
