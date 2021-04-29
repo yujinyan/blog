@@ -4,22 +4,23 @@ date: "2021-04-29T17:21:03.284Z"
 ---
 
 Retrofit 2.6.0 支持用 Kotlin suspend 函数定义接口。 
-本文介绍如何利用这个特性以及 Retrofit Call Adapter 和 Moshi / Gson Adapter 打造最舒适的使用体验。
+本文介绍如何通过自定义 Retrofit Call Adapter 和 Converter 打造最舒适的协程使用体验。
 
 剧透最终效果：
 
 ```kotlin
 // Retrofit 接口定义
-// 简洁起见后面这个 UserApi 不写了
+// 简洁起见，后文省略外面这个 UserApi
 interface UserApi {
-  suspend fun getUser(id: Int): ApiResponse<User>
+  suspend fun getUser(id: Int): 
+    ApiResponse<User>
 }
 
 data class User(val name: String)
 
 // 调用示例 1：
 lifecycleScope.launch {
-  retrofit.create<UserApi>
+  retrofit.create<UserApi>()
     .getUser(1)
     .getOrNull()
     ?.let { binding.nameLabel.text = it.name }
@@ -27,19 +28,21 @@ lifecycleScope.launch {
 
 // 调用示例 2：
 lifecycleScope.launch {
-  val user: User = retrofit.create<UserApi>
+  val user: User = retrofit.create<UserApi>()
     .getUser(1)
     .guardOk { return@launch }
   // 拿到非 null 的 User 继续后面的业务逻辑
 }
+
+// 还没有结束，文章最后会介绍一个进一步简化的方案 ;-)
 ```
 
 这个方案受到了 Jake Wharton [*Making Retrofit Work for You*](https://jakewharton.com/making-retrofit-work-for-you/) 演讲的启发。
-Jake 也是 Retrofit 的维护者。 在这个演讲中，他推荐利用好 Retrofit 提供的自定义反序列化以及请求执行的 API，适应 *adapt* 自己的业务逻辑和接口。 
+Jake 也是 Retrofit 的维护者。在演讲中，他推荐利用好 Retrofit 提供的自定义反序列化以及请求执行的 API，适应 *adapt* 自己的业务逻辑和接口。 
 
 ## 背景
 
-假设接口返回这样的数据，成功请求到数据时 `errcode` 字段返回值为 $0$，同时有一个 `data` 字段存放数据：
+假设我们的接口返回这样的 JSON 数据，请求成功时 `errcode` 字段返回值为 `0`，同时有一个 `data` 字段存放数据：
 
 ```json
 {
@@ -52,7 +55,7 @@ Jake 也是 Retrofit 的维护者。 在这个演讲中，他推荐利用好 Ret
 }
 ```
 
-异常情况下 `errcode` 不为 0 ，同时会有 `msg` 字段返回展示给用户的错误信息：
+异常情况下 `errcode` 不为 `0` ，同时会有 `msg` 字段返回展示给用户的错误信息：
 
 ```json
 {
@@ -63,63 +66,76 @@ Jake 也是 Retrofit 的维护者。 在这个演讲中，他推荐利用好 Ret
 
 ## Retrofit interface 设计
 
-我们先抛开实现，考虑下怎么设计 Retrofit interface。舒适的封装应该让调用方尽可能爽，越简单越好。
+我们先抛开实现，探讨一下怎么设计 Retrofit 的 interface。
 
 ### 去掉「信封」
 
-可以看到对业务真正有用的数据在 `data` 里面，外面套了一个“信封”。绝大部分情况下我们只需要拿正常情况下的数据，继续执行后续的业务逻辑。如果每次调用都要手动去检查一遍 `errcode`
-非常冗余。所以一种最简单的设计是直接返回去掉信封后的数据类型：
+舒适的封装应该让调用方尽可能爽，越简单越好。
+可以看到对业务真正有用的数据在 `data` 里面，外面套了一个“信封”。绝大部分情况下我们只需要拿正常情况下的数据，然后继续执行后续的业务逻辑。
+如果每次调用都要手动去检查一遍 `errcode != 0` 会非常冗余。一种最简单的设计是直接返回去掉信封后的数据类型：
 
 ```kotlin
-suspend fun getUser(@Query("id") id: Int): User
+suspend fun getUser(
+  @Query("id") id: Int
+): User // highlight-line
 
 data class User(val id: Int, val name: String)
 
 // 在主线程开启协程并更新 UI
 // 🚨 危险：请求异常会让应用崩溃
 lifecycleScope.launch {
-  val user = retrofit.create<UserApi>.getUser(1)
+  val user = retrofit.create<UserApi>().getUser(1)
   binding.userNameLabel.text = user.name
 }
 ```
 
 ### 异常处理
 
-这样的设计理论上可行：正常情况下调用很爽，如果出现异常可以借助 try catch 获得具体的异常信息。但是，按照 Kotlin 协程的设计，我们应该直接在主线程调用封装的 suspend
-函数。如果函数抛出异常会抛在主线程，导致应用崩溃。从函数签名上也能看出来：一旦不能正常返回 `User` 数据类型，运行时只能抛出异常。这样就要求调用方必须进行 try catch，写起来非常麻烦，更加糟糕的是大家完全可以忘记 try
-catch，甚至写错：
+直接返回信封内数据类型的设计理论上可行：正常情况下调用很爽，如果出现异常可以借助 try catch 获得具体的异常信息。
+但是，按照 Kotlin 协程的设计，我们应该直接在主线程调用封装的 suspend 函数。
+如果函数抛出异常会抛在主线程，导致应用崩溃。
+从函数签名上也能看出来：一旦不能正常返回 `User` 数据类型，运行时只能抛出异常。
+这样调用方必须进行 try catch，写起来非常麻烦。更加糟糕的是大家完全可以忘记 try catch，还很有可能写错：
 
 ```kotlin
 // - Kotlin 标准库的 runCatching，比 try catch 写起来舒服一点点
 // - 🚨 错误的 try catch，无法捕获 launch 协程块的异常
-runCatching {
+runCatching { // highlight-line
   lifecycleScope.launch {
-    val user = retrofit.create<UserService>.getUser(1)
+    val user = retrofit.create<UserService>().getUser(1)
     binding.userNameLabel.text = user.name
   }
-}
+} // highlight-line
 ```
 
-小心！上面这个例子的 try catch 写错了，如果协程快内抛出异常还是会 crash。原因是错误地 try catch 了 Coroutine builder `launch` 。而 Coroutine builder
-会立即返回。正确的写法是在协程快内部 try catch：
+小心！上面这个例子的 try catch 写错了。如果协程块内抛出异常还是会 crash。原因是错误地 try catch 了 Coroutine builder `launch`。
+Coroutine builder 在 CoroutineScope 中开启协程块以后会立即返回，builder 内的协程与 `launch` 周围的代码并发执行。
+协程块内的异常逻辑无法被 `launch` 外的 try catch 捕获。
+正确的写法是在协程块内部 try catch：
 
 ```kotlin
 lifecycleScope.launch {
-  runCatching {
+  runCatching { // highlight-line
     val user = retrofit.create<UserService>.getUser(1)
     binding.userNameLabel.text = user.name
-  }
+  } // highlight-line
 }
 ```
 
-**好的封装设计应该让正确的写法最简单，成为默认。**为了避免这种很容易发生的错误，应当在 suspend 函数内部封装中 catch 所有异常（借助 Retrofit Call Adapter），并在函数签名上体现。一种方案是返回
-nullable 的类型。我们知道， Kotlin 对 nullable 类型有语法糖支持：
+[[tip | 💡]]
+| 好的封装设计应该**让正确的写法最简单**，**默认最简单的写法是正确的写法**。
+
+为了避免 try catch 协程异常的麻烦和潜在的失误，笔者建议在 suspend 函数内部封装中 catch 所有异常，并将异常在函数签名上体现。
+
+一种方案是返回 nullable 的类型。我们知道， Kotlin 对 nullable 类型有语法糖 `?.`，`?:` 和 `!!` 支持：
 
 ```kotlin
-suspend fun getUser(@Query("id") id: Int): User?
+suspend fun getUser(
+  @Query("id") id: Int
+): User? // highlight-line
 
 lifecycleScope.launch {
-  retrofit.create<UserApi>.getUser(1)
+  retrofit.create<UserApi>().getUser(1)
     ?.let { binding.nameLabel.text = it.name }
 }
 ```
@@ -128,6 +144,8 @@ lifecycleScope.launch {
 
 另外对于异常情况，应该**在项目中有一个统一的位置进行处理**，比如在 `errcode != 0` 时给用户展示提示、网络请求异常时上报等。在业务调用接口的位置做临时（ad
 hoc）的异常处理不够健壮：大家完全可以忘记做异常处理，或者处理得非常粗糙。同时异常处理代码可能会造成大量冗余，看不清正常业务逻辑代码。
+
+(Retrofit 的 Call Adapter 可以帮助我们在 Retrofit 的执行逻辑中嵌入自定义的逻辑，实现这一目标。)
 
 ### 设计返回值 ApiResponse 类型
 
