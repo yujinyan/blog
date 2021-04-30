@@ -5,6 +5,9 @@ date: "2021-04-29T17:21:03.284Z"
 
 Retrofit 2.6.0 支持用 Kotlin suspend 函数定义接口。 本文介绍如何通过自定义 Retrofit Call Adapter 和 Converter 打造最舒适的协程使用体验。
 
+- Call Adapter: 自定义请求执行的逻辑，包括线程切换等；
+- Converter: 自定义反序列化逻辑，如何将请求获得的 bytes 转成对象。
+
 剧透最终效果：
 
 ```kotlin
@@ -396,8 +399,7 @@ class CatchingCallAdapterFactory(
           }
           callback.onResponse(this@CatchingCall, Response.success(body))
         } else {
-          // 自定义的 Exception
-          val throwable = Non200HttpCodeException(response.code(), response)
+          val throwable = HttpException(response.code(), response)
           errorHandler?.onOtherError(throwable)
           callback.onResponse(
             this@CatchingCall,
@@ -426,7 +428,7 @@ class CatchingCallAdapterFactory(
 }
 ```
 
-## 实现：Retrofit ConverterFactory
+## 实现：Retrofit Converter
 
 针对 `ApiResponse` 的不同 case，我们需要配置自定义 JSON 反序列化解析的逻辑。 Retrofit 可以通过 `addConverterFactory` 注入自定义的类型转换器（不一定仅仅是 JSON
 数据格式，也可以是 XML，Protocol Buffers 等）， 适配不同的反序列化库。
@@ -637,3 +639,4 @@ lifecycleScope.launch {
 ## 参考资料
 
 - Roman Elizarov: [Kotlin and Exceptions](https://elizarov.medium.com/kotlin-and-exceptions-8062f589d07)
+- [Create Retrofit CallAdapter for Coroutines to handle response as states](https://proandroiddev.com/create-retrofit-calladapter-for-coroutines-to-handle-response-as-states-c102440de37a)
