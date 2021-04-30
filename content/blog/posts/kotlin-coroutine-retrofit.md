@@ -66,13 +66,13 @@ Jake 也是 Retrofit 的维护者。在演讲中，他推荐利用好 Retrofit �
 
 ## Retrofit interface 设计
 
-我们先抛开实现，探讨一下怎么设计 Retrofit 的 interface。
+我们先抛开实现，探讨一下怎么设计 Retrofit 的 interface 才能让调用方更舒适地使用协程。
 
 ### 去掉「信封」
 
 舒适的封装应该让调用方尽可能爽，越简单越好。
 可以看到对业务真正有用的数据在 `data` 里面，外面套了一个“信封”。绝大部分情况下我们只需要拿正常情况下的数据，然后继续执行后续的业务逻辑。
-如果每次调用都要手动去检查一遍 `errcode != 0` 会非常冗余。一种最简单的设计是直接返回去掉信封后的数据类型：
+如果每次调用都要手动去检查一遍 `errcode == 0` 会非常冗余。一种最简单的设计是直接返回去掉信封后的数据类型：
 
 ```kotlin
 suspend fun getUser(
@@ -116,7 +116,7 @@ Coroutine builder 在 CoroutineScope 中开启协程块以后会立即返回，b
 ```kotlin
 lifecycleScope.launch {
   runCatching { // highlight-line
-    val user = retrofit.create<UserService>.getUser(1)
+    val user = retrofit.create<UserService>().getUser(1)
     binding.userNameLabel.text = user.name
   } // highlight-line
 }
@@ -135,21 +135,31 @@ suspend fun getUser(
 ): User? // highlight-line
 
 lifecycleScope.launch {
-  retrofit.create<UserApi>().getUser(1)
+  retrofit.create<UserApi>()
+    .getUser(1)
     ?.let { binding.nameLabel.text = it.name }
 }
 ```
 
-但使用 nullable 我们无法告诉调用方发生了什么类型的异常。对调用方来说只有成功 `!= null` 或者失败 `== null` 两种可能。不过很多情况下这样的区分已经足够了。
+这似乎是相当地道的优雅设计，值得推荐。但使用 nullable 我们无法告诉调用方发生了什么类型的异常。
+对调用方来说只有成功 `!= null` 或者失败 `== null` 两种可能。不过很多情况下这样的区分已经足够了。
 
-另外对于异常情况，应该**在项目中有一个统一的位置进行处理**，比如在 `errcode != 0` 时给用户展示提示、网络请求异常时上报等。在业务调用接口的位置做临时（ad
-hoc）的异常处理不够健壮：大家完全可以忘记做异常处理，或者处理得非常粗糙。同时异常处理代码可能会造成大量冗余，看不清正常业务逻辑代码。
+另外对于异常情况，应该**在项目中有一个统一的位置进行处理**，比如在 `errcode != 0` 时给用户展示提示、网络请求异常时上报等。
+在业务调用接口的位置到处 try catch 做临时（ad hoc）的异常处理不够健壮：
+大家完全可以忘记做异常处理，或者处理得非常粗糙。同时异常处理代码可能会造成大量冗余，看不清正常代码逻辑。
 
-(Retrofit 的 Call Adapter 可以帮助我们在 Retrofit 的执行逻辑中嵌入自定义的逻辑，实现这一目标。)
+Retrofit 的 Call Adapter 可以帮助我们在 Retrofit 的执行逻辑中嵌入自定义的逻辑，实现统一捕获处理所有异常的目标。
 
-### 设计返回值 ApiResponse 类型
+> **As a rule of thumb, you should not be catching exceptions in general Kotlin code. That’s a code smell.** 
+> Exceptions should be handled by some top-level framework code of your application to alert developers of the bugs in the code and to restart your application or its affected operation.
+> 
+> <cite>Roman Elizarov, Project Lead for Kotlin</cite>
 
-为了让调用方能够获取到异常信息，不可避免要将返回值塞在一个能够体现成功/失败结果的壳里面。 但我们不是原样照着返回的格式进行反序列化，而是进行一定的封装。请求结果大概可以分成三种情况：
+### 设计 ApiResponse 类型
+
+为了让调用方能够获取到异常信息，不可避免要将返回值塞在一个能够体现成功/失败结果的壳里面。
+但我们不原样照着返回的格式进行反序列化，而是进行一定的封装。比如请求正常情况下，`msg` 字段没有任何用处，可以省略。
+请求结果大概可以分成三种情况：
 
 - 正常响应：我们可以从 `data` 字段获取后续业务逻辑需要的数据；
 - 业务逻辑异常：接口请求成功，但是后端返回数据告诉我们业务逻辑异常，我们需要在 UI 展示异常信息；
@@ -178,7 +188,7 @@ suspend fun getUser(@Query("id") id: Int)
   : ApiResponse<User>
 
 lifecycleScope.launch {
-  val response = retrofit.create<UserApi>.getUser(1)
+  val response = retrofit.create<UserApi>().getUser(1)
   
   // 可以使用 when 对 ApiResponse 的类型进行区分
   // 作为表达式使用的时候可以利用 when
@@ -191,16 +201,16 @@ lifecycleScope.launch {
 }
 ```
 
-### 加点 Nullable 的语法糖
+### 加点 nullable 的语法糖
 
-我们将异常体现在类型系统，而不是抛出来，这样安全得多。但是绝大部分场景调用方不需要，也不应该做这样详细的异常处理。所以我们加上一对扩展函数，让调用方能够使用 Kotlin Nullable 的语法糖：
+我们将异常体现在类型系统，而不是抛出来，这样安全得多。但是绝大部分场景调用方不需要，也不应该做这样详细的异常处理。所以我们加上一对扩展函数，让调用方能够使用 Kotlin nullable 的语法糖：
 
 ```kotlin
-fun <T> ApiResponse<T>.getOrNull(): T? = when(this) {
+fun <T> ApiResponse<T>.getOrNull(): T? = when(this) { // highlight-line
   is Ok -> data
   is BizError, is OtherError -> null
 }
-fun <T> ApiResponse<T>.getOrThrow(): T = when(this) {
+fun <T> ApiResponse<T>.getOrThrow(): T = when(this) { // highlight-line
   is Ok -> data
   is BizError -> throw BizException(errcode, msg)
   is OtherError -> throw throwable
@@ -213,22 +223,22 @@ class BizException(
 
 // 调用方
 lifecycleScope.launch {
-  retrofit.create<UserApi>
+  retrofit.create<UserApi>()
     .getUser(1)
-    .getOrNull()
+    .getOrNull() // highlight-line
     ?.let { binding.nameLabel.text = it.name }
 }
 ```
 
-函数的命名参考了 Kotlin 标准库类似 `get` `getOrNull` , `first` `firstOrNull` 这样的约定：第一类抛出异常，第二类返回 Nullable 类型。考虑到客户端抛异常非常危险，我们将 `get`
+函数的命名参考了 Kotlin 标准库类似 `get` `getOrNull` , `first` `firstOrNull` 这样的约定：第一类抛出异常，第二类返回 nullable 类型。考虑到客户端抛异常非常危险，我们将 `get`
 命名为 `getOrThrow`，在方法名上进行强调。（实际上也可以考虑不加抛异常的版本，项目里估计没人用。）
 
 ### 借鉴 Swift 的 `guard` 关键字
 
-`getOrNull` 适用于只处理成功情况：如果请求成功，用这个数据更新 UI，否则什么也不发生。 如果失败的情况需要做些动作，可以用 if / else 或者 when 判断类型：
+`getOrNull` 常用于后接一个 `?.let` 只处理成功情况：如果请求成功，用这个数据 `it` 更新 UI，否则什么也不发生。 如果失败的情况需要做些动作，可以用 if / else 或者 when 判断类型：
 
 ```kotlin
-val response = retrofit.create<UserApi>.getUser(1)
+val response = retrofit.create<UserApi>().getUser(1)
 
 if (response is ApiResponse.Ok) {
   val user: User = response.data
@@ -239,7 +249,7 @@ if (response is ApiResponse.Ok) {
 }
 ```
 
-if ... else 如果嵌套过多会让代码可读性变差，利用 early exit 的风格，我们先处理失败的情况并退出当前块， 这样成功的 case 一路向下，更加简单清晰：
+if ... else 如果嵌套过多会让代码可读性变差，使用提前退出（early exit）的风格，我们先处理失败的情况并退出当前块， 这样成功的 case 一路向下，更加简单清晰：
 
 ```kotlin
 val response = retrofit.create<UserApi>.getUser(1)
@@ -272,7 +282,9 @@ guard let user = getUser(1) else {
 在 Kotlin 中我们可以借助 inline 的扩展函数实现类似效果。其中关键是 block 返回值是 `Nothing`：
 
 ```kotlin
-inline fun <T> ApiResponse<T>.guardOk(block: () -> Nothing): T {
+inline fun <T> ApiResponse<T>.guardOk(
+  block: () -> Nothing // highlight-line
+): T {
     if (this !is ApiResponse.Ok<T>) {
         block()
     }
@@ -292,12 +304,13 @@ val user: User = retrofit.create<UserApi>
 
 ## 实现：Retrofit Call Adapter
 
-为了让 Retrofit 捕获所有异常，我们实现一个 retrofit 的 `CallAdapter.Factory`。 我们设置一个 `ErrorHandler` 用于配置全局的异常处理逻辑。
+为了让 Retrofit 捕获所有异常，我们写一个 `CatchingCallAdapterFactory`, 继承 Retrofit 的 `CallAdapter.Factory`。 
+这个 `CatchingCallAdapterFactory` 暴露一个 `ErrorHandler` 用于配置全局的异常处理逻辑。
 
 ```kotlin
 val retrofit = Retrofit.Builder()
   .baseUrl(/**/)
-  .addCallAdapterFactory(CatchingCallAdapterFactory(
+  .addCallAdapterFactory(CatchingCallAdapterFactory( // highlight-line
     object: CatchingCallAdapterFactory.ErrorHandler {
       // 如果是业务逻辑异常给用户展示错误信息
       override fun onBizError(errcode: Int, msg: String) {
@@ -309,6 +322,7 @@ val retrofit = Retrofit.Builder()
       }
     }  
   ))
+  //...
 ```
 
 `CatchingCallAdapterFactory` 参考实现：
@@ -415,11 +429,13 @@ class CatchingCallAdapterFactory(
 
 ## 实现：Retrofit ConverterFactory
 
-针对 `ApiResponse` 的不同 case，我们需要通过 `JsonAdapter.Factory` 配置自定义解析。
+针对 `ApiResponse` 的不同 case，我们需要配置自定义 JSON 反序列化解析的逻辑。
+Retrofit 可以通过 `addConverterFactory` 注入自定义的类型转换器（不一定仅仅是 JSON 数据格式，也可以是 XML，Protocol Buffers 等），
+适配不同的反序列化库。
 
 ### JSON 反序列化库的选择
 
-推荐使用 Moshi 实现反序列化。Moshi 相比 Gson 对 Kotlin 的支持更加完善。比如下面这个例子：
+目前，Kotlin 项目推荐使用 Moshi。Moshi 相比 Gson 对 Kotlin 的支持更加完善。比如下面这个例子：
 
 ```kotlin
 data class User(
@@ -429,12 +445,12 @@ data class User(
 val user = gson.fromJson("{}", User::class.java)
 
 println(user) // User(name=null)
-💣 user.name.length // NullPointerException!
+user.name.length 💣// NullPointerException!
 ```
 
-Gson 通过反射创建出一个 User 类型的对象，但是 Gson 并不区分 Kotlin 的可空/非空类型，直接返回了属性都是 null
+Gson 通过反射创建出一个 `User` 类型的对象，但是 Gson 并不区分 Kotlin 的可空/非空类型，直接返回了属性都是 null
 的对象，导致我们后续使用这个“残缺”对象的时候抛出空指针异常。
-我们的 `CatchingCallAdapter` 会捕获包括反序列化在内的所有异常，但是 Gson 这样的行为逃过了我们的异常捕获逻辑，隐患侵入了业务逻辑代码。
+我们的 `CatchingCallAdapter` 理应捕获包括反序列化在内的所有异常，但是 Gson 这样的行为逃过了我们的异常捕获逻辑，隐患侵入了业务逻辑代码。
 
 Moshi 没有这样的问题，拿到无法解析的数据会统一抛出 `JsonDataException`。`CatchingCallAdapter` 捕获后会处理成 `ApiResponse.OtherError`。
 
@@ -458,20 +474,21 @@ Moshi 对比 Gson 的优势可以参考下面的链接：
 
 上面引用的是 Jake Wharton 的观点。新项目建议优先考虑 Moshi，已经用了 Gson 的项目迁移有一定风险，建议慎重。
 
-使用 Moshi 需要显式地为所有需要反序列化的类配置相应的 `JsonAdapter` ，目前有下面几种选项：
+使用 Moshi ，目前有下面几种选项：
 
 1. 和 Gson 一样使用反射，但是需要间接依赖 2.5 MiB 大小的 `kotlin-reflect`;
 2. 使用注解处理器为所有标记 `@JsonClass(generateAdapter = true)` 的类生成 `JsonAdapter`；
 3. 同 2 代码生成，但是不用注解处理器，而是使用 [Kotlin Symbol Processing](https://github.com/google/ksp)；
 4. 类似 1，但是使用 kotlinx-metadata，比 kotlin-reflect 更加轻量级。
 
-其中 3 和 4 在 [MoshiX](https://github.com/ZacSweers/MoshiX) 项目中，似乎略带有试验性质；另外需要注意代码生成的好处是性能更高，但是生成的代码占用体积也不小。
+其中 3 和 4 在 [MoshiX](https://github.com/ZacSweers/MoshiX) 项目中，似乎略带有试验性质；
+另外需要注意代码生成的好处是性能更高，但是生成的代码占用体积也不小，并且需要显式地为所有需要反序列化的类配置相应的 `JsonAdapter`，对已有的项目有一些侵入性。
 
-kotlinx.serialization 是 Kotlin 官方出品的序列化/反序列化方案，也是注解标记，代码生成的方案。
+[kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) 是 Kotlin 官方出品的序列化/反序列化方案，也是注解标记，代码生成的方案。
 但是代码生成集成在编译器中（类似 [`@Parcelize`](https://developer.android.com/kotlin/parcelize?hl=zh-cn) 和 KSP），开发体验可能更好，Kotlin
 特性支持更加丰富，应该是 Kotlin 上的首选方案。但暂不支持流式解析，[见此 issue](https://github.com/Kotlin/kotlinx.serialization/issues/204)。
 
-综合来看，目前似乎可以先使用 Moshi，等 kotlinx 成熟后搜索替换注解进行迁移。
+综合来看，目前似乎可以先使用 Moshi，等 kotlinx.serialization 成熟后搜索替换注解进行迁移。
 
 ### MoshiApiResponseTypeAdapterFactory
 
@@ -526,7 +543,6 @@ class MoshiApiResponseTypeAdapterFactory : JsonAdapter.Factory {
         ) as T
       else ApiResponse.Ok(
         errcode = errcode, 
-        msg = msg ?: "N/A", 
         data = data
       ) as T?
     }
@@ -599,27 +615,31 @@ suspend fun getUser(id: Int): Result<User>
 ```
 
 使用 Result 的话调用方可以拿到异常信息，但是无法在最外层区分 `BizError` 和 `OtherError`。
-不过实际看下来几乎没有调用方需要做这样的区分，让这种极少用到的 case 变得麻烦一些似乎是可以接收的权衡。
+不过实际看下来几乎没有调用方需要做这样的区分，让这种极少用到的 case 变得麻烦一些似乎是好的权衡。
 
-更加令人期待的是 Kotlin [计划让 Nullable 的语法糖同样适用于 Result](https://github.com/Kotlin/KEEP/pull/244)，于是我们可以这样写：
+更加令人期待的是 Kotlin [计划让 nullable 的操作符同样适用于 Result](https://github.com/Kotlin/KEEP/pull/244)，于是我们可以这样写：
 
 ```kotlin
 // 需要 Kotlin 1.5，以及尚未发布的特性
 
 // 调用示例 1：
 lifecycleScope.launch {
-  retrofit.create<UserApi>
-    .getUser(1)
-    ?.let { binding.nameLabel.text = it.name }
+  retrofit.create<UserApi>()
+    .getUser(1) // highlight-line
+    ?.let { binding.nameLabel.text = it.name } // highlight-line
 }
 
 // 调用示例 2：
 lifecycleScope.launch {
-  val user: User = retrofit.create<UserApi>
-    .getUser(1)
-    ?.run { return@launch }
+  val user: User = retrofit.create<UserApi>()
+    .getUser(1) // highlight-line
+    ?.run { return@launch } // highlight-line
   // 拿到非 null 的 User 继续后面的业务逻辑
 }
 ```
 
-对比一下可以看到我们可以少做一次 `getOrNull` 的方法调用，更加精简。
+可以看到，前文描述的扩展函数都可以去掉了。
+
+## 参考资料
+
+- Roman Elizarov: [Kotlin and Exceptions](https://elizarov.medium.com/kotlin-and-exceptions-8062f589d07)
