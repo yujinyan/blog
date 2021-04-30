@@ -465,8 +465,9 @@ Moshi 对比 Gson 的优势可以参考下面的链接：
 
 
 [[tip | “]]
-| 请不要再使用 Gson 了。Gson 三位维护者中有两位认为 Gson 实际上已经废弃了，请考虑使用 Moshi、Jackson 或者 kotlinx.serialization。 | 这些库都支持 Kotlin 的可空类型，而
-Gson 不支持，同时还有其他愚蠢的问题，不会被修复。请抛弃它。 | 落款：一位 Gson 维护者。
+| 请不要再使用 Gson 了。Gson 三位维护者中有两位认为 Gson 实际上已经废弃了，请考虑使用 Moshi、Jackson 或者 kotlinx.serialization。 
+| 这些库都支持 Kotlin 的可空类型，而 Gson 不支持，同时还有其他愚蠢的问题，不会被修复。请抛弃它。 
+| 落款：一位 Gson 维护者。
 
 上面引用的是 Jake Wharton 的观点。新项目建议优先考虑 Moshi，已经用了 Gson 的项目迁移有一定风险，建议慎重。
 
