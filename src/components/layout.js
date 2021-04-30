@@ -6,12 +6,12 @@ import SiteNav from "./SiteNav"
 import { rhythm, scale } from "../utils/typography"
 
 const Layout = ({
-  location,
-  title,
-  children,
-  aside,
-  darkModeToggleOverride
-}) => {
+                  location,
+                  title,
+                  children,
+                  aside,
+                  darkModeToggleOverride,
+                }) => {
   const rootPath = `${__PATH_PREFIX__}/`
   const data = useStaticQuery(graphql`
     query HeaderQuery {
@@ -90,7 +90,9 @@ const Layout = ({
         {children}
       </main>
       {aside}
-      <footer>© {new Date().getFullYear()} yujinyan.me</footer>
+      <footer>
+        © {new Date().getFullYear()} yujinyan.me | <span style={{ fontSize: "0.8em" }}>转载请注明原作者与本站链接</span>
+      </footer>
     </div>
   )
 }
