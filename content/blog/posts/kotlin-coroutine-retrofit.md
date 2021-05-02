@@ -587,21 +587,21 @@ val retrofit = Retrofit.Builder()
 文章开头的例子使用 Kotlin 标准库提供的 `runCatching` 方法进行 try catch。`runCatching`
 方法的返回值是 [Result](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-result/)，上面提供了很多有用的方法：
 
-```
-isFailure
-isSuccess
-exceptionOrNull()
-getOrNull()
+```kotlin
+suspend fun getUser(id: Int): Result<User>
 
-fold(onSuccess, onFailure)
-getOrDefault(defaultValue)
-getOrElse(onFailure)
-getOrThrow
+lifecycleScope.launch {
+  val result = getUser(1)
+    .onFailure {/**/}
+    .onSuccess {/**/}
 
-onFailure(action)
-onSuccess(action)
+  result.isSuccess
+  result.isFailure
 
-...
+  val exception: Throwable? = result.exceptionOrNull()
+  val user1: User? = result.getOrNull()
+  val user2: User = result.getOrThrow()
+}
 ```
 
 之前 Kotlin 不允许将 Result 作为函数的返回值。 这个限制在 Kotlin 1.5 中被去除。 这样我们可以考虑用 Result 作为 Retrofit interface 方法的返回类型：
@@ -634,7 +634,13 @@ lifecycleScope.launch {
 }
 ```
 
-可以看到，前文描述的扩展函数都可以去掉了。
+可以看到得益于空安全操作符，我们不需要专门定义扩展函数，调用起来也更加精简。
+
+适配 suspend 函数和 Result 返回值的 Call Adapter 可以参考或者直接使用这个库：
+[yujinyan/retrofit-suspend-result-adapter](https://github.com/yujinyan/retrofit-suspend-result-adapter)。
+
+如果项目中的接口像本文的例子一样外面包了一层“信封”，可以用自己的反序列化库写一个 Converter。
+[这个测试用例](https://github.com/yujinyan/retrofit-suspend-result-adapter/blob/master/src/test/kotlin/me/yujinyan/retrofit/CustomConverterTest.kt)提供了一个 Moshi 的参考实现。
 
 ## 参考资料
 
