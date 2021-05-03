@@ -95,9 +95,12 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         }
         <hr
           style={{
-            marginBottom: rhythm(1),
+            marginBottom: rhythm(0.25),
           }}
         />
+        <div 
+          style={{fontSize: "0.8em", marginBottom: rhythm(1)}}>© Attribution Required | 转载请注明原作者与本站链接
+        </div>
         <footer>
           <Bio />
         </footer>
