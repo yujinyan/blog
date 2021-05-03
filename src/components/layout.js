@@ -91,7 +91,7 @@ const Layout = ({
       </main>
       {aside}
       <footer>
-        © {new Date().getFullYear()} yujinyan.me | <span style={{ fontSize: "0.8em" }}>转载请注明原作者与本站链接</span>
+        © {new Date().getFullYear()} yujinyan.me
       </footer>
     </div>
   )
