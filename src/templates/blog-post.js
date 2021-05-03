@@ -99,7 +99,8 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           }}
         />
         <div 
-          style={{fontSize: "0.8em", marginBottom: rhythm(1)}}>© Attribution Required | 转载请注明原作者与本站链接
+          style={{fontSize: "0.8em", marginBottom: rhythm(1)}}>© Attribution Required | {` `}
+          <span style={{fontSize:"0.9em"}}>转载请注明原作者与本站链接</span>
         </div>
         <footer>
           <Bio />
