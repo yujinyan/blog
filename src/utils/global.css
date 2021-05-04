@@ -59,6 +59,16 @@ body {
 
 a {
   color: var(--textNormal);
+  text-decoration: none;
+}
+
+a:active, a:hover {
+  box-shadow: 0 1px 0 0 currentColor;
+}
+
+article p a, article li a {
+  color: var(--primary);
+  box-shadow: none;
 }
 
 blockquote cite {
