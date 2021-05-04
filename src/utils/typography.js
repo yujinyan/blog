@@ -14,6 +14,7 @@ Wordpress2016.overrideThemeStyles = ({ rhythm }, _, styles) => {
 
   // Fix scrolling main content when mobile menu is open.
   delete styles.html.overflowY
+  delete styles.a
 
   return {
     // larger line-height for english-language blog post

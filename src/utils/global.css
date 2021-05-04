@@ -59,6 +59,12 @@ body {
 
 a {
   color: var(--textNormal);
+  text-decoration: none;
+}
+
+article p a {
+  color: var(--primary);
+  box-shadow: none;
 }
 
 blockquote cite {
