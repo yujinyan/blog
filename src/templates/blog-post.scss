@@ -45,18 +45,21 @@
 
     .ToCs {
       font-size: 1em !important;
+      margin-left: 1.75em;
+      border-left: none;
     }
 
     .ToCs a {
-      color: var(--textNormal);
+      color: var(--textSecondary);
 
       &.isActive {
         color: var(--textNormal);
-        font-weight: 400;
-        box-shadow: 0 1px 0 0 currentColor;
       }
+
+      line-height: 2.5rem;
     }
 
+    // deprecated
     .ToCs > ul > li {
       font-weight: bold;
 
