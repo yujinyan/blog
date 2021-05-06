@@ -1,6 +1,7 @@
 ---
 title: Kotlin 协程与 Retrofit 
 date: "2021-04-29T17:21:03.284Z"
+issueId: "61"
 ---
 
 Retrofit 2.6.0 支持用 Kotlin suspend 函数定义接口。 本文介绍如何通过自定义 Retrofit Call Adapter 和 Converter 打造最舒适的协程使用体验。
