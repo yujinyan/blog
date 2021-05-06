@@ -24,9 +24,9 @@ export default function TableOfContents({ data, linkClicked }) {
       }
     }
   >
-    <ul>
+    <div>
       {data.items.map(item => buildItem(item, isActive))}
-    </ul>
+    </div>
   </div>
 }
 

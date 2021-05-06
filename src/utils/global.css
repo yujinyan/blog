@@ -20,7 +20,7 @@ body.dark {
   --bg-secondary: rgb(54, 60, 72);
   --header: #ffffff;
   --textNormal: rgba(255, 255, 255, 0.88);
-  --textSecondary: rgba(255, 255, 255, 0.5);
+  --textSecondary: rgba(255, 255, 255, 0.6);
   --textTitle: #ffffff;
   --textLink: var(--textTitle);
   --hr: hsla(0, 0%, 100%, 0.2);

@@ -33,7 +33,6 @@
     display: flex;
     margin: 0;
     width: 100%;
-    border-left: none;
   }
 
   @include mobile {
@@ -46,9 +45,17 @@
 
     .ToCs {
       font-size: 1em !important;
+      margin-left: 1.75em;
+      border-left: none;
     }
 
     .ToCs a {
+      color: var(--textSecondary);
+
+      &.isActive {
+        color: var(--textNormal);
+      }
+
       line-height: 2.5rem;
     }
 
