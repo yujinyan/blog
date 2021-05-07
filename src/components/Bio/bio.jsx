@@ -53,7 +53,7 @@ const Bio = () => {
           minWidth: 50,
           borderRadius: `100%`,
         }}
-        placeholder="blurred"
+        placeholder="none"
         imgStyle={{
           borderRadius: `50%`,
         }} />
