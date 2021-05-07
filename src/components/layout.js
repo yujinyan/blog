@@ -4,6 +4,7 @@ import DarkModeToggle from "./DarkModeToggle"
 import SiteNav from "./SiteNav"
 
 import { rhythm, scale } from "../utils/typography"
+import AdobeFont from "@/components/AdobeFont"
 
 const Layout = ({
                   location,
@@ -75,6 +76,7 @@ const Layout = ({
         color: "var(--textNormal)",
       }}
     >
+      <AdobeFont />
       <SiteNav location={location} style={{ marginBottom: rhythm(1) }} />
       <header
         style={{

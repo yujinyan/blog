@@ -4,7 +4,6 @@ import { Link, graphql } from "gatsby"
 import Bio from "../components/Bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import AdobeFont from "../components/AdobeFont"
 import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
 import ToC from "../components/ToC"
@@ -61,7 +60,6 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       />
       {/* Currently, blog posts are either in English or Simplified Han */}
       <Helmet htmlAttributes={{ lang: post.frontmatter.english ? "en" : "zh-cmn-Hans" }} />
-      <AdobeFont />
       <article>
         <header>
           <h1

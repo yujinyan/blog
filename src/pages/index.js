@@ -1,12 +1,11 @@
 import React from "react"
 import Helmet from "react-helmet"
-import { Link, graphql } from "gatsby"
+import { graphql, Link } from "gatsby"
 
 import Bio from "../components/Bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import GithubCorner from "../components/GithubCorner"
-import AdobeFont from "../components/AdobeFont"
 import { rhythm } from "../utils/typography"
 import { TranslateMark } from "../components/translate"
 import get from "lodash/get"
@@ -20,7 +19,6 @@ const BlogIndex = ({ data, location }) => {
     <Layout location={location} title={siteTitle}>
       <SEO title="All posts | Yu Jinyan's Blog" />
       <Helmet htmlAttributes={{ lang: "zh-cmn-Hans" }} />
-      <AdobeFont />
       <GithubCorner url="https://github.com/yujinyan/blog" />
       <Bio />
       {posts.map(({ node }) => {

@@ -1,6 +1,5 @@
 import Layout from "../components/layout"
 import GithubCorner from "../components/GithubCorner"
-import AdobeFont from "../components/AdobeFont"
 import { UtterancesComments } from "@/components/utterances"
 import Bio from "../components/Bio"
 import SEO from "../components/seo"
@@ -8,43 +7,42 @@ import { rhythm } from "@/utils/typography"
 import Helmet from "react-helmet"
 import "./friends.scss"
 
-<AdobeFont />
-<GithubCorner url="https://github.com/yujinyan/blog" />
+export default ({ children }) => <Layout location="friends">{children}</Layout>
+
+<GithubCorner url="https://github.com/yujinyan/blog/issues/46" />
 <Helmet htmlAttributes={{ lang: "en" }} />
 <SEO title="Friends 友链 | Yu Jinyan's Blog" />
-<Layout location="friends">
 
-  # Friends | <span lang="zh-cmn-Hans">友链</span>
+# Friends | <span lang="zh-cmn-Hans">友链</span>
 
-  Most authors nowadays publish their articles on platforms like WeChat, Juejin, or Medium.
-  Unfortunately, their content sometimes gets lost in a sea of clickbaity ads
-  that try to sell you programming tutorials by exploiting people's anxieties.
-  Even worse, many articles are locked inside a [walled garden](https://en.wikipedia.org/wiki/Closed_platform).
+Most authors nowadays publish their articles on platforms like WeChat, Juejin, or Medium.
+Unfortunately, their content sometimes gets lost in a sea of clickbaity ads
+that try to sell you programming tutorials by exploiting people's anxieties.
+Even worse, many articles are locked inside a [walled garden](https://en.wikipedia.org/wiki/Closed_platform).
 
-  Therefore, it's delightful to see there are still people out there,
-  tinkering with technologies of the Open Web and presenting their passion with a personal touch.
+Therefore, it's delightful to see there are still people out there,
+tinkering with technologies of the Open Web and presenting their passion with a personal touch.
 
-  This is a compilation of such personal blog sites that I have come across and found inspiring.
-  I hope this list can help you discover more sites like this one.
+This is a compilation of such personal blog sites that I have come across and found inspiring.
+I hope this list can help you discover more sites like this one.
 
-  ### [Stay Hungry Stay Foolish - Edward Elric's Blog](https://edward40.com/)
-  *Web Development, Rust, Programming Languages.*
-  I am a simple person. Whenever I see a site with that gorgeous Novela theme,
-  I try to add it to this list ;-).
+### [Stay Hungry Stay Foolish - Edward Elric's Blog](https://edward40.com/)
+*Web Development, Rust, Programming Languages.*
+I am a simple person. Whenever I see a site with that gorgeous Novela theme,
+I try to add it to this list ;-).
 
-  ### [Prin Blog](https://printempw.github.io)
-  *Fullstack Development.*
-  Prin says he's obsessed with layout and typography. I can testify to that.
+### [Prin Blog](https://printempw.github.io)
+*Fullstack Development.*
+Prin says he's obsessed with layout and typography. I can testify to that.
 
 
-  <hr style={{ marginBottom: rhythm(2.5) }} />
+<hr style={{ marginBottom: rhythm(2.5) }} />
 
   > Feel your site belongs to this list? Contact me or leave a comment below.
   > You can also edit [this page](https://github.com/yujinyan/blog/blob/master/src/pages/friends.mdx)
   > and send a PR directly.
 
-  <Bio />
+<Bio />
 
-  <UtterancesComments issueId={46} />
-</Layout>
+<UtterancesComments issueId={46} />
 
