@@ -7,7 +7,7 @@
 
 import React from "react"
 import { useStaticQuery, graphql } from "gatsby"
-import Image from "gatsby-image"
+import { StaticImage } from "gatsby-plugin-image"
 import telegram from "./telegram.svg"
 import twitter from "./twitter.svg"
 import "./bio.scss"
@@ -15,28 +15,20 @@ import "./bio.scss"
 import { rhythm } from "../../utils/typography"
 
 const Bio = () => {
-  const data = useStaticQuery(graphql`
-    query BioQuery {
-      avatar: file(absolutePath: { regex: "/profile-pic.png/" }) {
-        childImageSharp {
-          fixed(width: 50, height: 50) {
-            ...GatsbyImageSharpFixed
-          }
-        }
+  const data = useStaticQuery(graphql`query BioQuery {
+  site {
+    siteMetadata {
+      author {
+        name
+        summary
       }
-      site {
-        siteMetadata {
-          author {
-            name
-            summary
-          }
-          social {
-            twitter
-          }
-        }
+      social {
+        twitter
       }
     }
-  `)
+  }
+}
+`)
 
   const { author, social } = data.site.siteMetadata
   return (
@@ -48,19 +40,23 @@ const Bio = () => {
         alignItems: "center",
       }}
     >
-      <Image
-        fixed={data.avatar.childImageSharp.fixed}
+      <StaticImage
+        src="../../images/profile-pic.png"
         alt={author.name}
+        layout="fixed"
+        formats={["AUTO", "WEBP", "AVIF"]}
+        width={50}
+        height={50}
         style={{
           marginRight: rhythm(1 / 2),
           marginBottom: 0,
           minWidth: 50,
           borderRadius: `100%`,
         }}
+        placeholder="blurred"
         imgStyle={{
           borderRadius: `50%`,
-        }}
-      />
+        }} />
       <p
         className="subtitle"
         style={{ margin: 0, lineHeight: "1.5em", fontSize: "1rem" }}
