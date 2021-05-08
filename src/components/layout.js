@@ -2,17 +2,17 @@ import React from "react"
 import { graphql, Link, useStaticQuery } from "gatsby"
 import DarkModeToggle from "./DarkModeToggle"
 import SiteNav from "./SiteNav"
-
-import { rhythm } from "../utils/typography"
 import AdobeFont from "@/components/AdobeFont"
 
-const Layout = ({
-                  location,
-                  title,
-                  children,
-                  aside,
-                  darkModeToggleOverride,
-                }) => {
+const Layout = (
+  {
+    location,
+    title,
+    children,
+    aside,
+    darkModeToggleOverride,
+  },
+) => {
   const rootPath = `${__PATH_PREFIX__}/`
   const data = useStaticQuery(graphql`
     query HeaderQuery {
@@ -59,11 +59,8 @@ const Layout = ({
   }
   return (
     <div
+      className="max-w-2xl ml-auto mr-auto py-8 px-4"
       style={{
-        marginLeft: `auto`,
-        marginRight: `auto`,
-        maxWidth: rhythm(24),
-        padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
         transition: "color 0.2s ease-out, background 0.2s ease-out",
         color: "var(--textNormal)",
       }}

@@ -10,11 +10,24 @@
   hr {
     height: 1px;
   }
+
+  body {
+      @apply font-serif
+  }
+
+  h1, h2, h3 {
+    @apply font-display
+  }
+
+  code {
+    @apply font-mono !important
+  }
 }
 
 article {
   @apply prose font-serif
 }
+
 
 .dark article {
   @apply prose-dark
