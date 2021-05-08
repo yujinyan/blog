@@ -3,11 +3,12 @@ import GithubCorner from "../components/GithubCorner"
 import { UtterancesComments } from "@/components/utterances"
 import Bio from "../components/Bio"
 import SEO from "../components/seo"
-import { rhythm } from "@/utils/typography"
 import Helmet from "react-helmet"
 import "./friends.scss"
 
-export default ({ children }) => <Layout location="friends">{children}</Layout>
+export default ({ children }) => <Layout location="friends">
+  <article>{children}</article>
+</Layout>
 
 <GithubCorner url="https://github.com/yujinyan/blog/issues/46" />
 <Helmet htmlAttributes={{ lang: "en" }} />
@@ -36,7 +37,7 @@ I try to add it to this list ;-).
 Prin says he's obsessed with layout and typography. I can testify to that.
 
 
-<hr style={{ marginBottom: rhythm(2.5) }} />
+<hr />
 
   > Feel your site belongs to this list? Contact me or leave a comment below.
   > You can also edit [this page](https://github.com/yujinyan/blog/blob/master/src/pages/friends.mdx)
@@ -44,5 +45,5 @@ Prin says he's obsessed with layout and typography. I can testify to that.
 
 <Bio />
 
-<UtterancesComments issueId={46} />
+<UtterancesComments issueId={46} className="mt-16" />
 

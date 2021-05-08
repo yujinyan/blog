@@ -1,7 +1,7 @@
 // custom typefaces
 // import "typeface-montserrat"
 // import "typeface-merriweather"
-import typography from "./src/utils/typography"
+// import typography from "./src/utils/typography"
 
 import "prismjs/themes/prism-tomorrow.css"
 import "@fontsource/roboto-slab/900.css"
@@ -13,5 +13,5 @@ import "victormono"
 
 // Hot reload typography in development.
 if (process.env.NODE_ENV !== `production`) {
-  typography.injectStyles()
+  // typography.injectStyles()
 }

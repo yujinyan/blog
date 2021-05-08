@@ -4,7 +4,6 @@ import { Link, graphql } from "gatsby"
 import Bio from "../components/Bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import { rhythm, scale } from "../utils/typography"
 import { TranslateInfo, TranslateMark } from "../components/translate"
 import ToC from "../components/ToC"
 import Fab from "../components/Fab"
@@ -28,12 +27,9 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
     "https://github.com/yujinyan/blog"
 
   const darkModeToggle = <DarkModeToggle
-    className="fixed-on-desktop"
+    className={`fixed-on-desktop right-4 top-8 ${menuIsOpen ? "fixed" : "absolute"}`}
     style={{
       zIndex: 50,
-      position: `${menuIsOpen ? "fixed" : "absolute"}`,
-      right: rhythm(1),
-      top: rhythm(1.25),
     }}
   />
 
@@ -62,25 +58,13 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       <Helmet htmlAttributes={{ lang: post.frontmatter.english ? "en" : "zh-cmn-Hans" }} />
       <article>
         <header>
-          <h1
-            style={{
-              marginTop: rhythm(1),
-              marginBottom: 0,
-            }}
-          >
+          <h1 className="m-0 mt-4">
             {post.frontmatter.translate && <TranslateMark />}
-            <span style={{ verticalAlign: "middle" }}>
+            <span className="align-middle">
               {post.frontmatter.title}
             </span>
           </h1>
-          <p
-            style={{
-              ...scale(-1 / 5),
-              display: `block`,
-              marginBottom: rhythm(1),
-              fontFamily: "Georgia, serif",
-            }}
-          >
+          <p className="mt-2 caption mb-8 text-sm">
             {post.frontmatter.date}
           </p>
         </header>
@@ -91,29 +75,21 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             <MDXRenderer>{post.body}</MDXRenderer>
           </MyMdxLayout>
         }
-        <hr
-          style={{
-            marginBottom: rhythm(0.25),
-          }}
-        />
-        <div 
-          style={{
-            fontSize: "0.8em", 
-            marginBottom: rhythm(1),
-            color: "var(--textSecondary)" 
-          }}>© Attribution Required | {` `}
-          <span style={{fontSize:"0.9em"}}>转载请注明原作者与本站链接</span>
+        <hr className="mb-2" />
+        <div className="text-caption text-xs mb-4">
+          © Attribution Required | {` `}
+          <span style={{ fontSize: "0.9em" }}>转载请注明原作者与本站链接</span>
         </div>
         <footer>
           <Bio />
         </footer>
       </article>
       {post.frontmatter.issueId &&
-      <UtterancesComments issueId={post.frontmatter.issueId} />
+      <UtterancesComments issueId={post.frontmatter.issueId} className="mt-16" />
       }
       <GithubCorner url={githubUrl} />
       <Fab className="hide-on-desktop" isOpen={menuIsOpen} setOpen={setMenuOpen} />
-      <nav style={{ marginTop: rhythm(2) }}>
+      <nav className="mt-16 font-serif">
         <ul
           style={{
             display: `flex`,

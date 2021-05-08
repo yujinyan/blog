@@ -125,6 +125,7 @@ module.exports = {
       },
     },
     `gatsby-plugin-dark-mode`,
+    `gatsby-plugin-postcss`,
     `gatsby-plugin-sass`,
     `gatsby-plugin-twitter`,
     // this (optional) plugin enables Progressive Web App + Offline functionality

@@ -12,8 +12,6 @@ import telegram from "./telegram.svg"
 import twitter from "./twitter.svg"
 import "./bio.scss"
 
-import { rhythm } from "../../utils/typography"
-
 const Bio = () => {
   const data = useStaticQuery(graphql`
     query BioQuery {
@@ -40,51 +38,36 @@ const Bio = () => {
 
   const { author, social } = data.site.siteMetadata
   return (
-    <div
-      className="bio"
-      style={{
-        display: `flex`,
-        marginBottom: rhythm(2.5),
-        alignItems: "center",
-      }}
-    >
+    <div className="flex items-center space-x-2">
       <Image
         fixed={data.avatar.childImageSharp.fixed}
         alt={author.name}
-        style={{
-          marginRight: rhythm(1 / 2),
-          marginBottom: 0,
-          minWidth: 50,
-          borderRadius: `100%`,
-        }}
+        className="rounded-full"
         imgStyle={{
-          borderRadius: `50%`,
+          display: "inline",
+          margin: 0,
         }}
       />
-      <p
-        className="subtitle"
-        style={{ margin: 0, lineHeight: "1.5em", fontSize: "1rem" }}
-        lang="en"
-      >
+      <p className="font-subtitle m-0" lang="en">
         Written by{" "}
         <strong>
           <a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a>
         </strong>
         .
-        <span className="nowrap">
+        <span className="">
           <a
             className="social-icon"
             href="https://twitter.com/yujinyan92"
             title="Find me on Twitter"
           >
-            <img src={twitter} />
+            <img alt="twitter" src={twitter} className="inline" />
           </a>
           <a
             className="social-icon"
             href="https://t.me/fish_study_plz"
             title="I also chat on Telegram"
           >
-            <img src={telegram} />
+            <img alt="telegram" src={telegram} className="inline" />
           </a>
         </span>
         <br />

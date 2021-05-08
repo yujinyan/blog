@@ -13,7 +13,7 @@ const isActive = (location, link): boolean => {
   return (location?.pathname || location)?.includes(link.substr(1))
 }
 
-const SiteNav = (props) => <nav {...props} className="site-nav">
+const SiteNav = (props) => <nav {...props} className={`site-nav ${props.className}`}>
   {
     data.map((it, index) =>
       <span key={it.link}>

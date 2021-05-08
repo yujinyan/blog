@@ -3,7 +3,7 @@ import { graphql, Link, useStaticQuery } from "gatsby"
 import DarkModeToggle from "./DarkModeToggle"
 import SiteNav from "./SiteNav"
 
-import { rhythm, scale } from "../utils/typography"
+import { rhythm } from "../utils/typography"
 import AdobeFont from "@/components/AdobeFont"
 
 const Layout = ({
@@ -28,13 +28,7 @@ const Layout = ({
 
   if (location.pathname === rootPath) {
     header = (
-      <h1
-        style={{
-          ...scale(1.25),
-          marginBottom: rhythm(1.5),
-          marginTop: 0,
-        }}
-      >
+      <h1 className="text-5xl -ml-2">
         <Link
           style={{
             boxShadow: `none`,
@@ -49,9 +43,7 @@ const Layout = ({
     )
   } else {
     header = (
-      <h3
-        style={{ marginTop: 0 }}
-      >
+      <h3 className="text-2xl">
         <Link
           style={{
             boxShadow: `none`,
@@ -77,22 +69,17 @@ const Layout = ({
       }}
     >
       <AdobeFont />
-      <SiteNav location={location} style={{ marginBottom: rhythm(1) }} />
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+      <SiteNav location={location} className="mb-8" />
+      <header className="flex mb-8">
         {header}
         {darkModeToggleOverride ||
-        <DarkModeToggle style={{ position: "absolute", right: rhythm(1), top: rhythm(1.25) }} />}
+        <DarkModeToggle className="absolute right-4 top-8" />}
       </header>
       <main>
         {children}
       </main>
       {aside}
-      <footer>
+      <footer className="font-subtitle mt-8">
         © {new Date().getFullYear()} yujinyan.me
       </footer>
     </div>
