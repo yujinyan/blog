@@ -33,7 +33,6 @@ const markerFactory: MarkerFactory = () => {
   return {
     isComparing: (selected, i, j) => {
       const k = key(selected)
-      console.log(comparing)
       return comparing[k] &&
         comparing[k].some(([x, y]) => x == i && y == j)
     },
@@ -51,7 +50,7 @@ const marker: DpMarker = (i, j) => {
   return {
     i, j,
     comparing: (coordinates) => {
-      console.log(coordinates)
+      // console.log(coordinates)
     },
   }
 }
