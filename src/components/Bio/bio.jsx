@@ -54,7 +54,7 @@ const Bio = () => {
           <a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a>
         </strong>
         .
-        <span className="">
+        <span className="nowrap">
           <a
             className="social-icon"
             href="https://twitter.com/yujinyan92"

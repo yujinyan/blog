@@ -1,3 +1,7 @@
+/**
+ * We have migrated away from Typography.js to Tailwind.
+ * This file is only kept here for reference.
+ */
 import Typography from "typography"
 import Wordpress2016 from "typography-theme-wordpress-2016"
 import "./global.css"

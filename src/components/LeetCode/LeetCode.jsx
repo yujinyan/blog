@@ -28,7 +28,7 @@ const ProblemCard = (props) => {
   return <section className="flex items-center mb-4 space-x-2" >
     <img className="m-0" src={LeetCodeIcon} alt="LeetCode" width="36" />
     <div>
-      <p className="lc-title border-b m-0">
+      <p className="lc-title border-b m-0 leading-tight">
         {
           props.thisSite ?
             <Link to={`/leetcode/${props.slug}`}>{title} 🐟</Link> :
