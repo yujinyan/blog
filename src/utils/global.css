@@ -9,12 +9,14 @@
 
     hr {
         height: 1px;
+        @apply border-caption
     }
 
     body {
         @apply font-serif transition-colors text-body;
         font-feature-settings: "kern", "liga", "clig", "calt", "palt", "dlig", "onum";
         text-rendering: optimizeLegibility;
+        word-wrap: break-word;
     }
 
     h1, h2, h3 {
@@ -97,7 +99,7 @@ body.dark {
 }
 
 .dark hr {
-    background: var(--hr);
+    background: var(--caption);
 }
 
 body {
@@ -152,6 +154,7 @@ article .math .katex-display {
     /* inspiration https://evan.tatarka.me/blog/2020-03-02-you-dont-need-to-null-out-views */
     box-shadow: 0 6px 12px rgb(0 0 0 / 25%);
 }
+
 
 /* see https://github.com/yujinyan/blog/pull/10 */
 .gatsby-highlight pre > code {
@@ -215,6 +218,7 @@ figcaption {
 /* inline code */
 :not(pre) > code[class*="language-"] {
     padding: 0 0.375em !important;
+    font-size: 0.8em !important
 }
 
 .light :not(pre) > code[class*="language-"] {

@@ -58,7 +58,10 @@ const Layout = (
     )
   }
   return (
-    <div className="max-w-2xl ml-auto mr-auto py-8 px-4">
+    <div
+      className="max-w-2xl ml-auto mr-auto py-8 px-4"
+      style={{padding: "2.625rem 1.3125rem"}}
+    >
       <AdobeFont />
       <SiteNav location={location} className="mb-8" />
       <header className="flex mb-8">

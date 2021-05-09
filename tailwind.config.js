@@ -20,6 +20,9 @@ module.exports = {
       "mono": monoFonts("JetBrains Mono"),
     },
     extend: {
+      transitionProperty: {
+        colors: "color, background-color",
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {
@@ -37,6 +40,7 @@ module.exports = {
             "code::after": null,
             "blockquote p:first-of-type::before": null,
             "blockquote p:last-of-type::after": null,
+            "hr": null,
           },
         },
         dark: {
