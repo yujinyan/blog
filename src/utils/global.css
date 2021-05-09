@@ -8,8 +8,11 @@
     }
 
     hr {
-        height: 1px;
-        @apply border-caption
+        @apply border-gray-200
+    }
+
+    .dark hr {
+        @apply border-opacity-20
     }
 
     body {
@@ -98,9 +101,9 @@ body.dark {
     filter: invert(100%) hue-rotate(180deg);
 }
 
-.dark hr {
-    background: var(--caption);
-}
+/*.dark hr {*/
+/*    background: var(--caption);*/
+/*}*/
 
 body {
     background-color: var(--bg);
