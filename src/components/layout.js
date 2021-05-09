@@ -58,13 +58,7 @@ const Layout = (
     )
   }
   return (
-    <div
-      className="max-w-2xl ml-auto mr-auto py-8 px-4"
-      style={{
-        transition: "color 0.2s ease-out, background 0.2s ease-out",
-        color: "var(--textNormal)",
-      }}
-    >
+    <div className="max-w-2xl ml-auto mr-auto py-8 px-4">
       <AdobeFont />
       <SiteNav location={location} className="mb-8" />
       <header className="flex mb-8">
