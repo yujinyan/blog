@@ -6,7 +6,6 @@ import Bio from "../components/Bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import GithubCorner from "../components/GithubCorner"
-import { rhythm } from "../utils/typography"
 import { TranslateMark } from "../components/translate"
 import get from "lodash/get"
 import "./index.css"
@@ -24,13 +23,9 @@ const BlogIndex = ({ data, location }) => {
       {posts.map(({ node }) => {
         const title = node.frontmatter.title || node.fields.slug
         return (
-          <article key={node.fields.slug}>
+          <article key={node.fields.slug} className="my-4">
             <header>
-              <h3
-                style={{
-                  marginBottom: rhythm(1 / 4),
-                }}
-              >
+              <h3 className="m-0 -mb-2">
                 <Link style={{ boxShadow: `none` }} to={node.fields.slug}>
                   {get(node, "frontmatter.translate.title") ? (
                     <TranslateMark />
@@ -38,7 +33,7 @@ const BlogIndex = ({ data, location }) => {
                   <span style={{ verticalAlign: "middle" }}>{title}</span>
                 </Link>
               </h3>
-              <small className="subtitle"><i>{node.frontmatter.date}</i></small>
+              <small className="caption">{node.frontmatter.date}</small>
             </header>
           </article>
         )

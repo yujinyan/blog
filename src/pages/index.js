@@ -6,7 +6,6 @@ import Bio from "../components/Bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import GithubCorner from "../components/GithubCorner"
-import { rhythm } from "../utils/typography"
 import { TranslateMark } from "../components/translate"
 import get from "lodash/get"
 import "./index.css"
@@ -25,20 +24,16 @@ const BlogIndex = ({ data, location }) => {
         const title = node.frontmatter.title || node.fields.slug
         return (
           <article key={node.fields.slug}>
-            <header>
-              <h3
-                style={{
-                  marginBottom: rhythm(1 / 4),
-                }}
-              >
-                <Link style={{ boxShadow: `none` }} to={node.fields.slug}>
+            <header className="mb-2">
+              <h3 className="-mb-2">
+                <Link to={node.fields.slug}>
                   {get(node, "frontmatter.translate.title") ? (
                     <TranslateMark />
                   ) : null}
                   <span style={{ verticalAlign: "middle" }}>{title}</span>
                 </Link>
               </h3>
-              <small className="subtitle"><i>{node.frontmatter.date}</i></small>
+              <small className="font-subtitle text-caption">{node.frontmatter.date}</small>
             </header>
             <section
               className="excerpt"

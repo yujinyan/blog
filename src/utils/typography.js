@@ -1,3 +1,7 @@
+/**
+ * We have migrated away from Typography.js to Tailwind.
+ * This file is only kept here for reference.
+ */
 import Typography from "typography"
 import Wordpress2016 from "typography-theme-wordpress-2016"
 import "./global.css"
@@ -64,5 +68,5 @@ if (process.env.NODE_ENV !== `production`) {
 }
 
 export default typography
-export const rhythm = typography.rhythm
-export const scale = typography.scale
+// export const rhythm = typography.rhythm
+// export const scale = typography.scale

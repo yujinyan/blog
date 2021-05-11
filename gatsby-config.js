@@ -111,12 +111,12 @@ module.exports = {
       },
     },
     `gatsby-plugin-react-helmet`,
-    {
-      resolve: `gatsby-plugin-typography`,
-      options: {
-        pathToConfigModule: `src/utils/typography`,
-      },
-    },
+    // {
+    //   resolve: `gatsby-plugin-typography`,
+    //   options: {
+    //     pathToConfigModule: `src/utils/typography`,
+    //   },
+    // },
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
@@ -125,6 +125,7 @@ module.exports = {
       },
     },
     `gatsby-plugin-dark-mode`,
+    `gatsby-plugin-postcss`,
     `gatsby-plugin-sass`,
     `gatsby-plugin-twitter`,
     // this (optional) plugin enables Progressive Web App + Offline functionality

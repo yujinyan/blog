@@ -1,217 +1,278 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    a {
+        @apply no-underline
+    }
+
+    hr {
+        @apply border-gray-200
+    }
+
+    .dark hr {
+        @apply border-opacity-20
+    }
+
+    body {
+        @apply font-serif transition-colors text-body;
+        font-feature-settings: "kern", "liga", "clig", "calt", "palt", "dlig", "onum";
+        text-rendering: optimizeLegibility;
+        word-wrap: break-word;
+    }
+
+    h1, h2, h3 {
+        @apply font-display
+    }
+}
+
+article {
+    @apply prose font-serif transition-colors
+}
+
+.dark article {
+    @apply prose-dark
+}
+
+.caption {
+    @apply font-subtitle text-caption
+}
+
+.custom-block, .gatsby-highlight {
+    @apply mb-5
+}
+
 body.light {
-  --primary: #007acc;
-  --bg: #ffffff;
-  --bg-secondary: rgb(249, 250, 251);
-  --header: var(--pink);
-  --textNormal: #222;
-  --textSecondary: rgba(0, 0, 0, 0.5);
-  --textTitle: #222;
-  --textLink: #1a1a1a;
-  --hr: hsla(0, 0%, 0%, 0.1);
-  --inlineCode-bg: rgba(255, 229, 100, 0.2);
-  --inlineCode-text: #1a1a1a;
-  --form-shadow: 0 2px 15px 0 rgba(210, 214, 220, 0.5);
+    --primary: #007acc;
+    --body: #111827;
+    --caption: theme("colors.gray.500");
+
+    --bg: #ffffff;
+    --bg-secondary: rgb(249, 250, 251);
+    --header: var(--primary);
+    --textNormal: #222;
+    --textSecondary: rgba(0, 0, 0, 0.5);
+    --textTitle: #222;
+    --textLink: #1a1a1a;
+    --hr: hsla(0, 0%, 0%, 0.1);
+    --inlineCode-bg: rgba(255, 229, 100, 0.2);
+    --inlineCode-text: #1a1a1a;
+    --form-shadow: 0 2px 15px 0 rgba(210, 214, 220, 0.5);
 }
 
 body.dark {
-  -webkit-font-smoothing: antialiased;
-  --primary: #65b6ec;
-  --bg: #282c35;
-  --bg-secondary: rgb(54, 60, 72);
-  --header: #ffffff;
-  --textNormal: rgba(255, 255, 255, 0.88);
-  --textSecondary: rgba(255, 255, 255, 0.6);
-  --textTitle: #ffffff;
-  --textLink: var(--textTitle);
-  --hr: hsla(0, 0%, 100%, 0.2);
-  --inlineCode-bg: rgba(115, 124, 153, 0.2);
-  --inlineCode-text: #e6e6e6;
-  --form-shadow: 0 2px 15px 0 rgba(26, 26, 27, 0.637);
+    -webkit-font-smoothing: antialiased;
+    --primary: #65b6ec;
+    --body: #F3F4F6;
+    --caption: theme("colors.gray.300");
+
+    --bg: #282c35;
+    --bg-secondary: rgb(54, 60, 72);
+    --header: #ffffff;
+    --textNormal: rgba(255, 255, 255, 0.88);
+    --textSecondary: rgba(255, 255, 255, 0.6);
+    --textTitle: #ffffff;
+    --textLink: var(--textTitle);
+    --hr: hsla(0, 0%, 100%, 0.2);
+    --inlineCode-bg: rgba(115, 124, 153, 0.2);
+    --inlineCode-text: #e6e6e6;
+    --form-shadow: 0 2px 15px 0 rgba(26, 26, 27, 0.637);
 }
 
 .dark th, td {
-  border-bottom-color: var(--hr);
+    border-bottom-color: var(--hr);
 }
 
 .nowrap {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 
 .smcp {
-  font-variant-caps: all-small-caps;
+    font-variant-caps: all-small-caps;
 }
 
 .excalidraw {
-  width: 100%;
-  margin: 0 auto;
-}
-.dark .excalidraw {
-  filter: invert(100%) hue-rotate(180deg);
+    width: 100%;
+    margin: 0 auto;
 }
 
-.dark hr {
-  background: var(--hr);
+.dark .excalidraw {
+    filter: invert(100%) hue-rotate(180deg);
 }
+
+/*.dark hr {*/
+/*    background: var(--caption);*/
+/*}*/
 
 body {
-  background-color: var(--bg);
-}
-
-a {
-  color: var(--textNormal);
-  text-decoration: none;
+    background-color: var(--bg);
 }
 
 a:active, a:hover {
-  box-shadow: 0 1px 0 0 currentColor;
+    box-shadow: 0 1px 0 0 currentColor;
 }
 
-article p a, article li a {
-  color: var(--primary);
-  box-shadow: none;
+blockquote {
+    @apply text-xl
 }
 
 blockquote cite {
-  position: relative;
-  color: var(--textNormal)
+    @apply font-subtitle text-sm;
+    position: relative;
+    font-style: normal;
+    color: var(--textNormal)
 }
 
 blockquote cite:before {
-  top: -1.5em;
-  position: absolute
+    top: -1.5em;
+    position: absolute;
+    content: "— "
 }
 
 article .math .katex-display {
-  overflow-x: scroll;
+    overflow-x: scroll;
 }
 
 /* We don't have enough space for .github-corner on smaller screen. */
 @media (max-width: 768px) {
-  .github-corner {
-    visibility: hidden;
-  }
+    .github-corner {
+        visibility: hidden;
+    }
 }
 
 /* We have a lot of code snippets, scrollbars look like lots of hr's */
 /* CSS Standard, Firefox */
 .gatsby-highlight pre {
-  scrollbar-width: none;
+    scrollbar-width: none;
 }
+
 /* Chrome and friends */
 .gatsby-highlight pre::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 .light pre[class*="language-"] {
-  border-radius: 3px;
-  /* inspiration https://evan.tatarka.me/blog/2020-03-02-you-dont-need-to-null-out-views */
-  box-shadow: 0 6px 12px rgb(0 0 0 / 25%);
+    border-radius: 3px;
+    /* inspiration https://evan.tatarka.me/blog/2020-03-02-you-dont-need-to-null-out-views */
+    box-shadow: 0 6px 12px rgb(0 0 0 / 25%);
 }
+
 
 /* see https://github.com/yujinyan/blog/pull/10 */
 .gatsby-highlight pre > code {
-  display: inline-block;
-  min-width: 100%;
-  font-size: 14px;
+    display: inline-block;
+    min-width: 100%;
+    font-size: 14px;
 }
 
 .gatsby-highlight-code-line {
-  display: block;
-  background: #3c4846e0;
-  margin-right: -1.3125rem;
-  margin-left: -1rem;
-  /* padding-left + border-left = margin-left */
-  padding-left: 0.6875rem;
-  border-left: #cc99cd solid 0.3125em;
-}
-@media (max-width: 42rem) {
-  .light pre[class*="language-"] {
-    border-radius: 0;
-    box-shadow: 0 0px 6px 0px rgb(0 0 0 / 25%);
-  }
-  .gatsby-highlight {
-    margin-bottom: 1.75rem;
-    margin-left: -1.3125rem;
+    display: block;
+    background: #3c4846e0;
     margin-right: -1.3125rem;
-    border-radius: 10px;
-    -webkit-overflow-scrolling: touch;
-    overflow: auto;
-  }
-  .gatsby-highlight pre {
-    /* aligns code with paragraphs */
-    padding-left: 1.3125rem !important;
-  }
-  .gatsby-highlight-code-line {
-    margin-left: -1.3125rem;
-    padding-left: 1rem;
-  }
+    margin-left: -1rem;
+    /* padding-left + border-left = margin-left */
+    padding-left: 0.6875rem;
+    border-left: #cc99cd solid 0.3125em;
+}
+
+@media (max-width: 42rem) {
+    .light pre[class*="language-"] {
+        border-radius: 0;
+        box-shadow: 0 0px 6px 0px rgb(0 0 0 / 25%);
+    }
+
+    .gatsby-highlight {
+        margin-bottom: 1.75rem;
+        margin-left: -1.3125rem;
+        margin-right: -1.3125rem;
+        border-radius: 10px;
+        -webkit-overflow-scrolling: touch;
+        overflow: auto;
+    }
+
+    .gatsby-highlight pre {
+        /* aligns code with paragraphs */
+        padding-left: 1.3125rem !important;
+    }
+
+    .gatsby-highlight-code-line {
+        margin-left: -1.3125rem;
+        padding-left: 1rem;
+    }
 }
 
 .dark pre[class*="language-"] {
-  background: transparent !important;
+    background: transparent !important;
 }
 
 .dark blockquote {
-  color: var(--textTitle);
-  border-left-color: var(--textNormal);
+    color: var(--textTitle);
+    border-left-color: var(--textNormal);
 }
 
 figcaption {
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--textSecondary);
-  font-family: sans-serif;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--textSecondary);
+    font-family: sans-serif;
 }
 
 /* inline code */
 :not(pre) > code[class*="language-"] {
-  padding: 0 0.375em !important;
+    padding: 0 0.375em !important;
+    font-size: 0.8em !important
 }
+
 .light :not(pre) > code[class*="language-"] {
-  color: #606060;
-  background: #f6f3f2;
+    color: #606060;
+    background: #f6f3f2;
 }
+
 .dark :not(pre) > code[class*="language-"] {
-  color: #f6f3f2;
-  background: #6060608c;
+    color: #f6f3f2;
+    background: #6060608c;
 }
 
 a.anchor {
-  color: transparent;
-  fill: white;
+    color: transparent;
+    fill: white;
 }
+
 a.anchor.before {
-  padding-right: 8px;
+    padding-right: 8px;
 }
 
 .tip {
-  position: relative;
-  border-top: 1.25px solid var(--hr);
-  border-bottom: 1.25px solid var(--hr);
-  padding: 1rem 0 1rem 0;
-  margin-left: -4.75rem;
+    position: relative;
+    border-top: 1px solid var(--hr);
+    border-bottom: 1px solid var(--hr);
+    padding: 1rem 0 1rem 0;
+    margin-left: -4rem;
 }
 
 .tip p {
-  margin: 0;
+    margin: 0;
 }
 
 .tip .custom-block-heading {
-  position: absolute;
-  left: -0.5rem;
-  font-size: 2.5rem;
-  top: -3rem;
+    position: absolute;
+    left: -0.5rem;
+    font-size: 2.5rem;
+    top: -3rem;
 }
+
 .tip .custom-block-heading img {
-  margin-left: 0.5rem;
-  margin-top: 1rem;
-  width: 2.5rem;
+    margin-left: 0.5rem;
+    margin-top: 1rem;
+    width: 2.5rem;
 }
+
 @media (max-width: 1024px) {
-  .tip {
-    margin-left: 0;
-    margin-top: 3rem;
-  }
+    .tip {
+        margin-left: 0;
+        margin-top: 3rem;
+    }
 }
 
 
@@ -221,24 +282,27 @@ After migrating to mdx, the style is somehow not injected.
 Copy-pasting required style here.
  */
 .anchor.before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translateX(-100%);
-  padding-right: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    padding-right: 4px;
 }
+
 .anchor.after {
-  display: inline-block;
-  padding-left: 4px;
+    display: inline-block;
+    padding-left: 4px;
 }
+
 h1 .anchor svg,
 h2 .anchor svg,
 h3 .anchor svg,
 h4 .anchor svg,
 h5 .anchor svg,
 h6 .anchor svg {
-  visibility: hidden;
+    visibility: hidden;
 }
+
 h1:hover .anchor svg,
 h2:hover .anchor svg,
 h3:hover .anchor svg,
@@ -251,5 +315,5 @@ h3 .anchor:focus svg,
 h4 .anchor:focus svg,
 h5 .anchor:focus svg,
 h6 .anchor:focus svg {
-  visibility: visible;
+    visibility: visible;
 }

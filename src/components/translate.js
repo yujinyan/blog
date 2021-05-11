@@ -1,5 +1,4 @@
 import React from "react"
-import { rhythm, scale } from "../utils/typography"
 
 export const TranslateMark = () => (
   <span
@@ -19,14 +18,8 @@ export const TranslateMark = () => (
 )
 
 export const TranslateInfo = translate => (
-  <p
-    style={{
-      ...scale(-1 / 4),
-    }}
-  >
-    <p>
-      原文：<a href={translate.url}>{translate.title}</a>
-    </p>
-    <p style={{ marginTop: rhythm(-1) }}>作者：{translate.author}</p>
+  <p className="text-sm">
+    <p>原文：<a href={translate.url}>{translate.title}</a></p>
+    <p className="-mt-2">作者：{translate.author}</p>
   </p>
 )

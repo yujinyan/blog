@@ -1,5 +1,4 @@
 import React from "react"
-import { rhythm } from "utils/typography"
 
 import LeetCodeIcon from "./LeetCode.svg"
 import { Link } from "gatsby"
@@ -26,10 +25,10 @@ const ProblemCard = (props) => {
     <span className="ordn">№ </span>{props.id}. {props.title}
   </>
 
-  return <section className="lc-card" style={{ marginBottom: rhythm(1) }}>
-    <img src={LeetCodeIcon} alt="LeetCode" width="36" />
+  return <section className="flex items-center mb-4 space-x-2" >
+    <img className="m-0" src={LeetCodeIcon} alt="LeetCode" width="36" />
     <div>
-      <p className="lc-title">
+      <p className="lc-title border-b m-0 leading-tight">
         {
           props.thisSite ?
             <Link to={`/leetcode/${props.slug}`}>{title} 🐟</Link> :
