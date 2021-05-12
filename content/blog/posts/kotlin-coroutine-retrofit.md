@@ -418,8 +418,10 @@ class CatchingCallAdapterFactory(
       }
     })
 
-    override fun clone(): Call<Any> = CatchingCall(delegate, wrapperType, errorHandler)
-    override fun execute(): Response<Any> = throw UnsupportedOperationException("Blocking call in suspend function?")
+    override fun clone(): Call<Any> = 
+      CatchingCall(delegate, wrapperType, errorHandler)
+    override fun execute(): Response<Any> = 
+      throw UnsupportedOperationException()
     override fun isExecuted(): Boolean = delegate.isExecuted
     override fun cancel(): Unit = delegate.cancel()
     override fun isCanceled(): Boolean = delegate.isCanceled
@@ -490,14 +492,18 @@ Moshi 对比 Gson 的优势可以参考下面的链接：
 
 综合来看，目前似乎可以先使用 Moshi，等 kotlinx.serialization 成熟后搜索替换注解进行迁移。
 
-### MoshiApiResponseTypeAdapterFactory
+### Moshi 实现
 
-下面是参考实现，Gson 大同小异：
+下面是 Moshi 自定义解析 `ApiResponse` 的参考实现，Gson 大同小异：
 
 ```kotlin
 class MoshiApiResponseTypeAdapterFactory : JsonAdapter.Factory {
 
-  override fun create(type: Type, annotations: MutableSet<out Annotation>, moshi: Moshi): JsonAdapter<*>? {
+  override fun create(
+    type: Type, 
+    annotations: MutableSet<out Annotation>, 
+    moshi: Moshi
+  ): JsonAdapter<*>? {
     val rawType = type.rawType
     if (rawType != ApiResponse::class.java) return null
 
@@ -635,7 +641,7 @@ lifecycleScope.launch {
 }
 ```
 
-可以看到得益于空安全操作符，我们不需要专门定义扩展函数，调用起来也更加精简。
+得益于直接作用于 Result 类型的空安全操作符，我们不需要专门定义扩展函数转换成可空类型，调用起来也更加精简。
 
 适配 suspend 函数和 Result 返回值的 Call Adapter 可以参考或者直接使用这个库：
 [yujinyan/retrofit-suspend-result-adapter](https://github.com/yujinyan/retrofit-suspend-result-adapter)。
