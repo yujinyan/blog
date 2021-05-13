@@ -390,7 +390,11 @@ Roman 是 Kotlin 协程的主要设计者，现在担任 Kotlin Project Lead，�
 
 本文提到了 Λrrow `Either` 这个 ADT 来做异常处理，这是笔者认为比较好的异常处理方式。Kotlin 在类型系统区分了 null 和非 null 的值，解决了 `NullPointerException` 的问题，但是在异常处理这一块却干掉了 Checked Exception，可以说是开了倒车。我们调用一个函数不去了解其实现很难确定是否会抛出异常。这在客户端使用协程的情况下尤其糟糕，异常抛出的规律不容易掌握，稍有不慎便会让应用崩溃。异常处理在其他现代编程语言比如 Swift 和 Rust 就要好得多。不过可以理解 Kotlin 这一设计或许更多是 Java 生态的包袱造成的。
 
-所以笔者推荐在使用基于协程的 API 的时候，把所有的异常在全局位置（比如 Retrofit 的 call adapter）全部 catch 掉，然后根据业务逻辑封装成类似标准库 `Result` 类型或者 Λrrow 的 `Either` 。如果调用方不需要获取具体错误信息的话可以直接用 `T?` 可空类型来表示，这样既有类型安全又有 `?.` 、`?:` 语法糖。据说 Kotlin 有可能结合 `Result` 类给函数返回类型做个语法糖，非常期待。
+所以笔者推荐在使用基于协程的 API 的时候，把所有的异常在全局位置（比如 Retrofit 的 call adapter）全部 catch 掉，然后根据业务逻辑封装成类似标准库 `Result` 类型或者 Λrrow 的 `Either` 。如果调用方不需要获取具体错误信息的话可以直接用 `T?` 可空类型来表示，这样既有类型安全又有 `?.` 、`?:` 语法糖。
+另外，Kotlin [计划在 1.5 版本中让空安全操作符同样适用于 `Result`](https://github.com/Kotlin/KEEP/pull/244)，非常期待。
+
+[[tip | 🔗]]
+| [《Kotlin 协程与 Retrofit》](/posts/kotlin-coroutine-retrofit) 介绍了使用 Retrofit Call Adapter 封装全局异常处理逻辑的方案。
 
 ## 题外话：没有用的 `await` 关键字
 

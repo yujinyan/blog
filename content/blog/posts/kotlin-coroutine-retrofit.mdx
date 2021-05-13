@@ -129,7 +129,7 @@ lifecycleScope.launch {
 
 为了避免 try catch 协程异常的麻烦和潜在的失误，笔者建议在 suspend 函数内部封装中 catch 所有异常，并将异常在函数签名上体现。
 
-一种方案是返回 nullable 的类型。我们知道， Kotlin 对 nullable 类型有语法糖 `?.`，`?:` 和 `!!` 支持：
+一种方案是返回 nullable 的类型。这样可以利用 Kotlin 的空安全操作符 `?.`，`?:` 和 `!!`：
 
 ```kotlin
 suspend fun getUser(
@@ -204,7 +204,7 @@ lifecycleScope.launch {
 }
 ```
 
-### 加点 nullable 的语法糖
+### 加点空安全的语法糖
 
 我们将异常体现在类型系统，而不是抛出来，这样安全得多。但是绝大部分场景调用方不需要，也不应该做这样详细的异常处理。所以我们加上一对扩展函数，让调用方能够使用 Kotlin nullable 的语法糖：
 
@@ -620,7 +620,7 @@ suspend fun getUser(id: Int): Result<User>
 
 使用 Result 的话调用方可以拿到异常信息，但是无法在最外层区分 `BizError` 和 `OtherError`。 不过实际看下来几乎没有调用方需要做这样的区分，让这种极少用到的 case 变得麻烦一些似乎是好的权衡。
 
-更加令人期待的是 Kotlin [计划让 nullable 的操作符同样适用于 Result](https://github.com/Kotlin/KEEP/pull/244)，于是我们可以这样写：
+更加令人期待的是 Kotlin [计划让空安全操作符同样适用于 Result](https://github.com/Kotlin/KEEP/pull/244)，于是我们可以这样写：
 
 ```kotlin
 // 需要 Kotlin 1.5，以及尚未发布的特性
