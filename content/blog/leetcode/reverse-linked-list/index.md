@@ -22,20 +22,20 @@ public ListNode reverse(ListNode node) {
   if (node == null || node.next == null) {
     return node;
   }
-  ListNode newHead = reverse(head.next); // highlight-line
-  node.next.next = head;
+  ListNode newHead = reverse(node.next); // highlight-line
+  node.next.next = node;
   node.next = null;
   return newHead;
 }
 ```
 
 Recursive call trace:
-```shell
+```shell{1-4}
 ┌ reverse (1) -> 2 -> 3 -> 4 -> 5
 │ ┌ reverse 1 -> (2) -> 3 -> 4 -> 5
 │ │ ┌ reverse 1 -> 2 -> (3) -> 4 -> 5
 │ │ │ ┌ reverse 1 -> 2 -> 3 -> (4) -> 5
-│ │ │ │  reverse 1 -> 2 -> 3 -> 4 -> (5) // highlight-line
+│ │ │ │  reverse 1 -> 2 -> 3 -> 4 -> (5)
 │ │ │ └ reverse 1 -> 2 -> 3 -> (4) <~ 5
 │ │ └ reverse 1 -> 2 -> (3) <~ 4 <~ 5
 │ └ reverse 1 -> (2) <~ 3 <~ 4 <~ 5
@@ -43,4 +43,5 @@ Recursive call trace:
 ```
 
 Note in this example:
+- The recursive `reverse` call corresponds to the highlighted portion in the run-time call trace.
 - `newHead` is always $5$.

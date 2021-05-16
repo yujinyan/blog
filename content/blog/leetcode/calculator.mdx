@@ -206,6 +206,11 @@ Two things to note about the opening bracket `(`:
 
 Our current code cannot handle unary operators, because when evaluating RPN, we always assume there are two operands.
 
+We can accommodate the unary operators $-$ and $+$ by prefixing them with a zero. Notice they can only appear:
+
+- at the beginning of the expression, or
+- after an opening bracket `(`.
+
 $$
 \textcolor{#EC407A}{-}1+2
 $$
@@ -213,11 +218,6 @@ $$
 $$
 1+(\textcolor{#EC407A}{-}1+2)
 $$
-
-We can accommodate the unary operators $-$ and $+$ by prefixing them with a zero. Notice they can only appear:
-
-- at the beginning of the expression, or
-- after an opening bracket `(`.
 
 ```kotlin
 fun toRPN(s: String): List<Any> {
