@@ -327,11 +327,14 @@ Dijkstra 认为高级语言应当摒弃 goto 语句，提倡「结构化编程 S
 
 在讨论 Kotlin 如何实现结构化并发之前，我们先来看一下协程的取消（Cancellation）。
 
-首先从上面 Android Activity 的例子可以看到，如果用户离开界面，出于回收系统资源的考虑，协程应该需要支持取消。同样在服务端，如果连接断开或者某个关键异步任务失败，其他异步任务也应该及时停掉以避免不必要的资源浪费。
+首先从上面 Android Activity 的例子可以看到，如果用户离开界面，出于及时回收系统资源的考虑，协程应该需要支持取消。
+同样在服务端，如果连接断开或者某个关键异步任务失败，其他异步任务也应该及时停掉以避免不必要的资源浪费。
 
-Kotlin 的协程、 Java 的线程和 Goroutine 都是协作式（cooperative）的，意味着要真正支持取消，协程需要主动地去检查当前的 Job 是不是处于 Active 的状态。这是因为如果子程序可以被突兀地中止，很有可能事情做到一半，损坏数据结构或文件资源等。
+Kotlin 的协程、 Java 的线程和 Goroutine 都是协作式（cooperative）的，意味着要真正支持取消，协程需要在任务的间隙主动去检查当前的 Job 是不是处于 Active 的状态。
+这是因为如果子程序可以被突兀地中止，很有可能事情做到一半，损坏数据结构或文件资源等。
 
-Go 语言通过 channel 实现取消协程。下面这例子将一个名为 `done` 的  channel 传递给调用链中所有含有异步任务的函数。调用方通过关闭这个 channel 的方式「通知」所有开启的协程结束正在进行的任务。注意，我们不会给这个 channel 发送数据，只是把关闭 channel 产生的副作用作为「广播」的方式。
+Go 语言通过 channel 实现取消协程。下面这例子将一个名为 `done` 的  channel 传递给调用链中所有含有异步任务的函数。
+调用方通过关闭这个 channel 的方式「通知」所有开启的协程结束正在进行的任务。我们不会给这个 channel 发送数据，只是把关闭 channel 产生的副作用作为「广播」的方式。
 
 ```go
 func main() {
@@ -382,7 +385,9 @@ type Context interface {
 
 如果习惯使用 ThreadLocal，可能会觉得这种显式传值比较麻烦（比如[这篇介绍 Go 上下文 Context 文章](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/#61-%E4%B8%8A%E4%B8%8B%E6%96%87-context)底下的评论）。
 
-Kotlin coroutine builder `launch` 的返回值是一个代表协程的 Job 对象。我们可以调用 `Job.cancel` 取消协程，`Job.join` 等待协程完成。由于 `Job` 是一个 `CoroutineContext.Element`，我们可以在 suspend 函数调用链的任意位置通过 `coroutineContext` 获取当前协程对应的 Job 。可以认为编译器隐式地帮我们传递了 Job 对象。
+Kotlin 协程中，我们通过 `CoroutineContext` 中隐式传递的 Job 对象取消协程。
+Coroutine builder `launch` 的返回值是一个代表协程的 Job 对象，可以调用 `.cancel` 取消协程，`.join` 等待协程完成。
+由于 `Job` 是一个 `CoroutineContext.Element`，可以在 suspend 函数调用链的任意位置通过 `coroutineContext` 属性获取当前协程对应的 Job。
 
 ```kotlin
 suspend fun main() =
@@ -404,7 +409,10 @@ public val CoroutineContext.isActive: Boolean
     get() = this[Job]?.isActive == true // highlight-line
 ```
 
-在 coroutine builder 开启的协程块内部可以用 `Job.isActive` 判断当前协程是否被取消。如果已取消则可以直接返回或者抛出 `CancellationException`。这个异常在协程库中不同于别的异常，有特殊的意义，是一个专门用作取消协程的标记，被抛出以后调用栈回退到 `launch` 的协程，整个协程正常结束，异常不会继续传播。
+**如何让我们写的 Kotlin 协程代码支持取消？**
+在 coroutine builder 开启的协程块内部可以用 `Job.isActive` 判断当前协程是否被取消。
+如果已取消则可以直接返回或者抛出 `CancellationException`。
+这个异常在协程库中不同于别的异常，有特殊的意义，是一个专门用作取消协程的标记，被抛出以后调用栈回退到 `launch` 的协程，整个协程**正常结束**，异常不会继续传播。
 
 ```kotlin
 suspend fun main() {
@@ -433,9 +441,12 @@ fun fibonacci(n: Int): Int = if (n <= 1)
   n else fibonacci(n - 1) + fibonacci(n - 2)
 ```
 
-**在封装出的 suspend 函数内部支持取消， return 是不行的，必须抛 `CancellationException`**。因为 return 以后，控制流正常退回上层函数，可能会继续执行后面的同步语句。当协程被取消后，整个调用链应该立即回退。而 `launch` 的协程块不同于 suspend 函数内部，是协程调用树的根节点，因此可以直接 return 结束协程。
+**在封装出的 suspend 函数内部支持取消， return 是不行的，必须抛 `CancellationException`**。
+因为 return 以后，控制流正常退回上层函数，可能会继续执行后面的同步语句。当协程被取消后，整个调用链应该立即回退。
+而 `launch` 的协程块不同于 suspend 函数内部，是协程调用树的根节点，因此可以直接 return 结束协程。
 
-所有 `kotlinx.coroutines` 中的 suspend 函数都支持取消。如果 Job 已取消则会抛出 `CancellationException` 。 
+如果我们调用的 suspend 函数支持取消，意味着这个 suspend 函数会检查当前协程是否是取消的状态并抛出 `CancellationException`。
+所有 `kotlinx.coroutines` 中的 suspend 函数都支持取消。我们调用支持取消的 suspend 函数，也就自动支持了取消，很少需要做专门处理。
 
 假设我们把上面这个例子中输出 fibonacci 数的代码封装成 suspend 函数，在这个函数内部可以使用 `yield` 方法来确保只有协程在 Active 的状态才会继续计算：
 
@@ -515,7 +526,7 @@ suspend fun sayHelloWorld() = job {
 
 这很 Kotlin。但是 `launch(this)` 有些尴尬。Kotlin 老手可能会想到如果 `launch` 是定义在 `job` 块的 Receiver 上的话，那么我们可以直接这个块里面 `launch` ，写法上就和 0.26.0 之前的全局顶层函数很像了。
 
-到这里我们已经差不多重新发明了 Kotlin 协程库 Structured Concurrency 的两大支柱——   `coroutineScope` 高阶函数和 `CoroutineScope` 接口。`coroutineScope` 类似我们写的 `job` 函数（[Kotlin 官方曾考虑用这个名字](https://github.com/Kotlin/kotlinx.coroutines/issues/410#issuecomment-403054790)），而 `CoroutineScope` 就是前面提到的 Receiver。
+到这里我们已经差不多重新发明了 Kotlin 协程库 Structured Concurrency 的两大支柱——`coroutineScope` 高阶函数和 `CoroutineScope` 接口。`coroutineScope` 类似我们写的 `job` 函数（[Kotlin 官方曾考虑用这个名字](https://github.com/Kotlin/kotlinx.coroutines/issues/410#issuecomment-403054790)），而 `CoroutineScope` 就是前面提到的 Receiver。
 
 ### Kotlin 协程的结构化并发设计
 
