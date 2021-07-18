@@ -83,11 +83,13 @@ Context 集合和字典的性质确保了 `CombinedContext` 这个集合里**每
 [[fig | `CombinedContext` 数据结构示意]]
 | ![CombinedContext](./combined-context.svg)
 
-由于 Context 中每种类型的 Element 是唯一的，而 Element 类型定义在 Kotlin 协程库（kotlinx.coroutines）内部，其数量是固定的，所以对链表操作的时间复杂度是有上界的。使用自定义的链表来实现 Context 相比使用现成的数据结构可以避免一些额外的开销，对于框架实现来说是非常合理的。
+由于 Context 中每种类型的 Element 是唯一的，而 Element 类型定义在 Kotlin 协程库（kotlinx.coroutines）内部，其数量是固定的，所以对链表操作的时间复杂度是有上界的。
+使用自定义的链表来实现 Context 相比使用现成的数据结构可以避免一些额外的开销，对于框架实现来说是非常合理的。
 
 ### 在协程调用链任意位置获取 Context
 
-Context 一般用来存储某个工作流中具有全局性质的状态。比如，我们知道 Web 端的 React 通过声明式的 API 描述组件树的型状。有的时候跨组件层层传递一些数据会比较麻烦。如果这个数据具有全局性质（一个经典的例子是页面的主题），借助 React 的 [Context API](https://zh-hans.reactjs.org/docs/context.html) ，我们无须明确地传遍每一个组件，就能将值深入传递进组件树。
+Context 一般用来存储某些具有全局性质的状态。比如，React.js 通过声明式的 API 描述组件树的形状。有的时候跨组件层层传递一些数据会比较麻烦。
+如果这个数据具有全局性质（比如页面的主题），借助 React 的 [Context API](https://zh-hans.reactjs.org/docs/context.html) ，我们无须明确地传遍每一个组件，就能将值深入传递进组件树。
 
 ```jsx
 // 为当前的 theme 创建一个 context（“light”为默认值）。
@@ -123,9 +125,10 @@ class ThemedButton extends React.Component {
 }
 ```
 
-一段可以作为整体执行的代码块可以叫作「子程序 routine」，比如函数、方法、lambda、条件块、循环块等。 Kotlin 协程（coroutine）就是一段可以 suspend 的代码块。我们出于抽象复用的目的，将一部分含有异步的代码抽离出来封装成 suspend 函数。
+一段可以作为整体执行的代码块可以叫作「子程序 routine」，比如函数、方法、lambda、条件块、循环块等。 
+Kotlin 协程（coroutine）就是一段可以 suspend 的代码块。我们出于抽象复用的目的，将一部分含有异步的代码抽离出来封装成 suspend 函数。
 
-函数调用也类似 UI 组件，可以看作一个树状的结构。在 Kotlin 的 suspend 函数中，我们可以在调用链的任意层级获取 Context（Context propogation）：
+函数调用也类似 UI 组件，可以看作一个树状的结构。在 Kotlin 的 suspend 函数中，我们可以在调用链的任意层级获取 Context（Context propagation）：
 
 ```kotlin
 fun main() = runBlocking {
@@ -145,7 +148,9 @@ suspend fun baz() {
 }
 ```
 
-这个 `coroutineContext` 是 Kotlin 在编译期添加的，可以看成编译器将调用方的 Context **隐式**地传给了调用的 suspend 函数。在[「理解 Kotlin 的 suspend 函数」](https://blog.yujinyan.me/posts/understanding-kotlin-suspend-functions/)一文中，我们介绍了 `suspend` 的本质是 Continuation，而 Continuation 中除了对应回调的 `resumeWith` 方法之外，剩下另外一个属性就是 `CoroutineContext` ：
+这个 `coroutineContext` 是 Kotlin 在编译期添加的，可以看成编译器将调用方的 Context **隐式**地传给了调用的 suspend 函数。
+在[「理解 Kotlin 的 suspend 函数」](https://blog.yujinyan.me/posts/understanding-kotlin-suspend-functions/)一文中，
+我们介绍了 `suspend` 的本质是 Continuation，而 Continuation 中除了对应回调的 `resumeWith` 方法之外，剩下另外一个属性就是 `CoroutineContext`：
 
 ```kotlin
 public interface Continuation<in T> {
@@ -490,7 +495,9 @@ suspend fun sayHelloWorldInContext() {
 }
 ```
 
-上面的例子将 suspend 函数中编译器添加的 `coroutineContext` 传入 `launch` ，这样新开启的协程将运行在外部执行这个 suspend 函数的协程 Job 中。如果外部的 Job 被取消， `sayHelloWorldInContext` 中 `launch` 的协程也会被取消，可以解决前面 Android Activity 带有生命周期结束后协程泄漏的问题。但是另外的问题没有解决，开启协程的函数并不会等待异步任务结束，返回之后异步任务有可能还在执行。所以更加正确的写法是这样：
+上面的例子将 suspend 函数中编译器添加的 `coroutineContext` 传入 `launch`，这样新开启的协程将运行在外部执行这个 suspend 函数的协程 Job 中。
+如果外部的 Job 被取消，`sayHelloWorldInContext` 中 `launch` 的协程也会被取消，可以解决前面 Android Activity 带有生命周期结束后协程泄漏的问题。
+但是另外的问题没有解决，开启协程的函数并不会等待异步任务结束，返回之后异步任务有可能还在执行。所以更好的写法是这样：
 
 ```kotlin
 suspend fun sayHelloWorld() {
@@ -684,10 +691,17 @@ public interface Continuation<in T> {
 
 ### 国内对 Kotlin 协程的介绍
 
-笔者最早学习 Kotlin 协程主要是看其主要设计者 Roman Elizarov 先生的演讲以及在 Medium 上发表的文章。Roman 的介绍非常 high-level，着重问题、概念、思想和设计。并发实践匮乏会导致有时候难以领会 Kotlin 协程要解决的问题，造成不好理解。这两篇介绍协程的文章补充解释了笔者学习过程中产生的一些困惑，或许可以当作 Roman 演讲和文章的注脚。
+笔者最早学习 Kotlin 协程主要是看其主要设计者 Roman Elizarov 先生的演讲以及在 Medium 上发表的文章。
+Roman 的介绍非常 high-level，着重问题、概念、思想和设计。并发实践匮乏会导致有时候难以领会 Kotlin 协程要解决的问题，无法理解。
+这两篇介绍协程的文章补充解释了笔者学习过程中产生的一些困惑，或许可以当作 Roman 演讲和文章的注脚。
 
-在学习、写作的过程中笔者也看了一些国内对 Kotlin 协程的介绍，感觉对协程重要概念的介绍相对较少，比如本文提到的 Structured Concurrency、两个 Conventions 等。很多介绍协程的文章对协程的实现细节情有独钟，想要「破解」协程，或者「扒了协程的皮」。其他分析原理的文章摘录大量源码，翻译一些源码里面的注释，读起来「不明觉厉」。但仔细看的话会发现，由于缺少对一些重要的高层概念的把握，很多对源码的解读其实是片面甚至错误的。
+在学习、写作的过程中笔者也看了一些国内对 Kotlin 协程的介绍，感觉对协程重要概念的介绍相对较少，
+比如本文提到的 Structured Concurrency、两个 Conventions 等。
+很多文章对实现细节情有独钟，想要「破解」协程，或者「扒了协程的皮」。
+分析原理的时候摘录大量源码，翻译一些源码里面的注释，读起来让人「不明觉厉」。
+但仔细看的话会发现，由于缺少对一些重要的高层概念的把握，很多对源码的解读其实是片面甚至错误的。
 
-我想，学习一个库或者框架，直接看它的实现原理并不是最高效的方式。即使源码看明白了也不一定用得对。把握设计思想和理念更加重要。所有这些框架类库都为了解决某个问题而诞生。有了解决问题的 idea 以后，作者可能采取各种奇技淫巧甚至 hack 达成目的，同时在不断发展成熟的过程中会加入很多优化。所有这些细节都有可能掩盖问题和 idea 的本质。不先学习 idea 很容易被实现细节绕得晕头转向，更不要说在前人的基础上进行创新。
-
-当然学习源码是非常重要。有一些书叫 「×× 设计和实现」，是非常有价值的思路，不过对作者的功力有很高的要求。
+学习一个库或者框架，直接看它的实现原理并不是最高效的方式。即使源码看明白了也不一定用得对。
+把握设计思想和理念更加重要。所有这些框架类库都为了解决某个问题而诞生。
+有了解决问题的思路以后，作者可能采取各种 hack 达成目的，同时在不断发展成熟的过程中会加入很多优化。
+所有这些细节都有可能掩盖问题和 idea 的本质。不先学习 idea 绕在细节里，很难形成自己的思路，解决新的问题。
