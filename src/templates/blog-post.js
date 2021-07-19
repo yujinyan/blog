@@ -75,7 +75,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             <MDXRenderer>{post.body}</MDXRenderer>
           </MyMdxLayout>
         }
-        <hr className="mb-2" />
+        <hr className="mb-2 mt-8" />
         <div className="text-caption text-xs mb-4">
           © Attribution Required | {` `}
           <span style={{ fontSize: "0.9em" }}>转载请注明原作者与本站链接</span>

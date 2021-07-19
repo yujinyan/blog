@@ -83,11 +83,13 @@ Context 集合和字典的性质确保了 `CombinedContext` 这个集合里**每
 [[fig | `CombinedContext` 数据结构示意]]
 | ![CombinedContext](./combined-context.svg)
 
-由于 Context 中每种类型的 Element 是唯一的，而 Element 类型定义在 Kotlin 协程库（kotlinx.coroutines）内部，其数量是固定的，所以对链表操作的时间复杂度是有上界的。使用自定义的链表来实现 Context 相比使用现成的数据结构可以避免一些额外的开销，对于框架实现来说是非常合理的。
+由于 Context 中每种类型的 Element 是唯一的，而 Element 类型定义在 Kotlin 协程库（kotlinx.coroutines）内部，其数量是固定的，所以对链表操作的时间复杂度是有上界的。
+使用自定义的链表来实现 Context 相比使用现成的数据结构可以避免一些额外的开销，对于框架实现来说是非常合理的。
 
 ### 在协程调用链任意位置获取 Context
 
-Context 一般用来存储某个工作流中具有全局性质的状态。比如，我们知道 Web 端的 React 通过声明式的 API 描述组件树的型状。有的时候跨组件层层传递一些数据会比较麻烦。如果这个数据具有全局性质（一个经典的例子是页面的主题），借助 React 的 [Context API](https://zh-hans.reactjs.org/docs/context.html) ，我们无须明确地传遍每一个组件，就能将值深入传递进组件树。
+Context 一般用来存储某些具有全局性质的状态。比如，React.js 通过声明式的 API 描述组件树的形状。有的时候跨组件层层传递一些数据会比较麻烦。
+如果这个数据具有全局性质（比如页面的主题），借助 React 的 [Context API](https://zh-hans.reactjs.org/docs/context.html) ，我们无须明确地传遍每一个组件，就能将值深入传递进组件树。
 
 ```jsx
 // 为当前的 theme 创建一个 context（“light”为默认值）。
@@ -123,9 +125,10 @@ class ThemedButton extends React.Component {
 }
 ```
 
-一段可以作为整体执行的代码块可以叫作「子程序 routine」，比如函数、方法、lambda、条件块、循环块等。 Kotlin 协程（coroutine）就是一段可以 suspend 的代码块。我们出于抽象复用的目的，将一部分含有异步的代码抽离出来封装成 suspend 函数。
+一段可以作为整体执行的代码块可以叫作「子程序 routine」，比如函数、方法、lambda、条件块、循环块等。 
+Kotlin 协程（coroutine）就是一段可以 suspend 的代码块。我们出于抽象复用的目的，将一部分含有异步的代码抽离出来封装成 suspend 函数。
 
-函数调用也类似 UI 组件，可以看作一个树状的结构。在 Kotlin 的 suspend 函数中，我们可以在调用链的任意层级获取 Context（Context propogation）：
+函数调用也类似 UI 组件，可以看作一个树状的结构。在 Kotlin 的 suspend 函数中，我们可以在调用链的任意层级获取 Context（Context propagation）：
 
 ```kotlin
 fun main() = runBlocking {
@@ -145,7 +148,9 @@ suspend fun baz() {
 }
 ```
 
-这个 `coroutineContext` 是 Kotlin 在编译期添加的，可以看成编译器将调用方的 Context **隐式**地传给了调用的 suspend 函数。在[「理解 Kotlin 的 suspend 函数」](https://blog.yujinyan.me/posts/understanding-kotlin-suspend-functions/)一文中，我们介绍了 `suspend` 的本质是 Continuation，而 Continuation 中除了对应回调的 `resumeWith` 方法之外，剩下另外一个属性就是 `CoroutineContext` ：
+这个 `coroutineContext` 是 Kotlin 在编译期添加的，可以看成编译器将调用方的 Context **隐式**地传给了调用的 suspend 函数。
+在[「理解 Kotlin 的 suspend 函数」](https://blog.yujinyan.me/posts/understanding-kotlin-suspend-functions/)一文中，
+我们介绍了 `suspend` 的本质是 Continuation，而 Continuation 中除了对应回调的 `resumeWith` 方法之外，剩下另外一个属性就是 `CoroutineContext`：
 
 ```kotlin
 public interface Continuation<in T> {
@@ -327,11 +332,14 @@ Dijkstra 认为高级语言应当摒弃 goto 语句，提倡「结构化编程 S
 
 在讨论 Kotlin 如何实现结构化并发之前，我们先来看一下协程的取消（Cancellation）。
 
-首先从上面 Android Activity 的例子可以看到，如果用户离开界面，出于回收系统资源的考虑，协程应该需要支持取消。同样在服务端，如果连接断开或者某个关键异步任务失败，其他异步任务也应该及时停掉以避免不必要的资源浪费。
+首先从上面 Android Activity 的例子可以看到，如果用户离开界面，出于及时回收系统资源的考虑，协程应该需要支持取消。
+同样在服务端，如果连接断开或者某个关键异步任务失败，其他异步任务也应该及时停掉以避免不必要的资源浪费。
 
-Kotlin 的协程、 Java 的线程和 Goroutine 都是协作式（cooperative）的，意味着要真正支持取消，协程需要主动地去检查当前的 Job 是不是处于 Active 的状态。这是因为如果子程序可以被突兀地中止，很有可能事情做到一半，损坏数据结构或文件资源等。
+Kotlin 的协程、 Java 的线程和 Goroutine 都是协作式（cooperative）的，意味着要真正支持取消，协程需要在任务的间隙主动去检查当前的 Job 是不是处于 Active 的状态。
+这是因为如果子程序可以被突兀地中止，很有可能事情做到一半，损坏数据结构或文件资源等。
 
-Go 语言通过 channel 实现取消协程。下面这例子将一个名为 `done` 的  channel 传递给调用链中所有含有异步任务的函数。调用方通过关闭这个 channel 的方式「通知」所有开启的协程结束正在进行的任务。注意，我们不会给这个 channel 发送数据，只是把关闭 channel 产生的副作用作为「广播」的方式。
+Go 语言通过 channel 实现取消协程。下面这例子将一个名为 `done` 的  channel 传递给调用链中所有含有异步任务的函数。
+调用方通过关闭这个 channel 的方式「通知」所有开启的协程结束正在进行的任务。我们不会给这个 channel 发送数据，只是把关闭 channel 产生的副作用作为「广播」的方式。
 
 ```go
 func main() {
@@ -382,7 +390,9 @@ type Context interface {
 
 如果习惯使用 ThreadLocal，可能会觉得这种显式传值比较麻烦（比如[这篇介绍 Go 上下文 Context 文章](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-context/#61-%E4%B8%8A%E4%B8%8B%E6%96%87-context)底下的评论）。
 
-Kotlin coroutine builder `launch` 的返回值是一个代表协程的 Job 对象。我们可以调用 `Job.cancel` 取消协程，`Job.join` 等待协程完成。由于 `Job` 是一个 `CoroutineContext.Element`，我们可以在 suspend 函数调用链的任意位置通过 `coroutineContext` 获取当前协程对应的 Job 。可以认为编译器隐式地帮我们传递了 Job 对象。
+Kotlin 协程中，我们通过 `CoroutineContext` 中隐式传递的 Job 对象取消协程。
+Coroutine builder `launch` 的返回值是一个代表协程的 Job 对象，可以调用 `.cancel` 取消协程，`.join` 等待协程完成。
+由于 `Job` 是一个 `CoroutineContext.Element`，可以在 suspend 函数调用链的任意位置通过 `coroutineContext` 属性获取当前协程对应的 Job。
 
 ```kotlin
 suspend fun main() =
@@ -404,7 +414,10 @@ public val CoroutineContext.isActive: Boolean
     get() = this[Job]?.isActive == true // highlight-line
 ```
 
-在 coroutine builder 开启的协程块内部可以用 `Job.isActive` 判断当前协程是否被取消。如果已取消则可以直接返回或者抛出 `CancellationException`。这个异常在协程库中不同于别的异常，有特殊的意义，是一个专门用作取消协程的标记，被抛出以后调用栈回退到 `launch` 的协程，整个协程正常结束，异常不会继续传播。
+**如何让我们写的 Kotlin 协程代码支持取消？**
+在 coroutine builder 开启的协程块内部可以用 `Job.isActive` 判断当前协程是否被取消。
+如果已取消则可以直接返回或者抛出 `CancellationException`。
+这个异常在协程库中不同于别的异常，有特殊的意义，是一个专门用作取消协程的标记，被抛出以后调用栈回退到 `launch` 的协程，整个协程**正常结束**，异常不会继续传播。
 
 ```kotlin
 suspend fun main() {
@@ -433,9 +446,12 @@ fun fibonacci(n: Int): Int = if (n <= 1)
   n else fibonacci(n - 1) + fibonacci(n - 2)
 ```
 
-**在封装出的 suspend 函数内部支持取消， return 是不行的，必须抛 `CancellationException`**。因为 return 以后，控制流正常退回上层函数，可能会继续执行后面的同步语句。当协程被取消后，整个调用链应该立即回退。而 `launch` 的协程块不同于 suspend 函数内部，是协程调用树的根节点，因此可以直接 return 结束协程。
+**在封装出的 suspend 函数内部支持取消， return 是不行的，必须抛 `CancellationException`**。
+因为 return 以后，控制流正常退回上层函数，可能会继续执行后面的同步语句。当协程被取消后，整个调用链应该立即回退。
+而 `launch` 的协程块不同于 suspend 函数内部，是协程调用树的根节点，因此可以直接 return 结束协程。
 
-所有 `kotlinx.coroutines` 中的 suspend 函数都支持取消。如果 Job 已取消则会抛出 `CancellationException` 。 
+如果我们调用的 suspend 函数支持取消，意味着这个 suspend 函数会检查当前协程是否是取消的状态并抛出 `CancellationException`。
+所有 `kotlinx.coroutines` 中的 suspend 函数都支持取消。我们调用支持取消的 suspend 函数，也就自动支持了取消，很少需要做专门处理。
 
 假设我们把上面这个例子中输出 fibonacci 数的代码封装成 suspend 函数，在这个函数内部可以使用 `yield` 方法来确保只有协程在 Active 的状态才会继续计算：
 
@@ -479,7 +495,9 @@ suspend fun sayHelloWorldInContext() {
 }
 ```
 
-上面的例子将 suspend 函数中编译器添加的 `coroutineContext` 传入 `launch` ，这样新开启的协程将运行在外部执行这个 suspend 函数的协程 Job 中。如果外部的 Job 被取消， `sayHelloWorldInContext` 中 `launch` 的协程也会被取消，可以解决前面 Android Activity 带有生命周期结束后协程泄漏的问题。但是另外的问题没有解决，开启协程的函数并不会等待异步任务结束，返回之后异步任务有可能还在执行。所以更加正确的写法是这样：
+上面的例子将 suspend 函数中编译器添加的 `coroutineContext` 传入 `launch`，这样新开启的协程将运行在外部执行这个 suspend 函数的协程 Job 中。
+如果外部的 Job 被取消，`sayHelloWorldInContext` 中 `launch` 的协程也会被取消，可以解决前面 Android Activity 带有生命周期结束后协程泄漏的问题。
+但是另外的问题没有解决，开启协程的函数并不会等待异步任务结束，返回之后异步任务有可能还在执行。所以更好的写法是这样：
 
 ```kotlin
 suspend fun sayHelloWorld() {
@@ -515,7 +533,7 @@ suspend fun sayHelloWorld() = job {
 
 这很 Kotlin。但是 `launch(this)` 有些尴尬。Kotlin 老手可能会想到如果 `launch` 是定义在 `job` 块的 Receiver 上的话，那么我们可以直接这个块里面 `launch` ，写法上就和 0.26.0 之前的全局顶层函数很像了。
 
-到这里我们已经差不多重新发明了 Kotlin 协程库 Structured Concurrency 的两大支柱——   `coroutineScope` 高阶函数和 `CoroutineScope` 接口。`coroutineScope` 类似我们写的 `job` 函数（[Kotlin 官方曾考虑用这个名字](https://github.com/Kotlin/kotlinx.coroutines/issues/410#issuecomment-403054790)），而 `CoroutineScope` 就是前面提到的 Receiver。
+到这里我们已经差不多重新发明了 Kotlin 协程库 Structured Concurrency 的两大支柱——`coroutineScope` 高阶函数和 `CoroutineScope` 接口。`coroutineScope` 类似我们写的 `job` 函数（[Kotlin 官方曾考虑用这个名字](https://github.com/Kotlin/kotlinx.coroutines/issues/410#issuecomment-403054790)），而 `CoroutineScope` 就是前面提到的 Receiver。
 
 ### Kotlin 协程的结构化并发设计
 
@@ -673,10 +691,17 @@ public interface Continuation<in T> {
 
 ### 国内对 Kotlin 协程的介绍
 
-笔者最早学习 Kotlin 协程主要是看其主要设计者 Roman Elizarov 先生的演讲以及在 Medium 上发表的文章。Roman 的介绍非常 high-level，着重问题、概念、思想和设计。并发实践匮乏会导致有时候难以领会 Kotlin 协程要解决的问题，造成不好理解。这两篇介绍协程的文章补充解释了笔者学习过程中产生的一些困惑，或许可以当作 Roman 演讲和文章的注脚。
+笔者最早学习 Kotlin 协程主要是看其主要设计者 Roman Elizarov 先生的演讲以及在 Medium 上发表的文章。
+Roman 的介绍非常 high-level，着重问题、概念、思想和设计。并发实践匮乏会导致有时候难以领会 Kotlin 协程要解决的问题，无法理解。
+这两篇介绍协程的文章补充解释了笔者学习过程中产生的一些困惑，或许可以当作 Roman 演讲和文章的注脚。
 
-在学习、写作的过程中笔者也看了一些国内对 Kotlin 协程的介绍，感觉对协程重要概念的介绍相对较少，比如本文提到的 Structured Concurrency、两个 Conventions 等。很多介绍协程的文章对协程的实现细节情有独钟，想要「破解」协程，或者「扒了协程的皮」。其他分析原理的文章摘录大量源码，翻译一些源码里面的注释，读起来「不明觉厉」。但仔细看的话会发现，由于缺少对一些重要的高层概念的把握，很多对源码的解读其实是片面甚至错误的。
+在学习、写作的过程中笔者也看了一些国内对 Kotlin 协程的介绍，感觉对协程重要概念的介绍相对较少，
+比如本文提到的 Structured Concurrency、两个 Conventions 等。
+很多文章对实现细节情有独钟，想要「破解」协程，或者「扒了协程的皮」。
+分析原理的时候摘录大量源码，翻译一些源码里面的注释，读起来让人「不明觉厉」。
+但仔细看的话会发现，由于缺少对一些重要的高层概念的把握，很多对源码的解读其实是片面甚至错误的。
 
-我想，学习一个库或者框架，直接看它的实现原理并不是最高效的方式。即使源码看明白了也不一定用得对。把握设计思想和理念更加重要。所有这些框架类库都为了解决某个问题而诞生。有了解决问题的 idea 以后，作者可能采取各种奇技淫巧甚至 hack 达成目的，同时在不断发展成熟的过程中会加入很多优化。所有这些细节都有可能掩盖问题和 idea 的本质。不先学习 idea 很容易被实现细节绕得晕头转向，更不要说在前人的基础上进行创新。
-
-当然学习源码是非常重要。有一些书叫 「×× 设计和实现」，是非常有价值的思路，不过对作者的功力有很高的要求。
+学习一个库或者框架，直接看它的实现原理并不是最高效的方式。即使源码看明白了也不一定用得对。
+把握设计思想和理念更加重要。所有这些框架类库都为了解决某个问题而诞生。
+有了解决问题的思路以后，作者可能采取各种 hack 达成目的，同时在不断发展成熟的过程中会加入很多优化。
+所有这些细节都有可能掩盖问题和 idea 的本质。不先学习 idea 绕在细节里，很难形成自己的思路，解决新的问题。
