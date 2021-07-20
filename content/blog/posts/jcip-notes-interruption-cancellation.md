@@ -44,7 +44,7 @@ Interruption is commonly used to support cancellation.
 
 ## How to support cancellation in our code?
 
-When our code calls a blocking method, we know this thread is interrupted when it throws the `InterruptedException`.
+When our code calls a blocking method, we know this thread is interrupted if it throws the `InterruptedException`.
 Since it's a checked exception, we're forced to deal with this exception explicitly in our code. It's critical that we
 handle this exception appropriately. See the next section for detail.
 
@@ -247,7 +247,7 @@ Some notable differences:
 
 Notice that if `InterruptedException` were not designed as a checked exception, we wouldn't need to catch the exception
 and do the `Thread.currentThread().interrupt()` trick. We can just propagate the exception automatically. In theory, a
-checked exception encourages proper code in place to deal with cancellation. But in practice, it's easy to make the
+checked exception encourages proper code in place to deal with interruption. But in practice, it's easy to make the
 mistake of swallowing the exception.
 
 Kotlin abandoned checked exceptions. In Kotlin coroutines, cancellation works by throwing `CancellationException`. All
@@ -291,8 +291,7 @@ gets caught in `runCatching`, so code in the coroutine continues to run.
 [An issue](https://github.com/Kotlin/kotlinx.coroutines/issues/1814) asks to rethrow `CancellationException`
 in `runCatching`. However, the Kotlin team seems reluctant to support this. Catching exceptions all over the place in
 application code is a bad idea anyway. In the previous example, the `IllegalStateException` also gets lost. Ideally,
-exception handling should be done centrally once in the application and report such runtime exception to help identify
-and fix bugs.
+the application should handle exceptions centrally in one place, and make sure they are reported for tracking down bugs.
 
 ### Cancelled state is permanent
 
@@ -333,4 +332,4 @@ in the target thread. However, the code running on that thread might be busy doi
 flag. So the blocking methods in the library follow the convention to check the interrupted flag and throw
 an `InterruptedException`. When that happens, the interruption mechanism finally gets the chance to deliver that signal.
 By then, the interrupted status has served its purpose and gets cleared. As a checked exception is in use, we're sure
-there is a signal handler in place.
+a signal handler is in place.
