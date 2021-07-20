@@ -27,8 +27,8 @@ For example:
 ```java
 // AbstractQueuedSynchronizer.ConditionObject
 public final void await() throws InterruptedException {
-  if (Thread.interrupted())
-    throw new InterruptedException();
+  if (Thread.interrupted()) // highlight-line
+    throw new InterruptedException(); // highlight-line
   // ...
 }
 ```
@@ -42,7 +42,7 @@ Interruption is commonly used to support cancellation.
 > but in practice, using interruption for anything but cancellation is fragile and difficult to sustain in larger applications. 
 > <cite>Java Concurrency In Practice, §7.1.1</cite>
 
-## How to support cancellation in our code?
+## How to support interruption in our code?
 
 When our code calls a blocking method, we know this thread is interrupted if it throws the `InterruptedException`.
 Since it's a checked exception, we're forced to deal with this exception explicitly in our code. It's critical that we
@@ -81,7 +81,7 @@ Here are three examples that illustrate these points.
 
 ```java
 public static void producePrimes(BlockingQueue<BigInteger> queue)
-    throws InterruptedException {
+    throws InterruptedException { // highlight-line
   BigInteger p = BigInteger.ONE;
   while (!Thread.currentThread().isInterrupted()) {
     p = p.nextProbablePrime();
@@ -109,9 +109,9 @@ class PrimeProducerTask(
     try {
       p = p.nextProbablePrime()
       queue.put(p)
-    } catch (e: InterruptedException) {
+    } catch (e: InterruptedException) { // highlight-line
       println("got $e")
-      Thread.currentThread().interrupt()
+      Thread.currentThread().interrupt() // highlight-line
     }
   }
 }
@@ -127,7 +127,7 @@ interrupted status by calling `Thread.currentThread().interrupt()`.
 // Listing 7.5
 class PrimeProducer(
   private val queue: BlockingDeque<BigInteger>
-) : Thread() {
+) : Thread() { // highlight-line
   override fun run() {
     try {
       var p = BigInteger.ONE
@@ -135,7 +135,7 @@ class PrimeProducer(
         p = p.nextProbablePrime()
         queue.put(p)
       }
-    } catch (consumed: InterruptedException) {
+    } catch (consumed: InterruptedException) { // highlight-line
     }
   }
 
@@ -185,11 +185,11 @@ to the output stream. This approach can reduce context switch overhead. Section 
 service and section 11.6 expands on performance considerations. 
 
 When log producers get ahead of consumers, the queue
-reaches its capacity and  `BlockingQueue.put` starts to block. When an interrupt happens then, it
-throws `InterruptedException`. For a logging library, propagating the exception directly to the caller makes it
+reaches its capacity and `BlockingQueue.put` starts to block. If an interrupt happens then, it
+throws `InterruptedException`. For a logging library, propagating the exception to the caller makes it
 difficult to use. So internally it needs to catch `InterruptedException` and use `Thread.currentThread.interrupt()` to
-restore the interrupted status. If it swallows the exception, the `future.cancel` request in the example gets lost and
-the code won't exit in a timely fashion.
+restore the interrupted status. If it swallows the exception, the `future.cancel` request in the example will get lost, 
+and the code won't exit in a timely fashion.
 
 ## Don't interrupt threads you don't own
 
@@ -209,10 +209,10 @@ public class TimedRun1 {
 
   public static void timedRun(Runnable r,
                               long timeout, TimeUnit unit) {
-    final Thread taskThread = Thread.currentThread();
+    final Thread taskThread = Thread.currentThread(); // highlight-line
     cancelExec.schedule(new Runnable() {
       public void run() {
-        taskThread.interrupt();
+        taskThread.interrupt(); // highlight-line
       }
     }, timeout, unit);
     r.run();
@@ -236,7 +236,7 @@ in the Java class libraries is *not* `Thread`, but `Executor` (§6.2).
 
 ## Comparison with Kotlin coroutines
 
-Cancellation in Kotlin coroutines works similarly. Both system
+Cancellation in Kotlin coroutines works similarly. Both systems
 
 - are cooperative,
 - use an exception to deliver the interruption / cancellation signal.
@@ -264,7 +264,7 @@ the `CancellationException`.
 @OptIn(ExperimentalTime::class)
 fun main() = runBlocking {
   val job = launch {
-    runCatching {
+    runCatching { // highlight-line
       fetchData()
     }
 
@@ -273,7 +273,7 @@ fun main() = runBlocking {
   }
 
   delay(200)
-  job.cancel()
+  job.cancel() // highlight-line
 }
 
 // A suspend function that can throw exception.
@@ -311,7 +311,7 @@ fun main() = runBlocking {
     }
 
     // Pretend we continue to do other work...
-    while (isActive) {
+    while (isActive) { // highlight-line
     }
   }
 
