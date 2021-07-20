@@ -21,9 +21,10 @@ and `Object.wait()` try to detect when a thread has been interrupted. By convent
 - clear the interrupted status and
 - throw the checked `InterruptedException`.
 
-For example, in `AbstractQueuedSynchronizer.ConditionObject.await()`
+For example:
 
 ```java
+// AbstractQueuedSynchronizer.ConditionObject
 public final void await() throws InterruptedException {
   if (Thread.interrupted())
     throw new InterruptedException();

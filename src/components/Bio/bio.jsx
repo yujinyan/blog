@@ -48,7 +48,7 @@ const Bio = () => {
           margin: 0,
         }}
       />
-      <p className="font-subtitle m-0" lang="en">
+      <div className="font-subtitle m-0" lang="en">
         Written by{" "}
         <strong>
           <a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a>
@@ -76,7 +76,7 @@ const Bio = () => {
         {/* Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>. */}
         {/* I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>. */}
         {/* {author.summary} */}
-      </p>
+      </div>
     </div>
   )
 }
