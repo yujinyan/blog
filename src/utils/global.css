@@ -31,8 +31,8 @@ article {
     @apply prose font-serif transition-colors
 }
 
-html[lang=en] article {
-    @apply prose-lg leading-snug
+html[lang=en] article .post-body {
+    @apply prose prose-lg leading-snug
 }
 
 .dark article {
