@@ -31,6 +31,10 @@ article {
     @apply prose font-serif transition-colors
 }
 
+html[lang=en] article {
+    @apply prose-lg leading-snug
+}
+
 .dark article {
     @apply prose-dark
 }
