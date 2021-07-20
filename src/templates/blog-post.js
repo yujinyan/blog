@@ -71,11 +71,9 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         {post.frontmatter.translate &&
         TranslateInfo(post.frontmatter.translate)}
         {
-          <div className="post-body">
-            <MyMdxLayout>
-              <MDXRenderer>{post.body}</MDXRenderer>
-            </MyMdxLayout>
-          </div>
+          <MyMdxLayout>
+            <MDXRenderer>{post.body}</MDXRenderer>
+          </MyMdxLayout>
         }
         <hr className="mb-2 mt-8" />
         <div className="text-caption text-xs mb-4">
