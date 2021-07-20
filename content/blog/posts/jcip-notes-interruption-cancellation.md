@@ -2,6 +2,7 @@
 title: JCIP Notes - Interruption and Cancellation
 date: "2021-07-20T12:15:03.284Z"
 english: true
+issueId: "90"
 ---
 
 This note summarizes *Chapter 7 Cancellation and Shutdown* in *[Java Concurrency in Practice](https://jcip.net/)*, by
