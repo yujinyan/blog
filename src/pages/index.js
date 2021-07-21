@@ -25,7 +25,7 @@ const BlogIndex = ({ data, location }) => {
         return (
           <article key={node.fields.slug}>
             <header className="mb-2">
-              <h3 className="-mb-2">
+              <h3 className="mb-0 leading-none">
                 <Link to={node.fields.slug}>
                   {get(node, "frontmatter.translate.title") ? (
                     <TranslateMark />

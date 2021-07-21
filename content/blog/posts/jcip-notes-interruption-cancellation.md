@@ -321,6 +321,9 @@ fun main() = runBlocking {
 }
 ```
 
+[[tip | 🚨]]
+| `runCatching` suspend functions could break Kotlin coroutine's cancellation mechanism.
+
 ## Why clear the interrupted flag before throwing `InterruptedException`?
 
 It seems thread interruption behaves more like a one-shot event system. Remember, there is

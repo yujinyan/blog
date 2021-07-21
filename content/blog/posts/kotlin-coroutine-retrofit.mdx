@@ -1,5 +1,5 @@
 ---
-title: Kotlin 协程与 Retrofit 
+title: Kotlin 协程与 Retrofit
 date: "2021-04-29T17:21:03.284Z"
 issueId: "61"
 ---
@@ -117,12 +117,15 @@ catch：
 
 ```kotlin
 lifecycleScope.launch {
-  runCatching { // highlight-line
-    val user = retrofit.create<UserService>().getUser(1)
-    binding.userNameLabel.text = user.name
-  } // highlight-line
+  val user = runCatching { retrofit.create<UserService>().getUser(1) } // highlight-line
+    .onFailure { if (it is CancellationException) throw it }
+    .getOrNull() ?: return@launch
+  binding.userNameLabel.text = user.name
 }
 ```
+
+另外，try catch suspend 函数的时候需要注意重新抛出 `CancellationException`，否则可能导致协程块无法及时取消。
+详细可以查看 [JCIP Notes - Interruption and Cancellation](/posts/jcip-notes-interruption-cancellation/#comparison-with-kotlin-coroutines)。
 
 [[tip | 💡]]
 | 好的封装设计应该**让正确的写法最简单**，**默认最简单的写法是正确的写法**。
@@ -152,8 +155,8 @@ Retrofit 的 Call Adapter 可以帮助我们在 Retrofit 的执行逻辑中嵌�
 
 > **As a rule of thumb, you should not be catching exceptions in general Kotlin code. That’s a code smell.**
 > Exceptions should be handled by some top-level framework code of your application to alert developers of the bugs in the code and to restart your application or its affected operation.
->
-> <cite>Roman Elizarov, Project Lead for Kotlin</cite>
+
+<cite>Roman Elizarov, Project Lead for Kotlin</cite>
 
 [[tip | “]]
 | **原则上，不要在 Kotlin 业务逻辑代码中 catch 异常。**这是一种 Code Smell。异常应该在应用顶层的基础设施代码中进行统一处理：比如进行上报或者重试出错的步骤。
@@ -465,13 +468,13 @@ Moshi 对比 Gson 的优势可以参考下面的链接：
 > Please don't use Gson. 2 out of 3 maintainers agree: it's deprecated. Use Moshi, Jackson, or kotlinx.serialization
 > which all understand Kotlin's nullability.
 > Gson does not and will do dumb things, and it won't be fixed. Please abandon it.
->
-> <cite>Signed, a Gson maintainer.</cite>
+
+<cite>Signed, a Gson maintainer.</cite>
 
 
 [[tip | “]]
-| 请不要再使用 Gson 了。Gson 三位维护者中有两位认为 Gson 实际上已经废弃了，请考虑使用 Moshi、Jackson 或者 kotlinx.serialization。 
-| 这些库都支持 Kotlin 的可空类型，而 Gson 不支持，同时还有其他愚蠢的问题，不会被修复。请抛弃它。 
+| 请不要再使用 Gson 了。Gson 三位维护者中有两位认为 Gson 实际上已经废弃了，请考虑使用 Moshi、Jackson 或者 kotlinx.serialization。
+| 这些库都支持 Kotlin 的可空类型，而 Gson 不支持，同时还有其他愚蠢的问题，不会被修复。请抛弃它。
 | 落款：一位 Gson 维护者。
 
 上面引用的是 Jake Wharton 的观点。新项目建议优先考虑 Moshi，已经用了 Gson 的项目迁移有一定风险，建议慎重。
