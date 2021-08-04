@@ -14,12 +14,12 @@ issueId: "8"
 
 从 CoreDNS 的 [Release 页面](https://github.com/coredns/coredns/releases)下载编译好的二进制文件，并解压缩得到 coredns 可执行文件：
 
-```
+```shell
 wget https://github.com/coredns/coredns/releases/download/v1.1.1/coredns_1.1.1_linux_amd64.tgz
 tar xvzf coredns_1.1.1_linux_amd64.tgz
 ```
 
-###  配置文件
+### 配置文件
 
 在当前目录下新建 `Corefile` 配置文件（注意大写 C）。CoreDNS 借助一系列的插件（plugins）执行解析域名的操作，例如：
 
@@ -43,14 +43,14 @@ example.com {
 
 ```
 # ./hostfile
-example.com 1.1.1.1
+1.1.1.1 example.com
 ```
 
 ### 运行
 
 由于 DNS 服务默认监听 53 端口，需要 root 权限
 
-```
+```shell
 sudo ./coredns
 ```
 
@@ -61,14 +61,16 @@ sudo ./coredns
 在 iOS 和 Android 的 Wi-Fi 设置中进入更多选项可以手动配置 DNS 服务器（Android 需要设置为固定 IP）。将前面搭建好的 DNS 服务公网地址填入即可。
 
 ## 客户端方案
+
 在 PC 上我们可以通过 hosts 文件自定义域名解析规则。相比搭建自己的 DNS 服务，直接在设备上修改会更加便捷。
 
 ![surge](./ios-surge.png)
-iOS 上推荐 Surge，可以直接添加自定义的域名解析规则。 
+iOS 上推荐 Surge，可以直接添加自定义的域名解析规则。
 
 <a href="https://itunes.apple.com/cn/app/surge-3-web-developer-tool/id1329879957?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/zh-cht/appstore-lrg.svg) no-repeat;width:135px;height:40px;background-size:contain;"></a>
 
 ## 参考资料
-https://coredns.io/2017/07/23/corefile-explained/
-https://coredns.io/plugins/hosts/
+
+- https://coredns.io/2017/07/23/corefile-explained/
+- https://coredns.io/plugins/hosts/
  
