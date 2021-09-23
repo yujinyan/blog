@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^4.2.1",
-    "@fontsource/roboto-slab": "^4.2.1",
+    "@fontsource/roboto-slab": "^4.5.1",
     "@fontsource/zilla-slab": "^4.2.1",
     "@iconify/icons-feather": "^1.1.0",
     "@iconify/react": "^1.1.3",
