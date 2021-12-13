@@ -1,0 +1,193 @@
+---
+title: Building a collapsible Extended Floating Action Button with Jetpack Compose
+date: "2021-12-12T20:31:03.284Z"
+english: true
+issueId: "101"
+---
+
+In this post, we are building the collapsible Extended Floating Action Button animation specified in the [Material Design 3 guidelines](https://m3.material.io/components/floating-action-button/guidelines#3ad4a846-ac87-4884-b9b0-97efceea2e41).
+
+import specVideo from "./m3-collapsible-fab-behavior.mp4"
+
+<video controls>
+  <source src={specVideo} type="video/mp4" />
+</video>
+
+When the user scrolls up to reveal more content, the Extended FAB collapses into a regular FAB. This effect is easy to implement once we find the suitable APIs with Jetpack Compose, namely:
+
+
+- `AnimatedVisibility` takes care of the animation
+- `snapshotFlow` lets us listen to scroll offset given by `ScrollState.value`
+
+## Create our FAB component
+
+Out of the box, the [`androidx.compose.material3`](https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary) library gives us an `ExtendedFloatingActionButton` component.
+Unfortunately, it takes an optional `icon` composable, while what we want to achieve has a persistent icon across the two states. So, we'll have to roll our own:
+
+```kotlin
+@Composable
+fun ExtendableFloatingActionButton(
+  modifier: Modifier = Modifier,
+  extended: Boolean, // highlight-line
+  text: @Composable () -> Unit,
+  icon: @Composable () -> Unit,
+  onClick: () -> Unit = {}
+) {
+  FloatingActionButton(
+    modifier = modifier,
+    onClick = onClick,
+  ) {
+    Row(
+      modifier = Modifier.padding(
+        start = PaddingSize,
+        end = PaddingSize
+      ),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      icon()
+
+      AnimatedVisibility(visible = extended) { // highlight-line
+        Row {
+          Spacer(Modifier.width(12.dp))
+          text()
+        }
+      }
+    }
+  }
+}
+
+private val PaddingSize = 16.dp
+```
+
+The composable function takes an `extended: Boolean` parameter to indicate whether the optional text label is shown. This state is hoisted up to the parent composable, so that we can change it according to the scroll state of the background content.
+
+Inside the component, we wrap the optional text label inside an `AnimatedVisibility` block. The `AnimatedVisibility` is like a drop-in replacement for an `if` conditional block. When the `extended` state changes,  Compose will interpolate between the two states and animate the appearance/disappearance of content automatically.
+
+## Listen to scroll events
+
+Compose offers two sets of modifiers for handling scroll gestures:
+
+- `Modifier.verticalScroll` (and `horizontalScroll`), which take a `ScrollState`;
+- `Modifier.scrollable`, which takes a `ScrollableState`.
+
+By passing in either a `ScrollState` or `ScrollableState` object to these modifiers, we can read off scroll states and manually control how the content is scrolled.
+
+[[tip | 💡]]
+| Notice `ScrollState` with a shorter name is the more commonly used API.
+
+To subscribe to scroll events, I expected to find something to which we can attach a callback (like `RecyclerView.OnScrollListener`),
+or an event stream like a `Flow` of scrolled offsets.
+It turns out `ScrollableState` does take a lambda. We can grab the current scroll position in this lambda and store it
+in a `MutableState`.
+
+```kotlin
+@Composable
+fun ScrollableSample() {
+  // actual composable state
+  var offset by remember { mutableStateOf(0f) } // highlight-line
+  Box(
+    Modifier
+      .size(150.dp)
+      .scrollable(
+        orientation = Orientation.Vertical,
+        // Scrollable state: describes how to consume
+        // scrolling delta and update offset
+        // highlight-range{1-4}
+        state = rememberScrollableState { delta ->
+          offset += delta
+          delta
+        }
+      )
+      .background(Color.LightGray),
+    contentAlignment = Alignment.Center
+  ) {
+    Text(offset.toString())
+  }
+}
+```
+
+However, `Modifier.scrollable` is a low-level primitive used internally by `Modifier.verticalScroll`.
+It detects the scroll gestures, but the content itself won't be scrolled by default.
+In this way, we'll have to duplicate a lot of logic in `Modifier.verticalScroll`.
+
+On the other hand, `ScrollState` used by `Modifier.verticalScroll` gives us the current scroll position through the `ScrollState.value` attribute directly.
+
+```kotlin
+// 👇 ScrollState exposes an integer scroll position value.
+
+@Stable
+class ScrollState(initial: Int) : ScrollableState {
+  /**
+   * current scroll position value in pixels
+   */
+  var value: Int by mutableStateOf(initial, structuralEqualityPolicy())
+    private set
+
+  // ...
+}
+```
+It isn't obvious, but we can subscribe to this integer value by using `snapshotFlow`.
+This is how we can achieve the collapsible FAB behavior:
+
+```kotlin
+val verticalScroll = rememberScrollState()
+var fabExtended by remember { mutableStateOf(true) }
+
+LaunchedEffect(verticalScroll) {
+  var prev = 0
+  snapshotFlow { verticalScroll.value } // highlight-line
+    .collect {
+       fabExtended = it <= prev
+       prev = it
+    }
+}
+
+Scaffold(
+  floatingActionButton = { 
+    ExtendableFloatingActionButton(extended = fabExtended, /**/)
+  }
+) {
+  Column(Modifier.verticalScroll(verticalScroll) { /**/ }
+}
+```
+
+## How does `snapshotFlow` work?
+
+At first blush, the `snapshotFlow` looks a bit magical to me. Its lambda parameter only captures a primitive value, but somehow, it can react to `MutableState` changes and emit new values.
+
+Where does this reactivity come from? Under the hood, `snapshotFlow` uses the Snapshot API of the Compose runtime. Here is a simple demonstration:
+
+```kotlin
+class Counter(
+  val count: MutableState<Int> = mutableStateOf(0)
+)
+
+suspend fun snapshotFlow() {
+  val counter = Counter()
+
+  coroutineScope {
+    val job = launch {
+      snapshotFlow { counter.count.value }
+        .collect { println(it) }
+    }
+    launch {
+      repeat(5) {
+        delay(1000)
+        counter.count.value = counter.count.value + 1
+        Snapshot.sendApplyNotifications()
+      }
+
+      job.cancel()
+    }
+  }
+}
+
+// Prints out 0, 1, 2, 3, 4, 5 with 1 second interval.
+```
+
+On a high level, Snapshot keeps track of all `MutableState` declared in the application.
+Using this API, `snapshotFlow` records which states are read inside the lambda.
+Whenever those states are changed, the lambda passed into `snapshotFlow` is rerun and the resulting flow emits a new value.
+
+The little remaining space in this blog post doesn't do justice to this interesting part of the Compose runtime.
+I would like to refer my readers to Zach Klippenstein's excellent post [*Introduction to the Compose Snapshot system*](https://dev.to/zachklipp/introduction-to-the-compose-snapshot-system-19cn).

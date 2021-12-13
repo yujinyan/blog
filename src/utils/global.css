@@ -31,6 +31,20 @@ article {
     @apply prose font-serif transition-colors
 }
 
+.full-width {
+    left: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    max-width: 100vw;
+    position: relative;
+    right: 50%;
+    width: 100vw;
+}
+
+video {
+    width: 100%
+}
+
 html[lang=en] article p, html[lang=en] article li {
     @apply text-lg leading-snug
 }
@@ -181,9 +195,14 @@ article .math .katex-display {
 }
 
 @media (max-width: 42rem) {
+
+    video {
+        @apply full-width
+    }
+
     .light pre[class*="language-"] {
         border-radius: 0;
-        box-shadow: 0 0px 6px 0px rgb(0 0 0 / 25%);
+        box-shadow: 0 0 6px 0 rgb(0 0 0 / 25%);
     }
 
     .gatsby-highlight {
