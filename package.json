@@ -44,6 +44,7 @@
     "gatsby-remark-responsive-iframe": "^4.1.0",
     "gatsby-remark-smallcaps": "^1.0.1",
     "gatsby-remark-smartypants": "^4.1.0",
+    "gatsby-remark-vscode": "^3.2.1",
     "gatsby-source-filesystem": "^3.4.0",
     "gatsby-transformer-remark": "^4.1.0",
     "gatsby-transformer-sharp": "^3.4.0",

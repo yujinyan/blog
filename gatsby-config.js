@@ -63,6 +63,18 @@ module.exports = {
             resolve: require.resolve("./plugins/gatsby-remark-hanzi-nowrap"),
           },
           `gatsby-remark-prismjs`,
+          // {
+          //   resolve: `gatsby-remark-vscode`,
+          //   options: {
+          //     theme: "Material Theme Palenight",
+          //     // theme: "Light", // Or install your favorite theme from GitHub
+          //     extensions: [
+          //       require.resolve("./vendor/kotlin-refs.tags.0.2.22.vsix"),
+          //       require.resolve("./vendor/Equinusocio.vsc-material-theme-33.2.2.vsix")
+          //     ],
+          //     injectStyles: false
+          //   },
+          // },
           `gatsby-remark-copy-linked-files`,
           `gatsby-remark-smartypants`,
           {
