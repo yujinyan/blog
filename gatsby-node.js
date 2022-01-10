@@ -73,14 +73,46 @@ exports.onCreateWebpackConfig = ({ stage, actions }) => {
   actions.setWebpackConfig({
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'),
-        '~': path.resolve(__dirname, 'content')
+        "@": path.resolve(__dirname, "src"),
+        "~": path.resolve(__dirname, "content"),
       },
       modules: [
         path.resolve(__dirname, "src"),
         path.resolve(__dirname, "content"),
-        "node_modules"
+        "node_modules",
       ],
     },
   })
+}
+
+// https://www.gatsbyjs.com/docs/reference/graphql-data-layer/schema-customization/#foreign-key-fields
+// https://hashinteractive.com/blog/gatsby-data-relationships-with-foreign-key-fields/
+exports.createSchemaCustomization = ({ actions, schema }) => {
+  const { createTypes } = actions
+  const typeDefs = `
+    type Mdx implements Node {
+      book: Book @link(by: "alias", from: "frontmatter.book")
+    }
+  `
+
+  createTypes(typeDefs)
+}
+
+exports.createResolvers = ({ createResolvers }) => {
+  const resolvers = {
+    Book: {
+      coverFile: {
+        type: "File",
+        resolve(source, args, context, info) {
+          return context.nodeModel.findOne({
+            type: "File",
+            query: {
+              filter: { absolutePath: { regex: `/${source.cover}/` } },
+            },
+          })
+        },
+      },
+    },
+  }
+  createResolvers(resolvers)
 }

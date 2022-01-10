@@ -26,6 +26,20 @@ module.exports = {
         name: `assets`,
       },
     },
+    // {
+    //   resolve: `gatsby-source-filesystem`,
+    //   options: {
+    //     path: `${__dirname}/content/books`,
+    //     name: `books`,
+    //   },
+    // },
+    {
+      resolve: `gatsby-transformer-csv`,
+      options: {
+        // remove "Csv" suffix
+        typeName: ({ node }) => node.name.charAt(0).toUpperCase() + node.name.slice(1),
+      },
+    },
     {
       // https://github.com/gatsbyjs/gatsby/issues/21866
       resolve: `gatsby-plugin-mdx`,
