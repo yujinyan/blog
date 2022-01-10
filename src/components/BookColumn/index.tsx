@@ -1,13 +1,16 @@
 import React from "react"
 import Image from "gatsby-image"
 
+import "./style.scss"
 
 export default ({ title, author, year, coverFile }) => {
   return (
-    <div>
-      <Image fluid={coverFile.childImageSharp.fluid} className="rounded shadow-lg" />
-      <p className="text-2xl font-subtitle mt-4 mb-0 leading-tight font-bold text-right">{title}</p>
-      <p className="font-sans italic m-0 text-right text-opacity-60">{author}, {year}</p>
+    <div className="book-widget flex xl:block items-center">
+      <Image fluid={coverFile.childImageSharp.fluid} className="rounded shadow-lg xl:w-64 w-32" />
+      <div className="flex-auto ml-4 xl:ml-0">
+        <p className="title">{title}</p>
+        <p className="subtitle">{author}, {year}</p>
+      </div>
     </div>
   )
 }
