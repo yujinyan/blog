@@ -15,6 +15,7 @@ import Helmet from "react-helmet"
 import "katex/dist/katex.min.css"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import MyMdxLayout from "@/templates/my-mdx-layout"
+import BookColumn from "@/components/BookColumn"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.mdx
@@ -56,7 +57,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       />
       {/* Currently, blog posts are either in English or Simplified Han */}
       <Helmet htmlAttributes={{ lang: post.frontmatter.english ? "en" : "zh-cmn-Hans" }} />
-      <article>
+      <article className="relative">
         <header>
           <h1 className="m-0 mt-4">
             {post.frontmatter.translate && <TranslateMark />}
@@ -69,7 +70,8 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           </p>
         </header>
         {post.frontmatter.translate &&
-        TranslateInfo(post.frontmatter.translate)}
+          TranslateInfo(post.frontmatter.translate)}
+        {post.book && <div className="xl:absolute xl:-left-80 xl:w-64 w-auto mb-8"><BookColumn {...post.book} /></div>}
         {
           <MyMdxLayout>
             <MDXRenderer>{post.body}</MDXRenderer>
@@ -85,7 +87,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         </footer>
       </article>
       {post.frontmatter.issueId &&
-      <UtterancesComments issueId={post.frontmatter.issueId} className="mt-16" />
+        <UtterancesComments issueId={post.frontmatter.issueId} className="mt-16" />
       }
       <GithubCorner url={githubUrl} />
       <Fab className="hide-on-desktop" isOpen={menuIsOpen} setOpen={setMenuOpen} />
@@ -143,6 +145,21 @@ export const pageQuery = graphql`
           title
           url
           author
+        }
+      }
+      book {
+        title
+        author
+        year
+        coverFile {
+          childImageSharp {
+            fixed {
+               ...GatsbyImageSharpFixed
+            }
+            fluid {
+               ...GatsbyImageSharpFluid
+            }
+          }
         }
       }
     }

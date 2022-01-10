@@ -45,7 +45,7 @@ video {
     width: 100%
 }
 
-html[lang=en] article p, html[lang=en] article li {
+html[lang=en] article > p, html[lang=en] article li {
     @apply text-lg leading-snug
 }
 

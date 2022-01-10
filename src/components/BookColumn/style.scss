@@ -1,0 +1,9 @@
+.book-widget {
+  .title {
+    @apply text-2xl font-subtitle mt-4 mb-0 leading-tight font-bold xl:text-right;
+  }
+
+  .subtitle {
+    @apply italic m-0 xl:text-right text-opacity-50
+  }
+}
