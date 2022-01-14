@@ -93,6 +93,9 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
     type Mdx implements Node {
       book: Book @link(by: "alias", from: "frontmatter.book")
     }
+    type Book implements Node {
+      post: Mdx @link(by: "frontmatter.book", from: "alias")
+    }
   `
 
   createTypes(typeDefs)

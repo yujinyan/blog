@@ -10,7 +10,8 @@ import { TranslateMark } from "../components/translate"
 import get from "lodash/get"
 import "./index.css"
 
-const BlogIndex = ({ data, location }) => {
+
+const LeetCodePage =  ({ data, location }) => {
   const siteTitle = data.site.siteMetadata.title
   const posts = data.allMdx.edges
 
@@ -42,7 +43,7 @@ const BlogIndex = ({ data, location }) => {
   )
 }
 
-export default BlogIndex
+export default LeetCodePage
 
 export const pageQuery = graphql`
   query {

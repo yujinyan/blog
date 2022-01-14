@@ -271,6 +271,9 @@ a.anchor.before {
     border-top: 1px solid var(--hr);
     border-bottom: 1px solid var(--hr);
     padding: 1rem 0 1rem 0;
+}
+
+.pull-left {
     margin-left: -4rem;
 }
 
@@ -350,4 +353,49 @@ h6 .anchor:focus svg {
 @font-face {
     font-family: "Cascadia";
     src: url("../fonts/Cascadia.woff2");
+}
+
+@font-face {
+    font-family: "Kai";
+    src: url("../fonts/LXGWWenKaiScreen.ttf");
+    font-style: italic;
+}
+
+/* roboto-slab-latin-900-normal*/
+@font-face {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 900;
+    src: url('~@fontsource/roboto-slab/files/roboto-slab-latin-900-normal.woff2') format('woff2'), url('~@fontsource/roboto-slab/files/roboto-slab-all-900-normal.woff') format('woff');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* jetbrains-mono-latin-400-normal*/
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url('~@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2') format('woff2'), url('~@fontsource/jetbrains-mono/files/jetbrains-mono-all-400-normal.woff') format('woff');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* zilla-slab-latin-400-italic*/
+@font-face {
+    font-family: 'Zilla Slab';
+    font-style: italic;
+    font-display: swap;
+    font-weight: 400;
+    src: url('~@fontsource/zilla-slab/files/zilla-slab-latin-400-italic.woff2') format('woff2'), url('~@fontsource/zilla-slab/files/zilla-slab-all-400-italic.woff') format('woff');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* zilla-slab-latin-400-normal*/
+@font-face {
+    font-family: 'Zilla Slab';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url('~@fontsource/zilla-slab/files/zilla-slab-latin-400-normal.woff2') format('woff2'), url('~@fontsource/zilla-slab/files/zilla-slab-all-400-normal.woff') format('woff');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }

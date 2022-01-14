@@ -1,3 +1,5 @@
 alias,title,author,cover,year
 jcip,Java Concurrency in Practice,Brian Goetz,jcip.jpg,2006
 dddf,Domain Modeling Made Functional,Scott Wlaschin,swdddf.jpg,2018
+pragmatic,The Pragmatic Programmer,David Thomas and Andrew Hunt,pragmatic.jpg,2020
+code,Code: The Hidden Language of Computer Hardware and Software,Charles Petzold,petzold-code.jpg,2000
