@@ -71,7 +71,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         </header>
         {post.frontmatter.translate &&
           TranslateInfo(post.frontmatter.translate)}
-        {post.book && <div className="xl:absolute xl:-left-80 xl:w-64 w-auto mb-8"><BookColumn {...post.book} /></div>}
+        {post.book && <div className="xl:absolute xl:-left-80 xl:w-64 w-auto mb-16"><BookColumn {...post.book} /></div>}
         {
           <MyMdxLayout>
             <MDXRenderer>{post.body}</MDXRenderer>
