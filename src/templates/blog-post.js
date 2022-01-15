@@ -57,7 +57,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       />
       {/* Currently, blog posts are either in English or Simplified Han */}
       <Helmet htmlAttributes={{ lang: post.frontmatter.english ? "en" : "zh-cmn-Hans" }} />
-      <article className="relative">
+      <article className="relative prose dark:prose-invert font-serif transition-colors">
         <header>
           <h1 className="m-0 mt-4">
             {post.frontmatter.translate && <TranslateMark />}
