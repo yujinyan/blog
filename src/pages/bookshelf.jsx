@@ -12,11 +12,11 @@ const BookShelfPage = ({ data, location }) => {
   return <Layout location={location}>
     <div className="flex items-end flex-wrap">
       {books.map((book) =>
-        <div className="hover:scale-125">
-          <Link to={get(book, "post.fields.slug")} style={{ textDecoration: "none" }} >
-            <Image fluid={book.coverFile.childImageSharp.fluid} className="rounded shadow-xl xl:w-48 w-36 m-2 border hover:scale-125" />
-          </Link>
-        </div>
+          <div className="hover:scale-110 hover:z-50 transition-transform">
+            <Link to={get(book, "post.fields.slug")} style={{ textDecoration: "none" }}>
+              <Image fluid={book.coverFile.childImageSharp.fluid} className="rounded shadow-xl xl:w-48 w-36 m-2 border dark:border-gray-500" />
+            </Link>
+          </div>,
         // <BookColumn {...book} />,
       )}
     </div>
