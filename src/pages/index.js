@@ -59,7 +59,10 @@ export const pageQuery = graphql`
     }
     allMdx(
       sort: { fields: [frontmatter___date], order: DESC },
-      filter: { fileAbsolutePath: { regex: "/posts/" }}
+      filter: { 
+        fileAbsolutePath: { regex: "/posts/" },
+        frontmatter: { hidden: { ne: true } }
+      }
     ) {
       edges {
         node {

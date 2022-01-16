@@ -36,6 +36,14 @@ Example:
 | ![Structured Programming](./structured-programming.svg)
 ```
 
+## Frontmatter
+
+| field          | description                                                                                     |
+|----------------|-------------------------------------------------------------------------------------------------|
+| `hidden: true` | Hide the post from index page.                                                                  |
+| `book: jcip`   | Display book widget with cover and info. See [#108](https://github.com/yujinyan/blog/pull/108). |
+
+
 ## 📰 Typography
 
 Font combination
