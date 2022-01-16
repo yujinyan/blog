@@ -57,7 +57,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       />
       {/* Currently, blog posts are either in English or Simplified Han */}
       <Helmet htmlAttributes={{ lang: post.frontmatter.english ? "en" : "zh-cmn-Hans" }} />
-      <article className="relative">
+      <article className="relative prose dark:prose-invert font-serif transition-colors">
         <header>
           <h1 className="m-0 mt-4">
             {post.frontmatter.translate && <TranslateMark />}
@@ -71,7 +71,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         </header>
         {post.frontmatter.translate &&
           TranslateInfo(post.frontmatter.translate)}
-        {post.book && <div className="xl:absolute xl:-left-80 xl:w-64 w-auto mb-8"><BookColumn {...post.book} /></div>}
+        {post.book && <div className="xl:absolute xl:-left-80 xl:w-64 w-auto mb-16"><BookColumn {...post.book} /></div>}
         {
           <MyMdxLayout>
             <MDXRenderer>{post.body}</MDXRenderer>

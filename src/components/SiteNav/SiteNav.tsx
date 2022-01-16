@@ -4,6 +4,7 @@ import "./site-nav.scss"
 
 const data = [
   { link: "/", title: "Home" },
+  { link: "/bookshelf", title: "Bookshelf" },
   { link: "/leetcode", title: "LeetCode" },
   { link: "/friends", title: "Friends" },
 ]

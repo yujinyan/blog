@@ -23,7 +23,7 @@ const BlogIndex = ({ data, location }) => {
       {posts.map(({ node }) => {
         const title = node.frontmatter.title || node.fields.slug
         return (
-          <article key={node.fields.slug}>
+          <article key={node.fields.slug} className="prose dark:prose-invert">
             <header className="mb-2">
               <h3 className="mb-0 leading-none">
                 <Link to={node.fields.slug}>
@@ -59,7 +59,10 @@ export const pageQuery = graphql`
     }
     allMdx(
       sort: { fields: [frontmatter___date], order: DESC },
-      filter: { fileAbsolutePath: { regex: "/posts/" }}
+      filter: { 
+        fileAbsolutePath: { regex: "/posts/" },
+        frontmatter: { hidden: { ne: true } }
+      }
     ) {
       edges {
         node {

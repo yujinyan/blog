@@ -4,14 +4,14 @@ const colors = require("tailwindcss/colors")
 const monoFonts = (fontName) => `"${fontName}", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;`
 
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}"],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
   theme: {
     colors: {
       primary: "var(--primary)",
       body: "var(--body)",
       caption: "var(--caption)",
-      gray: colors.coolGray,
+      gray: colors.gray,
     },
     fontFamily: {
       "serif": `"source-serif-4", ${SourceHanSerif}, "Georgia", "serif"`,
@@ -52,9 +52,6 @@ module.exports = {
         },
       }),
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [require("@tailwindcss/typography")],
 }

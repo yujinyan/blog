@@ -84,7 +84,7 @@ module.exports = {
             options: {
               blocks: {
                 tip: {
-                  classes: "tip",
+                  classes: "tip pull-left",
                   title: "optional",
                 },
                 fig: {

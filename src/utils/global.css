@@ -27,10 +27,6 @@
     }
 }
 
-article {
-    @apply prose font-serif transition-colors
-}
-
 .full-width {
     left: 50%;
     margin-left: -50vw;
@@ -47,10 +43,6 @@ video {
 
 html[lang=en] article > p, html[lang=en] article li {
     @apply text-lg leading-snug
-}
-
-.dark article {
-    @apply prose-dark
 }
 
 .caption {
@@ -271,6 +263,9 @@ a.anchor.before {
     border-top: 1px solid var(--hr);
     border-bottom: 1px solid var(--hr);
     padding: 1rem 0 1rem 0;
+}
+
+.pull-left {
     margin-left: -4rem;
 }
 
