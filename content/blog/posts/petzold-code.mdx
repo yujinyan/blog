@@ -7,12 +7,12 @@ hidden: true
 
 import Callout from "@/components/Callout"
 
-<Callout className="mt-16" emoji="😍😍😍😍😟">前几章引人入胜，通俗易懂，很喜欢讲解计算机原理的过程中加入的历史叙事。后半部分关于电路的介绍十分“硬核”，且感觉略微零散。</Callout>
+<Callout className="mt-16" emoji="😍😍😍😍😓">前几章引人入胜，通俗易懂，很喜欢讲解计算机原理的过程中加入的历史叙事。后半部分关于电路的介绍相当“硬核”。</Callout>
 
 
 ## 第一章
 
-了解到一个有趣的轶事：二战期间 BBC 会播放贝多芬第五交响曲开始的那四个音，那个寓意是 **V**ictory
+了解到一个有趣的轶事：二战期间 BBC 会播放贝多芬第五交响曲开始的那四个音，那个寓意是 **V**ictory。
 
 ## 第二章：Morse Code
 
@@ -20,21 +20,27 @@ Morse code 联想到了霍夫曼码，霍夫曼和 input data 有关，而 Morse
 
 但 Morse 不像霍夫曼那样 prefix free，所以需要手动加入间隔。不知道 morse 设计成 prefix free 会不会更好些？
 
+<Callout emoji="📖" className="mt-16">
+  A prefix-free code requires there is no whole code word in the system that is a prefix (initial segment) of any other code word in the system.
+
+  For example, <code>`{9, 55}`</code> is a prefix-free code, while <code>`{9, 5, 59, 55}` is not.</code>
+</Callout>
+
 [Why do we use Morse code, instead of a prefix-free code, which eliminates the need for the spaces between characters?](https://www.quora.com/Why-do-we-use-Morse-code-instead-of-a-prefix-free-code-which-eliminates-the-need-for-the-spaces-between-characters)
 
-Morse 是个非常好的例子，深刻揭示了计算机信息存储的本质即 bits+context，这也是本书书名 code 所要传达的核心
+Morse 是个非常好的例子，深刻揭示了计算机信息存储的本质即 bits+context，这也是本书书名 Code 所要传达的核心。
 
 ## 第三章：Braille
 
 关于盲文的设计，起初有人设计成字母的样子，没有很好把握住痛点，陷入了思维的局限。
 
-最终还是这位 Louis Braille 虽幼年遭遇不幸失明，但没有妨碍心中求知的光明冲破黑暗，留下来传世的发明。
+最终还是这位 Louis Braille 虽幼年遭遇不幸失明，但心中求知的光明冲破黑暗，留下来传世的发明。
 
 为了追求编码的精简，一些 contraction 的设计非常有趣。
 
 ## 第四、五、六章：电
 
-电的物质基础是电子的移动，唤醒了一些残存的中学物理的记忆。作者对电的介绍得非常好，深入浅出，激发兴趣。
+电的物质基础是电子的移动，唤醒了一些残存的中学物理的记忆。作者对电的介绍得非常好，深入浅出。
 
 ## 第七、八章：进制
 
@@ -55,13 +61,13 @@ Morse 是个非常好的例子，深刻揭示了计算机信息存储的本质�
 
 ## 第九章：胶卷、条形码的编码
 
-胶卷的例子有点过时了，条形码看着有点迷糊，看上去冗余度挺高。另外可以看下二维码。
+胶卷的例子感觉有点过时了。另外可以看下二维码。
 
 感受到的这本书的历史轶闻，比如第九章一开始的英军入侵的歌谣以及各位发明家的生平，让人感受到计算机发明的线索和灵感隐匿在人类文明发展历程中。
 
 ## 第十章
 
-用 + 和 × 表示「或」和「与」感觉挺有趣，同 Algebraic Data Type：sum type / product type。
+用 + 和 × 表示「或」和「与」感觉挺有趣，像 Algebraic Data Type：sum type / product type。
 
 ## 第十一、十二章
 
