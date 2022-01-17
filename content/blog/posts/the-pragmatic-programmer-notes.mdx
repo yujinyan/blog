@@ -1,0 +1,177 @@
+---
+title: The Pragmatic Programmer
+date: "2022-01-17T16:07:17.284Z"
+book: pragmatic
+hidden: true
+english: true
+---
+
+import Callout from "@/components/Callout"
+
+<Callout className="mt-16" emoji="😍😍😍😍😍">
+  A pragmatic general software engineering book full of useful advice.
+  It covers a lot of ground, from writing code to team communication.
+  An experienced developer probably already knows much of the material,
+  but may still enjoy the anecdotes and punch lines.
+</Callout>
+
+Here are some helpful tips I highlighted, annotated with some of my thoughts.
+
+## Invest regularly in knowledge portfolio
+
+- Learn at least one new programming language every year.
+- Read a technical book each month.
+- Read nontechnical books, too.
+- Take classes.
+
+I feel these goals are well-worth putting into action.
+The second point is the motivation for the bookshelf page of this blog.
+
+## Engineering Daybooks
+
+> ... a kind of journal in which they recorded what they did, things they learned, sketches of ideas, readings from meters: basically anything to do with their work.
+
+
+Now I’m keeping this kind of journal inside Notion, where I paste links, screenshots and scribble down thoughts. I also try to organize the notes on a weekly basis.
+
+The author advises using pen and paper, but I think that’s inconvenient.
+
+## Critically analyze what you read and hear
+
+> Beware of the zealots who insist their dogma provides the *only* answer.
+
+Many undergo this stage where we are overly enthusiastic about one specific piece of technology. It’s important to be open-minded.
+
+I feel coming from a humanities background may have an edge here, as we are more used to the fact that there are many solutions to a problem.
+
+Writing software is mainly about weighing pros and cons of different solutions and striking the right balance.
+
+Related: *[Goodbye, Clean Code](https://overreacted.io/goodbye-clean-code/)*.
+
+## Uniform Access Principle
+
+> All services offered by a module should be available through a uniform notation, which does not betray whether they are implemented through storage or through computation.
+> <cite>Bertrand Meyer</cite>
+
+
+[bliki: UniformAccessPrinciple](https://martinfowler.com/bliki/UniformAccessPrinciple.html)
+
+Kotlin provides direct support for this principle through object property. For example, the `length` property of the `Line` class is first implemented through computation.
+
+```kotlin
+class Line(
+  val start: Point,
+  val end: Point,
+) {
+  val length get() = start.distanceTo(end) // highlight-line
+}
+```
+
+Later, we’d like to store the result inside a field. We can evolve the class like this:
+
+```kotlin
+class Line(
+  val start: Point,
+  val end: Point,
+) {
+  val length = start.distanceTo(end) // highlight-line
+}
+```
+
+In either way, the API looks the same to the client.
+
+## Balance resources
+
+> The function or object that allocates a resource should be responsible for deallocating it.
+
+
+The key idea is that the opening and closing of a resource should happen locally in the same place. Further, it’s even better to leverage good interface design and language features.
+
+Example: [Using the Effect Hook - React](https://reactjs.org/docs/hooks-effect.html#tip-use-multiple-effects-to-separate-concerns)
+
+```jsx
+class FriendStatusWithCounter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0, isOnline: null };
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+  }
+
+  componentDidMount() {
+    document.title = `You clicked ${this.state.count} times`;
+    ChatAPI.subscribeToFriendStatus(this.props.friend.id, this.handleStatusChange); // highlight-line
+  }
+
+  componentDidUpdate() {
+    document.title = `You clicked ${this.state.count} times`;
+  }
+
+  componentWillUnmount() {
+    ChatAPI.unsubscribeFromFriendStatus(this.props.friend.id, this.handleStatusChange); // highlight-line
+  }
+
+  handleStatusChange(status) {
+    this.setState({ isOnline: status.isOnline });
+  }
+  // ...
+```
+
+With the hook API:
+
+```jsx
+function FriendStatusWithCounter(props) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    document.title = `You clicked ${count} times`; // highlight-line
+  });
+
+  const [isOnline, setIsOnline] = useState(null);
+  useEffect(() => {
+    function handleStatusChange(status) {
+      setIsOnline(status.isOnline);
+    }
+
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange); // highlight-line
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange); // highlight-line
+    };
+  });
+  // ...
+}
+```
+
+Notice the hook API helps to co-locate the opening and closing of resources in a single method.
+
+## Concurrency vs. Parallelism
+
+> Concurrency is a software mechanism, and parallelism is a hardware concern.
+
+
+## Refactoring
+
+> Software is more like gardening—it is more organic than concrete.
+
+
+## Test-driven development
+
+> Thinking about writing a test for our method made us look at it from the outside, as if we were a client of the code, and not its author.
+
+
+Java applications seem to have the tradition of defining interfaces even if there is only one implementation. Such interface-first approach also makes us think about how the API looks from the outside. However, it could lead to a more rigid structure.
+
+## Agile
+
+> In fact, whenever someone says “do this, and you”ll be agile,” they are wrong. By definition.
+
+
+Don’t lose sight of the true meaning of agility. Remember the values from the original manifesto:
+
+- ***Individuals and interactions*** over processes and tools
+- ***Working software*** over comprehensive documentation
+- ***Customer collaboration*** over contract negotiation
+- ***Responding to change*** over following a plan
+
+## The requirements
+
+> In our experience, this initial statement of need is not an absolute requirement.
+> The client may not realize this, but it is really an invitation to explore.

@@ -6,10 +6,10 @@
     flex: 2 2 auto;
   }
   .title {
-    @apply text-2xl font-subtitle mt-4 mb-0 leading-tight font-bold xl:text-right;
+    @apply text-2xl font-subtitle mt-4 mb-1 leading-tight font-bold xl:text-right;
   }
 
   .subtitle {
-    @apply italic m-0 xl:text-right text-opacity-50
+    @apply italic m-0 xl:text-right text-opacity-50 leading-tight
   }
 }
