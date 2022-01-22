@@ -8,9 +8,7 @@ import get from "lodash/get"
 
 const BookShelfPage = ({ data, location }) => {
   const books = data.allBook.edges.map((it) => it.node)
-  console.log(books)
   const booksByStatus = groupBy(books, (book) => book.status)
-  console.log(booksByStatus)
 
   return <Layout location={location}>
     <Title>已读 | Done</Title>
