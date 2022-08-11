@@ -1,6 +1,7 @@
 ---
 title: Temporal：使用熟悉的编程语言实现微服务工作流编排
 date: "2022-08-11T21:19:03.284Z"
+issueId: "140"
 ---
 
 
@@ -75,7 +76,7 @@ class ArticleController {
 
 ### Event sourcing 的思路：重放执行记录和结果
 
-Temporal 采用了 Event sourcing 的思路。我们可以使用 Temporal SDK 支持的编程语言编写工作流方法。这个方法必须是一个纯函数。一个纯函数无论何时调用、调用多少次，其结果都是确定的（deterministic）。
+[Temporal](https://temporal.io) 采用了 Event sourcing 的思路。我们可以使用 Temporal SDK 支持的编程语言编写工作流方法。这个方法必须是一个纯函数。一个纯函数无论何时调用、调用多少次，其结果都是确定的（deterministic）。
 
 [[tip | 📖]]
 | Event sourcing：用 Log 的形式记录应用状态的变更，而不是应用状态本身。通过重放日志的形式可以获得最新的状态。
