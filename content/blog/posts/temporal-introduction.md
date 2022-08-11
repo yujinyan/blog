@@ -1,0 +1,165 @@
+---
+title: Temporal：使用熟悉的编程语言实现微服务工作流编排
+date: "2022-08-11T21:19:03.284Z"
+---
+
+
+## 问题背景
+
+假设这样一个业务场景：用户在发布文章后，如果文章包含视频链接，需要下载视频并进行转码。转码完成后还有一些后续的业务逻辑。
+
+```kotlin
+@RestController
+class ArticleController {
+  @PostMapping("/article")
+  fun createArticle(article: Article) {
+    if (article.videos.isNotEmpty()) {
+      val urls = videoTranscodeService.transcode(articles.videos)
+      article.setVideoUrls(urls)
+    }
+    // 视频转码完成后继续其他业务逻辑
+    processArticle(article)
+  }
+}
+```
+
+如果这段代码写在文章发布服务， `videoTranscodeService` 是另外一个提供异步接口的远程服务，那么我们不能简单地写一个同步方法，等待方法返回后继续执行后面的业务逻辑。接入异步逻辑之后，代码可能长这样：
+
+```kotlin
+@RestController
+class ArticleController {
+  @PostMapping("/article")
+  fun createArticle(article: Article) {
+    if (article.videos.isNotEmpty()) {
+      videoTranscodeService.transcode(articles.videos)
+      return
+    }
+    processArticle(article)
+  }
+
+  @PostMapping("/article/video-transcode-callback")
+  fun videoTranscodeServiceCallback(articleId: String, urls: List<String>) {
+    val article = articleRepository.findById(articleId)
+    article.setVideoUrls(urls)
+    processArticle(article)
+  }
+}
+```
+
+在经过异步化代码改造之后：
+
+- 文章发布服务原本清晰易读的顺序风格代码（sequential code）变得十分割裂，很难看清楚整个业务流程的全貌。
+- 如果考虑服务间系统健壮性，视频转码服务可能会用一个消息队列来接收视频转码的任务，文章发布服务在落苦文章数据后，发送转码任务至消息队列，系统复杂度上升。另外，如何保证文章服务更新数据库与发送消息队列两个操作的原子性也是一个问题。
+
+[[tip | 🤔]]
+| 能否提供一个抽象层，封装掉服务之间的异步回调，模拟同步顺序执行，同时保证系统健壮性？
+
+## 抽象同步方法执行
+
+### 类比 async / await：保存中间状态
+
+提到「异步转同步」的问题，可以联想到 C#、JavaScript 等语言包含的 async / await 特性。[《理解 Kotlin 的 suspend 函数》](/posts/understanding-kotlin-suspend-functions/)介绍了 Kotlin 该特性的实现。简单来说，编译器会将标有 suspend （类似 async）关键字的函数编译成一个状态机，在状态机中保存：
+
+- 执行环境（局部变量）
+- 程序计数器（program counter，程序执行到哪一步）
+
+存下这些元素，回调过来时才能恢复原函数执行的状态并继续执行。
+
+在现有编程语言直接应用这种思路十分困难，因为通常无法从运行时获取到这些信息。所以大部分工作流引擎都是基于某种形式的 DSL，比如写一个 JSON 或者 YAML。[BPMN](https://en.wikipedia.org/wiki/Business_Process_Model_and_Notation) 是一套图形化的工作流 DSL。很多工作流引擎（如 Activiti、Camunda、Flowable 等）都支持 BPMN。
+
+基于 DSL 的工作流引擎的局限：
+
+- 额外的学习成本
+- 特定领域的 DSL 未必适用所有业务场景
+- 表达能力不如通用编程语言
+
+### Event sourcing 的思路：重放执行记录和结果
+
+Temporal 采用了 Event sourcing 的思路。我们可以使用 Temporal SDK 支持的编程语言编写工作流方法。这个方法必须是一个纯函数。一个纯函数无论何时调用、调用多少次，其结果都是确定的（deterministic）。
+
+[[tip | 📖]]
+| Event sourcing：用 Log 的形式记录应用状态的变更，而不是应用状态本身。通过重放日志的形式可以获得最新的状态。
+
+但我们的业务逻辑方法一定会包含读写数据库、调用外部服务这些「副作用」。Temporal 提供了 Activity API 来做这些副作用。这些副作用的执行记录和返回结果会被保存下来。这样通过重放日志的方式就能重新构建起函数执行的状态。
+
+以前面提到的业务场景为例：
+
+```kotlin
+interface PublishArticleWorkflow {
+  @WorkflowMethod
+  fun run(article: Article)
+}
+
+class PublishArticleWorkflowImpl : PublishArticleWorkflow {
+  private val videoTranscodeActivities = Workflow.newActivityStub(
+    VideoTranscodeActivities.transcode::class.java
+  )
+
+  override fun run(article: Article) {
+    if (article.videos.isNotEmpty()) {
+      val urls = videoTranscodeActivities.transcode(articles.videos) // highlight-line
+      articles.setVideoUrls(urls)
+    }
+    // 视频转码完成后继续其他业务逻辑
+    processArticle(article)
+  }
+}
+```
+
+`PublishArticleWorkflow#run` 是 Workflow 方法，当方法执行到高亮的 `videoTranscodeActivities` 这一行时：
+
+- Temporal SDK 调用 Temporal 服务生成一个编码视频的任务
+- 假设视频编码服务集成了 Temporal SDK ，它会从 Temporal 服务消费编码视频任务
+- 任务执行完， SDK 回调给 Temporal 服务方法执行的返回值。
+- Temporal 在数据库中记录方法调用的历史和结果，并通过重新执行 Workflow 方法，重放我们的业务逻辑的执行记录，构建业务函数的中间执行状态并继续往下执行。
+
+[[tip | 🔑]]
+| 「重放」意思是工作流方法实际会执行很多次。每当有新的会引起状态变化的事件发生，就会重新执行一遍工作流方法，比如 Activity 执行完成、外部传入信号等。
+
+借助 Temporal，我们可以使用熟悉的编程语言来编写工作流，借助语言自身的条件、循环等结构，实现复杂的逻辑。Temporal 还提供了 Promise 并发原语和 Workflow.sleep 方法实现延迟效果。最终写出来的代码与最初的同步、本地的方法执行相近。
+
+[[tip | 🔗]]
+| [YouTube: Intro to Temporal Architecture Part 1 - Workflow Engine](https://www.youtube.com/watch?v=wMUKhtRhlmY) 详细介绍了这个标题下介绍的两种思路
+
+[[tip | 📖]]
+| Temporal 提供的抽象并非首创，本质上和 [Azure Durable Function](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) 相同。
+
+## 意义：后端的 React？
+
+在了解 Temporal 的过程中，可能会感觉到 Temporal 和目前流行的声明式 UI 非常像，尤其是两者都强调写纯函数。
+
+> The core premise for React is that UIs are simply a projection of data into a different form of data. The same input gives the same output. A simple pure function. https://github.com/reactjs/react-basic
+>
+
+此外，有观点认为 Temporal 对于后端开发的意义甚至堪比 React 对于前端开发的革新。Vercel CEO Guillermo Rauch 在一段商业互吹中总结道：
+
+> [temporal.io](http://temporal.io) does to backend and infra, what React did to frontend. If you're in the React world, you've forgotten about manually adding and removing DOM elements, updating attributes and their quirks, hooking up event listeners… It's not only been a boost in developer experience, but most importantly in *consistency and reliability*. In the backend world, this reliability problem is absurdly amplified as monoliths break into SaaS services, functions, containers. You have to carefully manage and create queues to capture each side effect, ensure everything gets retried, state is scattered all over the place.
+>
+
+在 Web 端声明式 UI 之前，非常容易写出「面条代码」，随手注册一个监听，等事件过来更新一下 DOM；类似地，在「微服务」架构下，常见的后端代码这里监听一个消息队列，那里接收一个回调通知，完了再更新一下数据库。
+
+Temporal  抽象走了服务之间通信、调度的细节，将控制逻辑收口到框架内，让我们可以专注于开发各个服务自身的业务逻辑，不仅提升了开发体验和效率，同时提升了系统的健壮性。
+
+> Any sufficiently complicated distsys contains an adhoc bug-ridden implementation of half of Temporal.
+>
+
+## 风险
+
+Temporal 引入的编程模型对于后端程序员是相对陌生的，可能需要一段时间消化。此外，Workflow 代码有一些特别需要注意的点：
+
+- Workflow 函数需要能保证确定的执行结果（deterministic），副作用需要走 Activity API 或者 Workflow 提供的特殊 API，不能直接调用运行时提供的随机、日期、多线程等相关的 API。
+- 已经上线的 Workflow 函数需要做兼容处理。
+- 一个 Workflow 的状态机流转次数有上限。
+
+## 关于 Temporal 项目的一些历史
+
+Temporal 是 Cadence 的一个 fork。Cadence 是 Uber 的开源项目。Cadence 作者离开 Uber 后创业做了 Temporal，在 2022 年 2 月拿了 1 亿美元 B 轮融资，未来会卖托管版 Temporal 服务。根据开箱体验，Temporal 相较于 Cadence 的优势：
+
+- API 设计更加合理。具体例子：Temporal 可以方便地配置一个自定义的 Jackson ObjectMapper，Cadence 实现起来十分麻烦。
+- Temporal 支持更多语言的 SDK：TypeScript 和 PHP，其他语言的支持开发中。
+- 新版 Web UI 看起来更美观。
+
+## 了解更多
+
+如果想进一步了解 Temporal 的编程模型，推荐 [Cadence 的入门文档](https://cadenceworkflow.io/docs/concepts/workflows/#example)，提供了一个更加复杂、真实的业务场景例子。
+
