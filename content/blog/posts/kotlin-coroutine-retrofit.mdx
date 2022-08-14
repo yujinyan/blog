@@ -155,8 +155,7 @@ Retrofit 的 Call Adapter 可以帮助我们在 Retrofit 的执行逻辑中嵌�
 
 > **As a rule of thumb, you should not be catching exceptions in general Kotlin code. That’s a code smell.**
 > Exceptions should be handled by some top-level framework code of your application to alert developers of the bugs in the code and to restart your application or its affected operation.
-
-<cite>Roman Elizarov, Project Lead for Kotlin</cite>
+> <cite>Roman Elizarov, Project Lead for Kotlin</cite>
 
 [[tip | “]]
 | **原则上，不要在 Kotlin 业务逻辑代码中 catch 异常。**这是一种 Code Smell。异常应该在应用顶层的基础设施代码中进行统一处理：比如进行上报或者重试出错的步骤。

@@ -129,12 +129,15 @@ class PublishArticleWorkflowImpl : PublishArticleWorkflow {
 
 在了解 Temporal 的过程中，可能会感觉到 Temporal 和目前流行的声明式 UI 非常像，尤其是两者都强调写纯函数。
 
-> The core premise for React is that UIs are simply a projection of data into a different form of data. The same input gives the same output. A simple pure function. https://github.com/reactjs/react-basic
+> The core premise for React is that UIs are simply a projection of data into a different form of data. The same input gives the same output. A simple pure function.
+> <cite>https://github.com/reactjs/react-basic</cite>
 >
+
 
 此外，有观点认为 Temporal 对于后端开发的意义甚至堪比 React 对于前端开发的革新。Vercel CEO Guillermo Rauch 在一段商业互吹中总结道：
 
 > [temporal.io](http://temporal.io) does to backend and infra, what React did to frontend. If you're in the React world, you've forgotten about manually adding and removing DOM elements, updating attributes and their quirks, hooking up event listeners… It's not only been a boost in developer experience, but most importantly in *consistency and reliability*. In the backend world, this reliability problem is absurdly amplified as monoliths break into SaaS services, functions, containers. You have to carefully manage and create queues to capture each side effect, ensure everything gets retried, state is scattered all over the place.
+> <cite>https://twitter.com/rauchg/status/1316808665370820609</cite>
 >
 
 在 Web 端声明式 UI 之前，非常容易写出「面条代码」，随手注册一个监听，等事件过来更新一下 DOM；类似地，在「微服务」架构下，常见的后端代码这里监听一个消息队列，那里接收一个回调通知，完了再更新一下数据库。
@@ -142,6 +145,7 @@ class PublishArticleWorkflowImpl : PublishArticleWorkflow {
 Temporal  抽象走了服务之间通信、调度的细节，将控制逻辑收口到框架内，让我们可以专注于开发各个服务自身的业务逻辑，不仅提升了开发体验和效率，同时提升了系统的健壮性。
 
 > Any sufficiently complicated distsys contains an adhoc bug-ridden implementation of half of Temporal.
+> <cite>8https://twitter.com/temporalio/status/1519330803582439424</cite>
 >
 
 ## 风险
