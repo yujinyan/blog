@@ -49,7 +49,7 @@
     "gatsby-transformer-csv": "^4.4.0",
     "gatsby-transformer-remark": "^5.4.0",
     "gatsby-transformer-sharp": "^4.4.0",
-    "gitalk": "^1.7.0",
+    "gitalk": "^1.7.2",
     "hamburger-react": "^2.4.0",
     "hast-util-find-and-replace": "^3.2.1",
     "hastscript": "^6.0.0",
