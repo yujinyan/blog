@@ -216,7 +216,11 @@ public class OverrideDemo {
 
 ### 编译时处理
 
-[[tip|🚧]]
+[Project Lombok](https://projectlombok.org/features/)
+
+我用得最多的：`@Value`，用于 immutable data class
+
+JDK 17 的话可以直接用 record
 
 ### 运行时处理
 
@@ -286,7 +290,82 @@ public class RuntimeDemo {
 }
 ```
 
+## 并发编程
 
+### 线程 API
+
+```java
+public class ThreadDemo {
+    @SneakyThrows
+    public static void main(String[] args) {
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000L);
+                System.out.printf("Inside %s%n", Thread.currentThread().getName());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        thread.start();
+        thread.join();
+    }
+}
+```
+
+### 线程池
+
+```java
+public class ThreadPoolDemo {
+
+    private static final ExecutorService POOL = Executors.newCachedThreadPool();
+
+    @SneakyThrows
+    static String writeFile() {
+        Thread.sleep(1000);
+        return "file.csv";
+    }
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        Future<String> filename = POOL.submit(ThreadPoolDemo::writeFile);
+        System.out.println(filename.get());
+    }
+}
+```
+
+### Request Per Thread
+
+传统 Spring MVC 使用的是一个 http 请求对应一个线程的模型
+
+```java
+@RestController
+class NaiveCounterDemoController {
+    // 线程不安全的示范
+    private int counter = 0;
+
+    @PostMapping("/inc")
+    public void inc() {
+        counter++;
+    }
+
+    @GetMapping("/get")
+    public int get() {
+        return counter;
+    }
+}
+```
+
+### Shared Mutable State
+
+[[fig | 并发加计数器的问题]]
+| ![Race condition between two clients concurrently incrementing a counter](./counter-race.png)
+
+解决方法：
+- Thread-safe data structures: `AtomicInteger` （counter 场景首选）
+- Mutual exclusion
+- Thread confinement
+
+[Shared Mutable State and Concurrency in Kotlin](https://kotlinlang.org/docs/shared-mutable-state-and-concurrency.html)
 
 ## 数据库持久化
 
