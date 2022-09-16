@@ -56,6 +56,8 @@ interface A {
 }
 ```
 
+### Duck typing vs. Nominative typing
+
 TypeScript:
 ```tsx
 type Person = {
@@ -70,56 +72,39 @@ function introduce(person: Person) {
   return `I'm ${person.name}`
 }
 
-console.log(harry)
+console.log(introduce(harry))
 ```
-
-
-### Duck typing vs. Nominative typing
 
 [[tip | 🔑]]
 | Java 和 TypeScript 类型系统的区别
 
-**Nominative typing**: an object is of a given type *if it is declared to be* (or if a type's association with the object is inferred through mechanisms such as object inheritance).
+**Nominative typing**: 对象类型、继承关系必须显式声明. An object is of a given type *if it is declared to be* (or if a type's association with the object is inferred through mechanisms such as object inheritance).
 
-**Duck typing**: an object is of a given type if it has all methods and properties required by that type.
+**Duck typing**: 对象满足类型的约束条件（含有特定属性或方法）即可. An object is of a given type if it has all methods and properties required by that type.
+
+[[tip | 🦆]]
+|能像鸭子一样叫的对象就是一只鸭子
 
 ## Java 虚拟机
 
 ### The runtime environment
 
-JVM is the **runtime** for Java. (JVM → Java, Node.js → JavaScript).
+JVM 是 Java 的运行时，类似 Node.js （或者说 V8） 和 JavaScript 之间的关系
 
-Android’s Dalvik and its replacement Android Runtime (ART) are other widely used Java runtimes.
+其他广泛使用的 Java 运行时：
+- Android 的 Dalvik 以及后来的 Android Runtime (ART) are other widely used Java runtimes.
 
 [[tip | 🔑]]
 | Difference between `java HelloWorld` and `node hello.js`
 
 interpreting vs. compiling
 
-- V8 compiles JavaScript source code to native machine code [at runtime](https://en.wikipedia.org/wiki/Just-in-time_compilation). As of 2016, it also includes Ignition, a [bytecode interpreter](https://en.wikipedia.org/wiki/Bytecode_interpreter). [(Wikipedia - Node.js)](https://en.wikipedia.org/wiki/Node.js)
+- V8 compiles JavaScript source code to native machine code [at runtime](https://en.wikipedia.org/wiki/Just-in-time_compilation). As of 2016, it also includes Ignition, a [bytecode interpreter](https://en.wikipedia.org/wiki/Bytecode_interpreter). [(Wikipedia - Node.js)](https://en.wikipedia.org/wiki/Node.js)
 - JVM interprets bytecode produced by javac. It also uses JIT (just-in-time compilation) to translate part of Java bytecode into native machine code.
 
-### Other major JVM languages
+### 其他主流 JVM 语言
 
 - Kotlin：改良版 Java、Android 开发首选语言
-  - NPE
-  - static by default
-  - fix mutable by default
-
-  ```kotlin
-  val foo: String = ""
-  var bar: Int = 1
-  fun sayHi(): String = TODO()
-    ```
-
-  ```ts
-  const foo = ""
-  let bar: number = 1
-  function sayHi() {
-   // ...
-  }
-    ```
-
 - Groovy：弱类型、动态、Gradle
 - Scala：学院派、函数式、大数据、Flink
 - Clojure：动态、函数式、Lisp
@@ -157,7 +142,7 @@ Campaign c = objectMapper.readValueFromString(json, Campaign.class); // highligh
 ```
 
 [[tip | 🔍]]
-| 反序列化的时候需要指定得到对象的类型
+| 不同于 JavaScript，Java 在反序列化成对象的时候需要指定类型
 
 有多种 JSON 序列化/反序列化的库，如 Jackson、Gson 等。Java 后端项目推荐用 Jackson（也是 Spring Boot 默认的 JSON 库）。
 
@@ -185,7 +170,7 @@ JS 的 `Date` 带时区，所以直接对应 Java 的 `ZonedDateTime`
 
 ## 注解 Annotation
 
-添加元信息（Metadata）
+作用：添加元信息（Metadata）
 
 
 | 用途    | 主要场景         | 例                        |
