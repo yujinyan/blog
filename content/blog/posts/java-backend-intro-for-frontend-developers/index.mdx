@@ -92,7 +92,7 @@ console.log(introduce(harry))
 JVM 是 Java 的运行时，类似 Node.js （或者说 V8） 和 JavaScript 之间的关系
 
 其他广泛使用的 Java 运行时：
-- Android 的 Dalvik 以及后来的 Android Runtime (ART) are other widely used Java runtimes.
+- Android 的 Dalvik 以及后来的 Android Runtime (ART)
 
 [[tip | 🔑]]
 | Difference between `java HelloWorld` and `node hello.js`
@@ -170,8 +170,7 @@ JS 的 `Date` 带时区，所以直接对应 Java 的 `ZonedDateTime`
 
 ## 注解 Annotation
 
-作用：添加元信息（Metadata）
-
+Java 的注解和 JavaScript 的 Decorator 语法相似，但语义不同。Java 注解的作用是给 class、方法、字段等添加元信息（Metadata）。
 
 | 用途    | 主要场景         | 例                        |
 |-------|--------------|--------------------------|
@@ -190,24 +189,38 @@ public class OverrideDemo {
         }
     }
 
-    @Override // highlight-line
     static class Circle extends Shape {
-        String name() {
+        @Override // highlight-line
+        String name() { // highlight-line
             return "Circle";
         }
     }
 }
 ```
 
+假设 `Circle#name` 方法注解了 `@Override`，但是实际上并没有覆写父类的任何方法，会报编译错误。`@Override` 注解是可选的，
+给编译器额外的提示信息。
+
 ### 编译时处理
 
-[Project Lombok](https://projectlombok.org/features/)
+[Project Lombok](https://projectlombok.org/features/) 是一个利用 Java 的注解处理器机制，
+通过在编译期生成代码帮助我们减少样板代码（boilerplate）的工具类库。
 
 我用得最多的：`@Value`，用于 immutable data class
 
 JDK 17 的话可以直接用 record
 
 ### 运行时处理
+
+也可以在运行时获取注解上标注的信息。常见的 Bean 数据校验（JSR-303）、Spring MVC 基于注解的路由配置都是采用这种机制。
+
+在 Spring Boot 项目中使用 Hibernate 的 Bean 校验库：
+
+```groovy
+implementation 'org.springframework.boot:spring-boot-starter-validation'
+```
+
+API Demo:
 
 ```java
 import lombok.Value;
@@ -234,11 +247,14 @@ public class BeanValidationDemo {
     public static void main(String[] args) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
-        Set<ConstraintViolation<Article>> violations = validator.validate(new Article("Hi"));
+        Set<ConstraintViolation<Article>> violations =
+            validator.validate(new Article("Hi")); // highlight-line
         System.out.println(violations);
     }
 }
 ```
+
+假设我们自己写一个这样的库：
 
 ```java
 import lombok.Value;
@@ -250,8 +266,9 @@ import java.lang.reflect.Field;
 
 @Slf4j
 public class RuntimeDemo {
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Range {
+    // 自定义注解，需要保留到运行时
+    @Retention(RetentionPolicy.RUNTIME) // highlight-line
+    @interface Range { // highlight-line
         int min();
         int max();
     }
@@ -266,9 +283,13 @@ public class RuntimeDemo {
         Article article = new Article("Hello World");
         Field[] fields = article.getClass().getDeclaredFields();
         for (Field field : fields) {
+            // 获取 Range 类型的注解
             Range range = field.getAnnotation(Range.class); // highlight-line
             if (range != null) {
-                log.info("range: min is {}, max is {}, field {}", range.min(), range.max(), field);
+                log.info("range: min is {}, max is {}, field {}",
+                    range.min(),
+                    range.max(),
+                    field);
             }
         }
     }
@@ -283,26 +304,40 @@ public class RuntimeDemo {
 public class ThreadDemo {
     @SneakyThrows
     public static void main(String[] args) {
-        Thread thread = new Thread(() -> {
+        Thread aThread = new Thread(() -> {
             try {
                 Thread.sleep(1000L);
-                System.out.printf("Inside %s%n", Thread.currentThread().getName());
+                System.out.printf("Inside %s%n",
+                    Thread.currentThread().getName()); // highlight-line
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
-        thread.start();
-        thread.join();
+        // 调用 start 方法后，aThread 开始运行
+        // aThread 和 main 线程并发
+        aThread.start();
+        System.out.printf("Inside %s%n",
+            Thread.currentThread().getName()); // highlight-line
+        // 等待 aThread 执行完成
+        aThread.join();
     }
 }
 ```
+
+JVM 线程对应操作系统线程，是比较昂贵的资源。实际开发中几乎不会直接 `new Thread`，而是使用线程池做多任务并发。
+
+[[tip|🚀]]
+| [JEP 425](https://openjdk.org/jeps/425) 将为 JVM 带来虚拟线程，即在一个操作系统线程上复用多个虚拟线程，从而提供应用吞吐量
+
 
 ### 线程池
 
 ```java
 public class ThreadPoolDemo {
 
-    private static final ExecutorService POOL = Executors.newCachedThreadPool();
+    // 创建一个线程池
+    private static final ExecutorService POOL =
+        Executors.newCachedThreadPool();
 
     @SneakyThrows
     static String writeFile() {
@@ -326,11 +361,11 @@ public class ThreadPoolDemo {
 @RestController
 class NaiveCounterDemoController {
     // 线程不安全的示范
-    private int counter = 0;
+    private int counter = 0; // highlight-line
 
     @PostMapping("/inc")
     public void inc() {
-        counter++;
+        counter++; // highlight-line
     }
 
     @GetMapping("/get")
@@ -342,15 +377,21 @@ class NaiveCounterDemoController {
 
 ### Shared Mutable State
 
-[[fig | 并发加计数器的问题]]
+在上面的 `NaiveCounterDemoController` 中，多个线程各自处理自己的请求，并发修改 `counter` 会造成问题。
+
+假如有 100 个并发请求增加计数器，最终计数器的结果可能小于 100。
+
+原因是 `counter++` 并非原子的操作，相当于 `counter = counter + 1`，先读取后写入。
+
+[[fig | 并发加计数器的问题图解（引自 DDIA）]]
 | ![Race condition between two clients concurrently incrementing a counter](./counter-race.png)
 
 解决方法：
-- Thread-safe data structures: `AtomicInteger` （counter 场景首选）
-- Mutual exclusion
-- Thread confinement
+- 提供原子操作的线程安全的数据机构 Thread-safe data structures: `AtomicInteger` （counter 场景首选）
+- 互斥锁 Mutual exclusion
+- 线程隔离 Thread confinement
 
-[Shared Mutable State and Concurrency in Kotlin](https://kotlinlang.org/docs/shared-mutable-state-and-concurrency.html)
+参考：[Shared Mutable State and Concurrency in Kotlin](https://kotlinlang.org/docs/shared-mutable-state-and-concurrency.html)
 
 ## 数据库持久化
 
