@@ -1,14 +1,14 @@
-import PropTypes from "prop-types"
 import React, { useEffect, useMemo } from "react"
 import { useActiveHash } from "./use-active-hash"
 
-TableOfContents.propTypes = {
-  html: PropTypes.string.isRequired,
-  linkClicked: PropTypes.func
+
+type TableOfContentsProps = {
+  html: string,
+  linkClicked?: () => void
 }
 
 // https://stackoverflow.com/questions/60833907/gatsby-syncing-the-table-of-contents-with-the-page-scroll-and-style-the-active-l
-export default function TableOfContents({ html, linkClicked }) {
+export default function TableOfContents({ html, linkClicked }: TableOfContentsProps) {
   const isSSR = typeof window === "undefined"
   let targetedIds = useMemo(() => {
     if (isSSR) return []
@@ -48,7 +48,7 @@ export default function TableOfContents({ html, linkClicked }) {
       dangerouslySetInnerHTML={{ __html: html }}
       onClick={
         (evt) => {
-          if (linkClicked && evt.target.tagName === "A") {
+          if (linkClicked && (evt.target as Element).tagName === "A") {
             linkClicked()
           }
         }

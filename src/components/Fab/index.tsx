@@ -1,9 +1,14 @@
 import React from "react"
-import PropTypes from "prop-types"
 import "./style.scss"
 import Hamburger from "hamburger-react"
 
-const Fab = ({ isOpen, setOpen, className }) => (
+type FabProps = {
+  isOpen: boolean,
+  setOpen: (boolean) => void,
+  className?: string
+}
+
+const Fab = ({ isOpen, setOpen, className }: FabProps) => (
   <div className={`fab ${className}`}>
     <Hamburger
       size={24}
@@ -14,11 +19,5 @@ const Fab = ({ isOpen, setOpen, className }) => (
     />
   </div>
 )
-
-Fab.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  setOpen: PropTypes.func,
-  className: PropTypes.string,
-}
 
 export default Fab

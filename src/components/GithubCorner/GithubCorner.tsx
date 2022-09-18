@@ -1,8 +1,11 @@
 import React from "react"
-import PropTypes from "prop-types"
 import "./GithubCorner.css"
 
-const GithubCorner = ({ url, className }) => (
+type GithubCornerProps = {
+  url: string,
+  className: string
+}
+const GithubCorner = ({ url, className }: GithubCornerProps) => (
   <div // https://github.com/facebook/react/issues/12014
     className={className}
     dangerouslySetInnerHTML={{
@@ -23,9 +26,5 @@ const GithubCorner = ({ url, className }) => (
     }}
   />
 )
-
-GithubCorner.propTypes = {
-  url: PropTypes.string.isRequired,
-}
 
 export default GithubCorner
