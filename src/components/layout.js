@@ -3,6 +3,7 @@ import { graphql, Link, useStaticQuery } from "gatsby"
 import DarkModeToggle from "./DarkModeToggle"
 import SiteNav from "./SiteNav"
 import AdobeFont from "@/components/AdobeFont"
+import Helmet from "react-helmet"
 
 const Layout = (
   {
@@ -63,6 +64,9 @@ const Layout = (
       style={{padding: "2.625rem 1.3125rem"}}
     >
       <AdobeFont />
+      <Helmet>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css" />
+      </Helmet>
       <SiteNav location={location} className="mb-8" />
       <header className="flex mb-8">
         {header}
