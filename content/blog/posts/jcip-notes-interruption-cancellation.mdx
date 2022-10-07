@@ -6,6 +6,8 @@ issueId: "90"
 book: "jcip"
 ---
 
+import PullQuote from "@/components/PullQuote"
+
 This note summarizes *Chapter 7 Cancellation and Shutdown* in *[Java Concurrency in Practice](https://jcip.net/)*, by
 Brian Goetz et al. Thread interruption is a delicate mechanism, and the chapter in JCIP is not particularly
 straightforward to read. Here, I list key points from the book, put together some helpful examples and try to answer
@@ -39,8 +41,8 @@ status.
 
 Interruption is commonly used to support cancellation.
 
-> There is nothing in the API or language specification that ties interruption to any specific cancellation semantics, 
-> but in practice, using interruption for anything but cancellation is fragile and difficult to sustain in larger applications. 
+> There is nothing in the API or language specification that ties interruption to any specific cancellation semantics,
+> but in practice, using interruption for anything but cancellation is fragile and difficult to sustain in larger applications.
 > <cite>Java Concurrency In Practice, §7.1.1</cite>
 
 ## How to support interruption in our code?
@@ -183,13 +185,13 @@ Would `doSomeWork` finish in approximately 3 seconds? What could go wrong?
 The answer is: it depends on the implementation of  `log.info`  call. A logging library may optimize performance by
 storing log events in something like a bounded `BlockingQueue`. Then, a background thread consumes the queue and writes
 to the output stream. This approach can reduce context switch overhead. Section 7.2.1 gives an example of a logging
-service and section 11.6 expands on performance considerations. 
+service and section 11.6 expands on performance considerations.
 
 When log producers get ahead of consumers, the queue
 reaches its capacity and `BlockingQueue.put` starts to block. If an interrupt happens then, it
 throws `InterruptedException`. For a logging library, propagating the exception to the caller makes it
 difficult to use. So internally it needs to catch `InterruptedException` and use `Thread.currentThread.interrupt()` to
-restore the interrupted status. If it swallows the exception, the `future.cancel` request in the example will get lost, 
+restore the interrupted status. If it swallows the exception, the `future.cancel` request in the example will get lost,
 and the code won't exit in a timely fashion.
 
 ## Don't interrupt threads you don't own
@@ -205,7 +207,7 @@ The book presents an example where it's bad to interrupt:
 ```java
 // Listing 7.8
 public class TimedRun1 {
-  private static final ScheduledExecutorService cancelExec = 
+  private static final ScheduledExecutorService cancelExec =
     Executors.newScheduledThreadPool(1);
 
   public static void timedRun(Runnable r,
@@ -322,13 +324,14 @@ fun main() = runBlocking {
 }
 ```
 
-[[tip | 🚨]]
-| `runCatching` suspend functions could break Kotlin coroutine's cancellation mechanism.
+<PullQuote emoji="🚨">
+  `runCatching` suspend functions could break Kotlin coroutine's cancellation mechanism.
+</PullQuote>
 
 ## Why clear the interrupted flag before throwing `InterruptedException`?
 
 It seems thread interruption behaves more like a one-shot event system. Remember, there is
-nothing that specifically ties interruption to cancellation. 
+nothing that specifically ties interruption to cancellation.
 
 Conceptually, interruption sounds less permanent than
 cancellation. A thread signals that it requests another thread to stop what it's doing by first setting a boolean flag

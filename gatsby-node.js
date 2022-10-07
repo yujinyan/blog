@@ -1,25 +1,25 @@
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
-exports.createPages = async ({ graphql, actions }) => {
+exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 
-  const blogPost = path.resolve(`./src/templates/blog-post.js`)
   const result = await graphql(
     `
-      {
+      query {
         allMdx(
           sort: { fields: [frontmatter___date], order: DESC }
           limit: 1000
         ) {
-          edges {
-            node {
-              fields {
-                slug
-              }
-              frontmatter {
-                title
-              }
+          nodes {
+            fields {
+              slug
+            }
+            frontmatter {
+              title
+            }
+            internal {
+              contentFilePath
             }
           }
         }
@@ -28,21 +28,22 @@ exports.createPages = async ({ graphql, actions }) => {
   )
 
   if (result.errors) {
-    throw result.errors
+    reporter.panicOnBuild('Error loading MDX result', result.errors)
   }
 
   // Create blog posts pages.
-  const posts = result.data.allMdx.edges
+  const posts = result.data.allMdx.nodes
+  const postTemplate = path.resolve(`./src/templates/blog-post.js`)
 
   posts.forEach((post, index) => {
     const previous = index === posts.length - 1 ? null : posts[index + 1].node
     const next = index === 0 ? null : posts[index - 1].node
 
     createPage({
-      path: post.node.fields.slug,
-      component: blogPost,
+      path: post.fields.slug,
+      component: `${postTemplate}?__contentFilePath=${post.internal.contentFilePath}`,
       context: {
-        slug: post.node.fields.slug,
+        slug: post.fields.slug,
         previous: excludingLeetCodePosts(previous),
         next: excludingLeetCodePosts(next),
       },

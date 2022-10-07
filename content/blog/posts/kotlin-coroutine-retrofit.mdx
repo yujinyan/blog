@@ -4,6 +4,8 @@ date: "2021-04-29T17:21:03.284Z"
 issueId: "61"
 ---
 
+import PullQuote from "@/components/PullQuote"
+
 Retrofit 2.6.0 支持用 Kotlin suspend 函数定义接口。 本文介绍如何通过自定义 Retrofit Call Adapter 和 Converter 打造最舒适的协程使用体验。
 
 - Call Adapter: 自定义请求执行的逻辑，包括线程切换等；
@@ -15,7 +17,7 @@ Retrofit 2.6.0 支持用 Kotlin suspend 函数定义接口。 本文介绍如何
 // Retrofit 接口定义
 // 简洁起见，后文省略外面这个 UserApi
 interface UserApi {
-  suspend fun getUser(id: Int): 
+  suspend fun getUser(id: Int):
     ApiResponse<User>
 }
 
@@ -127,8 +129,9 @@ lifecycleScope.launch {
 另外，try catch suspend 函数的时候需要注意重新抛出 `CancellationException`，否则可能导致协程块无法及时取消。
 详细可以查看 [JCIP Notes - Interruption and Cancellation](/posts/jcip-notes-interruption-cancellation/#comparison-with-kotlin-coroutines)。
 
-[[tip | 💡]]
-| 好的封装设计应该**让正确的写法最简单**，**默认最简单的写法是正确的写法**。
+<PullQuote emoji="💡">
+  好的封装设计应该**让正确的写法最简单**，**默认最简单的写法是正确的写法**。
+</PullQuote>
 
 为了避免 try catch 协程异常的麻烦和潜在的失误，笔者建议在 suspend 函数内部封装中 catch 所有异常，并将异常在函数签名上体现。
 
@@ -157,8 +160,9 @@ Retrofit 的 Call Adapter 可以帮助我们在 Retrofit 的执行逻辑中嵌�
 > Exceptions should be handled by some top-level framework code of your application to alert developers of the bugs in the code and to restart your application or its affected operation.
 > <cite>Roman Elizarov, Project Lead for Kotlin</cite>
 
-[[tip | “]]
-| **原则上，不要在 Kotlin 业务逻辑代码中 catch 异常。**这是一种 Code Smell。异常应该在应用顶层的基础设施代码中进行统一处理：比如进行上报或者重试出错的步骤。
+<PullQuote emoji="“">
+  **原则上，不要在 Kotlin 业务逻辑代码中 catch 异常。**这是一种 Code Smell。异常应该在应用顶层的基础设施代码中进行统一处理：比如进行上报或者重试出错的步骤。
+</PullQuote>
 
 ### 设计 ApiResponse 类型
 
@@ -178,12 +182,12 @@ sealed class ApiResponse {
   data class Ok<T>(
     val data: T
   )
-  
+
   data class BizError<T>(
     val errcode: Int,
     val msg: String
   ): ApiResponse<T>
-  
+
   data class OtherError<T>(
     val throwable: Throwable
   ): ApiResponse<T>
@@ -194,7 +198,7 @@ suspend fun getUser(@Query("id") id: Int)
 
 lifecycleScope.launch {
   val response = retrofit.create<UserApi>().getUser(1)
-  
+
   // 可以使用 when 对 ApiResponse 的类型进行区分
   // 作为表达式使用的时候可以利用 when
   // 穷尽枚举的特性
@@ -325,7 +329,7 @@ val retrofit = Retrofit.Builder()
       override fun onOtherError(throwable: Throwable) {
         report(throwable)
       }
-    }  
+    }
   ))
   //...
 ```
@@ -344,8 +348,8 @@ class CatchingCallAdapterFactory(
   }
 
   override fun get(
-    returnType: Type, 
-    annotations: Array<out Annotation>, 
+    returnType: Type,
+    annotations: Array<out Annotation>,
     retrofit: Retrofit
   ): CallAdapter<*, *>? {
     // suspend 函数在 Retrofit 中的返回值其实是 `Call`
@@ -357,15 +361,15 @@ class CatchingCallAdapterFactory(
     val innerType: Type = getParameterUpperBound(0, returnType)
     // 如果不是 ApiResponse 则不由本 CallAdapter.Factory 处理
     if (getRawType(innerType) != ApiResponse::class.javava) return null
-    
+
     // 获取后续代理
     val delegate: CallAdapter<*, *> = retrofit
       .nextCallAdapter(this, returnType, annotations)
 
     return CatchingCallAdapter(
-      innerType, 
-      retrofit, 
-      delegate, 
+      innerType,
+      retrofit,
+      delegate,
       defaultErrorHandler
     )
   }
@@ -376,9 +380,9 @@ class CatchingCallAdapterFactory(
     val delegate: CallAdapter<*, *>,
     val errorHandler: ErrorHandler?
   ) : CallAdapter<Any, Call<Any>> {
-    override fun responseType(): Type 
+    override fun responseType(): Type
         = delegate.responseType()
-    override fun adapt(call: Call<Any>): Call<Any> 
+    override fun adapt(call: Call<Any>): Call<Any>
         = CatchingCall(call, dataType as ParameterizedType, errorHandler)
   }
 
@@ -387,7 +391,7 @@ class CatchingCallAdapterFactory(
     private val wrapperType: ParameterizedType,
     private val errorHandler: ErrorHandler?
   ) : Call<Any> {
-  
+
     override fun enqueue(
       // suspend 其实是 callback
       // suspend 的返回值通过这个 callback 传递
@@ -420,9 +424,9 @@ class CatchingCallAdapterFactory(
       }
     })
 
-    override fun clone(): Call<Any> = 
+    override fun clone(): Call<Any> =
       CatchingCall(delegate, wrapperType, errorHandler)
-    override fun execute(): Response<Any> = 
+    override fun execute(): Response<Any> =
       throw UnsupportedOperationException()
     override fun isExecuted(): Boolean = delegate.isExecuted
     override fun cancel(): Unit = delegate.cancel()
@@ -470,11 +474,11 @@ Moshi 对比 Gson 的优势可以参考下面的链接：
 
 <cite>Signed, a Gson maintainer.</cite>
 
-
-[[tip | “]]
-| 请不要再使用 Gson 了。Gson 三位维护者中有两位认为 Gson 实际上已经废弃了，请考虑使用 Moshi、Jackson 或者 kotlinx.serialization。
-| 这些库都支持 Kotlin 的可空类型，而 Gson 不支持，同时还有其他愚蠢的问题，不会被修复。请抛弃它。
-| 落款：一位 Gson 维护者。
+<PullQuote emoji="“">
+  请不要再使用 Gson 了。Gson 三位维护者中有两位认为 Gson 实际上已经废弃了，请考虑使用 Moshi、Jackson 或者 kotlinx.serialization。
+  这些库都支持 Kotlin 的可空类型，而 Gson 不支持，同时还有其他愚蠢的问题，不会被修复。请抛弃它。
+  落款：一位 Gson 维护者。
+</PullQuote>
 
 上面引用的是 Jake Wharton 的观点。新项目建议优先考虑 Moshi，已经用了 Gson 的项目迁移有一定风险，建议慎重。
 
@@ -502,8 +506,8 @@ Moshi 对比 Gson 的优势可以参考下面的链接：
 class MoshiApiResponseTypeAdapterFactory : JsonAdapter.Factory {
 
   override fun create(
-    type: Type, 
-    annotations: MutableSet<out Annotation>, 
+    type: Type,
+    annotations: MutableSet<out Annotation>,
     moshi: Moshi
   ): JsonAdapter<*>? {
     val rawType = type.rawType
@@ -511,9 +515,9 @@ class MoshiApiResponseTypeAdapterFactory : JsonAdapter.Factory {
 
     // 获取 ApiResponse 的泛型参数，比如 User
     val dataType: Type = (type as? ParameterizedType)
-      ?.actualTypeArguments?.firstOrNull() 
+      ?.actualTypeArguments?.firstOrNull()
       ?: return null
-        
+
     // 获取 User 的 JsonAdapter
     val dataTypeAdapter = moshi.nextAdapter<Any>(
       this, dataType, annotations
@@ -543,20 +547,20 @@ class MoshiApiResponseTypeAdapterFactory : JsonAdapter.Factory {
       }
 
       reader.endObject()
-      
+
       return if (errcode != 0)
         ApiResponse.BizError(
-          errcode ?: -1, 
+          errcode ?: -1,
           msg ?: "N/A"
         ) as T
       else ApiResponse.Ok(
-        errcode = errcode, 
+        errcode = errcode,
         data = data
       ) as T?
     }
 
     // 不需要序列化的逻辑
-    override fun toJson(writer: JsonWriter, value: T?): Unit 
+    override fun toJson(writer: JsonWriter, value: T?): Unit
       = TODO("Not yet implemented")
   }
 }
@@ -581,7 +585,7 @@ val retrofit = Retrofit.Builder()
       override fun onOtherError(throwable: Throwable) {
         report(throwable)
       }
-    }  
+    }
   .addConverterFactory( // highlight-line
     MoshiConverterFactory.create(moshi) // highlight-line
   )

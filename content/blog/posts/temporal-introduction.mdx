@@ -4,6 +4,7 @@ date: "2022-08-11T21:19:03.284Z"
 issueId: "140"
 ---
 
+import PullQuote from "@/components/PullQuote"
 
 ## 问题背景
 
@@ -52,8 +53,9 @@ class ArticleController {
 - 文章发布服务原本清晰易读的顺序风格代码（sequential code）变得十分割裂，很难看清楚整个业务流程的全貌。
 - 如果考虑服务间系统健壮性，视频转码服务可能会用一个消息队列来接收视频转码的任务，文章发布服务在落库文章数据后，发送转码任务至消息队列，系统复杂度上升。另外，如何保证文章服务更新数据库与发送消息队列两个操作的原子性也是一个问题。
 
-[[tip | 🤔]]
-| 能否提供一个抽象层，封装掉服务之间的异步回调，模拟同步顺序执行，同时保证系统健壮性？
+<PullQuote emoji="🤔">
+  能否提供一个抽象层，封装掉服务之间的异步回调，模拟同步顺序执行，同时保证系统健壮性？
+</PullQuote>
 
 ## 抽象同步方法执行
 
@@ -78,8 +80,9 @@ class ArticleController {
 
 [Temporal](https://temporal.io) 采用了 Event sourcing 的思路。我们可以使用 Temporal SDK 支持的编程语言编写工作流方法。这个方法必须是一个纯函数。一个纯函数无论何时调用、调用多少次，其结果都是确定的（deterministic）。
 
-[[tip | 📖]]
-| Event sourcing：用 Log 的形式记录应用状态的变更，而不是应用状态本身。通过重放日志的形式可以获得最新的状态。
+<PullQuote emoji="📖">
+  Event sourcing：用 Log 的形式记录应用状态的变更，而不是应用状态本身。通过重放日志的形式可以获得最新的状态。
+</PullQuote>
 
 但我们的业务逻辑方法一定会包含读写数据库、调用外部服务这些「副作用」。Temporal 提供了 Activity API 来做这些副作用。这些副作用的执行记录和返回结果会被保存下来。这样通过重放日志的方式就能重新构建起函数执行的状态。
 
@@ -114,16 +117,19 @@ class PublishArticleWorkflowImpl : PublishArticleWorkflow {
 - 任务执行完， SDK 回调给 Temporal 服务方法执行的返回值。
 - Temporal 在数据库中记录方法调用的历史和结果，并通过重新执行 Workflow 方法，重放我们的业务逻辑的执行记录，构建业务函数的中间执行状态并继续往下执行。
 
-[[tip | 🔑]]
-| 「重放」意思是工作流方法实际会执行很多次。每当有新的会引起状态变化的事件发生，就会重新执行一遍工作流方法，比如 Activity 执行完成、外部传入信号等。
+<PullQuote emoji="🔑">
+  「重放」意思是工作流方法实际会执行很多次。每当有新的会引起状态变化的事件发生，就会重新执行一遍工作流方法，比如 Activity 执行完成、外部传入信号等。
+</PullQuote>
 
 借助 Temporal，我们可以使用熟悉的编程语言来编写工作流，借助语言自身的条件、循环等结构，实现复杂的逻辑。Temporal 还提供了 Promise 并发原语和 Workflow.sleep 方法实现延迟效果。最终写出来的代码与最初的同步、本地的方法执行相近。
 
-[[tip | 🔗]]
-| [YouTube: Intro to Temporal Architecture Part 1 - Workflow Engine](https://www.youtube.com/watch?v=wMUKhtRhlmY) 详细介绍了这个标题下介绍的两种思路
+<PullQuote emoji="🔗">
+  [YouTube: Intro to Temporal Architecture Part 1 - Workflow Engine](https://www.youtube.com/watch?v=wMUKhtRhlmY) 详细介绍了这个标题下介绍的两种思路
+</PullQuote>
 
-[[tip | 📖]]
-| Temporal 提供的抽象并非首创，本质上和 [Azure Durable Function](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) 相同。
+<PullQuote emoji="📖">
+  Temporal 提供的抽象并非首创，本质上和 [Azure Durable Function](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp) 相同。
+</PullQuote>
 
 ## 意义：后端的 React？
 

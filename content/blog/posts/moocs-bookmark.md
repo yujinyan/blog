@@ -6,8 +6,6 @@ date: "2018-07-09T20:44:17.284Z"
 ## Guide
 [Teach Yourself Computer Science](https://teachyourselfcs.com/) is a motivating and invaluable resource for self-taught programmers.
 
-<!-- excerpt end -->
-
 ## Coursera, Udacity, edX courses
 |||||
 |-|-|-|-|

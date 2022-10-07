@@ -54,7 +54,7 @@ export const pageQuery = graphql`
     }
     allMdx(
       sort: { fields: [frontmatter___date], order: DESC },
-      filter: { fileAbsolutePath: { regex: "/leetcode/" }}
+      filter: { internal: { contentFilePath: { regex: "/leetcode/" }}}
     ) {
       edges {
         node {
@@ -64,9 +64,6 @@ export const pageQuery = graphql`
           frontmatter {
             date(formatString: "MMMM DD, YYYY")
             title
-            translate {
-              title
-            }
           }
         }
       }

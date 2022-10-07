@@ -12,7 +12,7 @@ import "./index.css"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata.title
-  const posts = data.allMdx.edges
+  const posts = data.allMdx.nodes
 
   return (
     <Layout location={location} title={siteTitle}>
@@ -20,25 +20,25 @@ const BlogIndex = ({ data, location }) => {
       <Helmet htmlAttributes={{ lang: "zh-cmn-Hans" }} />
       <GithubCorner url="https://github.com/yujinyan/blog" />
       <Bio />
-      {posts.map(({ node }) => {
-        const title = node.frontmatter.title || node.fields.slug
+      {posts.map(post => {
+        const title = post.frontmatter.title || post.fields.slug
         return (
-          <article key={node.fields.slug} className="prose dark:prose-invert">
+          <article key={post.fields.slug} className="prose dark:prose-invert">
             <header className="mb-2">
               <h3 className="mb-0 leading-none">
-                <Link to={node.fields.slug}>
-                  {get(node, "frontmatter.translate.title") ? (
+                <Link to={post.fields.slug}>
+                  {get(post, "frontmatter.translate.title") ? (
                     <TranslateMark />
                   ) : null}
                   <span style={{ verticalAlign: "middle" }}>{title}</span>
                 </Link>
               </h3>
-              <small className="font-subtitle text-caption">{node.frontmatter.date}</small>
+              <small className="font-subtitle text-caption">{post.frontmatter.date}</small>
             </header>
             <section
               className="excerpt"
               dangerouslySetInnerHTML={{
-                __html: node.frontmatter.description || node.excerpt,
+                __html: post.frontmatter.description || post.excerpt,
               }}>
             </section>
           </article>
@@ -60,12 +60,11 @@ export const pageQuery = graphql`
     allMdx(
       sort: { fields: [frontmatter___date], order: DESC },
       filter: { 
-        fileAbsolutePath: { regex: "/posts/" },
+        internal: { contentFilePath: { regex: "/posts/" } }
         frontmatter: { hidden: { ne: true } }
       }
     ) {
-      edges {
-        node {
+        nodes {
           excerpt
           fields {
             slug
@@ -73,12 +72,8 @@ export const pageQuery = graphql`
           frontmatter {
             date(formatString: "MMMM DD, YYYY")
             title
-            translate {
-              title
-            }
           }
         }
-      }
     }
   }
 `

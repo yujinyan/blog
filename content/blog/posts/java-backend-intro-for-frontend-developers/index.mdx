@@ -3,9 +3,12 @@ title: 给前端同学的 Java 后端开发介绍
 date: "2022-09-14T23:00:03.284Z"
 ---
 
+import PullQuote from "@/components/PullQuote"
+import Figure from "@/components/Figure"
 
-[[tip|🚧]]
-| 尚未完成 - Work In Progress
+<PullQuote emoji="🚧">
+  尚未完成 - Work In Progress
+</PullQuote>
 
 ## 关于 Java 语言
 
@@ -75,15 +78,17 @@ function introduce(person: Person) {
 console.log(introduce(harry))
 ```
 
-[[tip | 🔑]]
-| Java 和 TypeScript 类型系统的区别
+<PullQuote emoji="🔑">
+  Java 和 TypeScript 类型系统的区别
+</PullQuote>
 
 **Nominative typing**: 对象类型、继承关系必须显式声明. An object is of a given type *if it is declared to be* (or if a type's association with the object is inferred through mechanisms such as object inheritance).
 
 **Duck typing**: 对象满足类型的约束条件（含有特定属性或方法）即可. An object is of a given type if it has all methods and properties required by that type.
 
-[[tip | 🦆]]
-|能像鸭子一样叫的对象就是一只鸭子
+<PullQuote emoji="🦆">
+  能像鸭子一样叫的对象就是一只鸭子
+</PullQuote>
 
 ## Java 虚拟机
 
@@ -94,8 +99,9 @@ JVM 是 Java 的运行时，类似 Node.js （或者说 V8） 和 JavaScript 之
 其他广泛使用的 Java 运行时：
 - Android 的 Dalvik 以及后来的 Android Runtime (ART)
 
-[[tip | 🔑]]
-| Difference between `java HelloWorld` and `node hello.js`
+<PullQuote emoji="🔑">
+  Difference between `java HelloWorld` and `node hello.js`
+</PullQuote>
 
 interpreting vs. compiling
 
@@ -117,8 +123,9 @@ interpreting vs. compiling
 
 ### JSON 序列化、反序列化
 
-[[tip| 🔑]]
-| 前端传给后端的 JSON 字符串是如何变成对象的？
+<PullQuote emoji="🔑">
+  前端传给后端的 JSON 字符串是如何变成对象的？
+</PullQuote>
 
 JavaScript:
 ```js
@@ -141,8 +148,9 @@ String json = objectMapper.writeValueToString(campaign); // highlight-line
 Campaign c = objectMapper.readValueFromString(json, Campaign.class); // highlight-line
 ```
 
-[[tip | 🔍]]
-| 不同于 JavaScript，Java 在反序列化成对象的时候需要指定类型
+<PullQuote emoji="🔍">
+  不同于 JavaScript，Java 在反序列化成对象的时候需要指定类型
+</PullQuote>
 
 有多种 JSON 序列化/反序列化的库，如 Jackson、Gson 等。Java 后端项目推荐用 Jackson（也是 Spring Boot 默认的 JSON 库）。
 
@@ -326,9 +334,10 @@ public class ThreadDemo {
 
 JVM 线程对应操作系统线程，是比较昂贵的资源。实际开发中几乎不会直接 `new Thread`，而是使用线程池做多任务并发。
 
-[[tip|🚀]]
-| [JEP 425](https://openjdk.org/jeps/425) 将为 JVM 带来虚拟线程，即在一个操作系统线程上复用多个虚拟线程，从而提供应用吞吐量
-
+<PullQuote emoji="🚀">
+  [JEP 425](https://openjdk.org/jeps/425) 将为 JVM 带来虚拟线程，即在一个操作系统线程上复用多个虚拟线程，从而提供应用吞吐量。
+  关于虚拟线程推荐阅读 Brian Goetz 的 [Virtual Threads: New Foundations for High-Scale Java Applications](https://www.infoq.com/articles/java-virtual-threads/)
+</PullQuote>
 
 ### 线程池
 
@@ -383,8 +392,9 @@ class NaiveCounterDemoController {
 
 原因是 `counter++` 并非原子的操作，相当于 `counter = counter + 1`，先读取后写入。
 
-[[fig | 并发加计数器的问题图解（引自 DDIA）]]
-| ![Race condition between two clients concurrently incrementing a counter](./counter-race.png)
+<Figure caption="并发加计数器的问题图解（引自 DDIA）">
+  ![Race condition between two clients concurrently incrementing a counter](./counter-race.png)
+</Figure>
 
 解决方法：
 - 提供原子操作的线程安全的数据机构 Thread-safe data structures: `AtomicInteger` （counter 场景首选）

@@ -12,6 +12,7 @@ module.exports = {
       body: "var(--body)",
       caption: "var(--caption)",
       gray: colors.gray,
+      hr: "var(--hr)"
     },
     fontFamily: {
       "serif": `"source-serif-4", ${SourceHanSerif}, "Georgia", "serif"`,
@@ -46,7 +47,7 @@ module.exports = {
         dark: {
           css: {
             strong: {
-              color: colors.coolGray["50"],
+              color: colors.gray["50"],
             },
           },
         },

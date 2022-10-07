@@ -5,17 +5,19 @@ english: true
 issueId: "32"
 ---
 
+import PullQuote from "@/components/PullQuote"
+
 ## Introduction
 
 Recently a friend helped migrate Android's SharedPreferences to Tencent's MMKV for their app at work. He also compared how these persistence libraries perform in terms of reads and writes, including SharedPreferences, MMKV, Jetpack DataStore, and SQLite.
-<!-- excerpt end -->
 
 MMKV uses `mmap`, a Unix system call that maps files into memory. In this way, most of the heavy lifting is handed off to the operating system. Since the library is just reading/writing memory, it comes as no surprise that MMKV appears to perform the best among the four.
 
 Jetpack DataStore, currently in alpha, is Android team's latest remedy for drawbacks of SharedPreferences. Google currently [advocates](https://android-developers.googleblog.com/2020/09/prefer-storing-data-with-jetpack.html) that Android developers prefer storing simple data with DataStore in place of SharedPreferences.
 
-[[tip | ☕]]
-| DataStore provides an artifact without Android dependency, making it a viable simple persistence solution for the JVM. This post also has little to do with Android.
+<PullQuote emoji="☕">
+  DataStore provides an artifact without Android dependency, making it a viable simple persistence solution for the JVM. This post also has little to do with Android.
+</PullQuote>
 
 DataStore and SharedPreferences work similarly in that they both keep an in-memory cache of the key-value pairs and write out all the data on commit. DataStore mainly improves upon the API design. In particular, it leverages Kotlin's suspend functions to highlight the long-running nature of I/O operations. Developers can safely call these functions on the main thread and forget about the ANR that haunts SharedPreferences. DataStore also uses Protocol Buffers, a more efficient binary encoding format than SharedPreferences' XML.
 
@@ -67,7 +69,7 @@ fun CoroutineScope.counterActor() = actor<CounterMsg> {
 ```kotlin
 class CounterModel {
   private val _counter = MutableStateFlow(0)
-  val counter: StateFlow<Int> 
+  val counter: StateFlow<Int>
     get() = _counter
 
   fun inc() {
@@ -81,8 +83,9 @@ I wrote a demo app that demonstrates that DataStore increments the counter corre
 
 ## Actor-based concurrency control
 
-[[tip | 🚧]]
-| This analysis is based on Jetpack DataStore 1.0.0-alpha07. Its API and implementation are subject to significant change.
+<PullQuote emoji=" 🚧">
+  This analysis is based on Jetpack DataStore 1.0.0-alpha07. Its API and implementation are subject to significant change.
+</PullQuote>
 
 In its implementation, DataStore provides atomicity guarantee by using actors, as described in the [aforementioned Kotlin documentation](https://kotlinlang.org/docs/shared-mutable-state-and-concurrency.html#actors). Conceptually, an actor is a worker that receives messages from a mailbox. States like counter values are encapsulated inside the actor, thus eliminating shared mutable states.
 
@@ -91,13 +94,13 @@ It's customary to use Kotlin's sealed class to represent messages the actor is a
 ```kotlin
 private sealed class Message {
   class Read(
-    val key: String, 
+    val key: String,
     val ack: CompletableDeferred<String?>
   ) : Message()
 
   class Write(
-    val key: String, 
-    val value: String, 
+    val key: String,
+    val value: String,
     val ack: CompletableDeferred<Unit>
   ) : Message()
 }
@@ -190,7 +193,7 @@ fun Context.createDataStore(name: String)
 Mere docs and comments probably won't stop developers from making this error. Version 1.0.0-alpha07 came up with an interesting API change. The `createDataStore` function was removed and replaced with a property delegate. This is how we currently get a `DataStore` instance.
 
 ```kotlin
-val Context.myDataStore 
+val Context.myDataStore
   by preferencesDataStore("my_store")
 ```
 
@@ -205,7 +208,7 @@ See [release notes](https://developer.android.com/jetpack/androidx/releases/data
 You may be surprised to find that DataStore does not currently have any method to read specific keys directly like SharedPreferences' `getString`, etc. It only exposes a flow through the `data` property and an `updateData` method.
 
 ```kotlin
-public interface DataStore<T> { 
+public interface DataStore<T> {
   public val data: Flow<T> // highlight-line
 
   public suspend fun updateData(
@@ -218,7 +221,7 @@ In order to read from DataStore, we need to collect the `data` flow. This is lik
 
 ```kotlin
 class MainContentActivity : Context {
-  val selectedCity: Flow<String> = 
+  val selectedCity: Flow<String> =
     myDataStore.data.distinctUntilChanged { old, new ->
       old[cityKey] == new[cityKey]
     }
@@ -237,7 +240,7 @@ class WrappedDataStore(private val ds: DataStore<Preferences>) : CoroutineScope 
     ds.data.stateIn(this + Job(parent = scopeJob)) // highlight-line
   }
 
-  suspend fun data(): StateFlow<Preferences> = 
+  suspend fun data(): StateFlow<Preferences> =
     deferredData.await()
 }
 ```

@@ -3,6 +3,7 @@ title: Building a collapsible Extended Floating Action Button with Jetpack Compo
 date: "2021-12-12T20:31:03.284Z"
 english: true
 issueId: "101"
+hidden: false
 ---
 
 In this post, we are building the collapsible Extended Floating Action Button animation specified in the [Material Design 3 guidelines](https://m3.material.io/components/floating-action-button/guidelines#3ad4a846-ac87-4884-b9b0-97efceea2e41).
@@ -143,7 +144,7 @@ LaunchedEffect(verticalScroll) {
 }
 
 Scaffold(
-  floatingActionButton = { 
+  floatingActionButton = {
     ExtendableFloatingActionButton(extended = fabExtended, /**/)
   }
 ) {

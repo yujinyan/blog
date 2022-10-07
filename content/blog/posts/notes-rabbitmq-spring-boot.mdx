@@ -1,9 +1,11 @@
 ---
-title: Notes on RabbitMQ with Spring Boot 
+title: Notes on RabbitMQ with Spring Boot
 date: "2021-03-17T20:44:17.284Z"
 english: true
 issueId: "40"
 ---
+
+import PullQuote from "@/components/PullQuote"
 
 ## Introduction
 
@@ -18,9 +20,9 @@ interface DomainEventListener {
 @Component
 class UserRegistered: DomainEventListener {
   override val topic = "user:registered"
-  
+
   // How deserialization is performed is left out.
-  
+
   override fun handle(event: DomainEvent) {
     // perform business logic
   }
@@ -56,8 +58,8 @@ supports the AMQP 0-9-1 model. It mainly revolves around the following three *AM
 
 ### Exchange, queue, and binding
 
-Messages are published to an *exchange* and consumed from a *queue*. 
-A queue can subscribe to exchanges with *bindings*. 
+Messages are published to an *exchange* and consumed from a *queue*.
+A queue can subscribe to exchanges with *bindings*.
 When a message arrives at an exchange, it will be routed to different queues based on:
 
 - the *routing key* in the message, and
@@ -91,11 +93,11 @@ I like this declarative approach. It feels like Kubernetes without nasty YAML co
 @Configuration
 class RabbitMqConfig {
   @Bean
-  fun domainEventExchange() = 
+  fun domainEventExchange() =
     DirectExchange("domain_events")
 
   @Bean
-  fun queues(listeners: List<DomainEventListener>) = 
+  fun queues(listeners: List<DomainEventListener>) =
     Declarables( // highlight-line
       listeners.map {
         QueueBuilder
@@ -105,7 +107,7 @@ class RabbitMqConfig {
     )
 
   @Bean
-  fun bindings(listeners: List<DomainEventListener>) = 
+  fun bindings(listeners: List<DomainEventListener>) =
     Declarables(
       queues.zip(listeners) { queue, listener ->
         BindingBuilder
@@ -176,7 +178,7 @@ Check out more details at:
 ## Messages are ephemeral
 
 It's important to realize that in the AMQP model, the message broker just acts as a postman between sender and receiver.
-It holds on to the messages only temporarily. 
+It holds on to the messages only temporarily.
 After successful delivery to all consumers, the message is usually removed from the broker.
 
 In contrast, Redis Stream and Kafka are more like databases that store the messages until explicitly deleted.
@@ -203,17 +205,18 @@ Message consumers can fail at any time (due to business exceptions, dropped conn
 prevent losing messages in this way, message brokers use acknowledgments: a message is removed from the broker only
 after the client explicitly acknowledges that it has processed it.
 
-[[tip | 💡]]
-| In Laravel, when a job is taken from the queue, it's placed at `myqueue:reserved` key at the same time.
-| These two steps form an atomic operation by using Lua scripting. This can also be seen as a form of acknowledgment.
+<PullQuote emoji="💡">
+  In Laravel, when a job is taken from the queue, it's placed at `myqueue:reserved` key at the same time.
+  These two steps form an atomic operation by using Lua scripting. This can also be seen as a form of acknowledgment.
+</PullQuote>
 
 ### Dead letter exchange
 
 [RabbitMQ Dead Letter Documentation](https://www.rabbitmq.com/dlx.html)
 
-Suppose there is a mal-formed message. 
-In our Spring application, if our message handlers throw an exception due to this message, by default, 
-the message will be re-queued and delivered again, resulting in an infinite loop. 
+Suppose there is a mal-formed message.
+In our Spring application, if our message handlers throw an exception due to this message, by default,
+the message will be re-queued and delivered again, resulting in an infinite loop.
 A viable solution would be sending the bad message to other places for inspection after a few retries.
 
 RabbitMQ can handle this situation with [dead letter exchanges](https://www.rabbitmq.com/dlx.html). When our consumer
@@ -288,8 +291,9 @@ SimpleRabbitListenerContainerFactory().apply {
 }
 ```
 
-[[tip | 💡]]
-| Laravel's [failed jobs](https://laravel.com/docs/8.x/queues#dealing-with-failed-jobs) table is the equivalent concept.
+<PullQuote emoji="💡">
+  Laravel's [failed jobs](https://laravel.com/docs/8.x/queues#dealing-with-failed-jobs) table is the equivalent concept.
+</PullQuote>
 
 ### Retry
 

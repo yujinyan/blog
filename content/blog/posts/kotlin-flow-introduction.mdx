@@ -4,7 +4,8 @@ date: "2021-04-23T18:37:03.284Z"
 issueId: "56"
 ---
 
-import LeetCode from "components/LeetCode"
+import LeetCode from "@/components/LeetCode"
+import PullQuote from "@/components/PullQuote"
 
 ## 从 Sequence 说起
 
@@ -90,9 +91,10 @@ feedbacks.firstNotNullOfOrNull { it.name }
 如果集合元素非常多，或者需要经过很多操作符变换，方法 1 每次变换都创建一个新集合存储中间结果，有些浪费。
 这样的场景使用 Sequence 会更好一些。
 
-[[tip | ✨]]
-| 这个例子摘自 *[Kotlin 1.5.0-RC Released: Changes to the Standard and Test Libraries](https://blog.jetbrains.com/kotlin/2021/04/kotlin-1-5-0-rc-released/)*。
-| 大家觉得 `firstNotNullOfNull` 这个方法怎么样？
+<PullQuote emoji="✨">
+  这个例子摘自 *[Kotlin 1.5.0-RC Released: Changes to the Standard and Test Libraries](https://blog.jetbrains.com/kotlin/2021/04/kotlin-1-5-0-rc-released/)*。
+  大家觉得 `firstNotNullOfNull` 这个方法怎么样？
+</PullQuote>
 
 ### 应用案例：扁平化嵌套列表迭代器
 
@@ -159,9 +161,10 @@ suspend tailrec fun SequenceScope<Int>.walk(
 sequence { walk(nestedList) }.iterator() // 题目所求
 ```
 
-[[tip | 💡]]
-| 或许会想到，可以给 `walk` 函数传一个回调，这样也能实现边遍历边消费的效果。可以理解成 Sequence 就是对这一方式的封装。还记得 suspend 本质上是回调。
-| Sequence builder 是一个（受限的）suspend 块，而 `yield` 是 suspend 函数。
+<PullQuote emoji="💡">
+  或许会想到，可以给 `walk` 函数传一个回调，这样也能实现边遍历边消费的效果。可以理解成 Sequence 就是对这一方式的封装。还记得 suspend 本质上是回调。
+  Sequence builder 是一个（受限的）suspend 块，而 `yield` 是 suspend 函数。
+</PullQuote>
 
 ## Flow：可以 suspend 的 Sequence
 
@@ -213,8 +216,9 @@ for (item in listOf("foo", "bar")) {
 
 `collect` 为代表的终端操作符是 suspend 函数。因此，对 Flow 进行消费必须有一个 CoroutineScope。而 Sequence 的终端操作符都只是普通函数。
 
-[[tip | 🤔]]
-| Flow 让我们可以对数据流中的数据应用 suspend 函数，而所有 suspend 函数必须在某个 CoroutineScope 中执行。这些 suspend 的块默认就运行在 collect 的 CoroutineScope 中。
+<PullQuote emoji="🤔">
+  Flow 让我们可以对数据流中的数据应用 suspend 函数，而所有 suspend 函数必须在某个 CoroutineScope 中执行。这些 suspend 的块默认就运行在 collect 的 CoroutineScope 中。
+</PullQuote>
 
 实际上和 Sequence 一样，Flow 的终端操作符才是驱动整个数据流的“原动力”。如果没有终端操作符，只引用了若干 map、filter 中间操作符，相当于只搭建了一个数据管道，Flow builder 中的代码不会运行，数据不会流动。
 这种 Flow 被称作「冷流」。
@@ -382,8 +386,9 @@ suspend fun main() = MyFlow<Int> { emit(1); emit(2) }
 
 可以看到，借助 Kotlin 已有的 suspend 基础设施，实现一个支持异步的反应式数据流不过两三行。实际上，Kotlin 协程库的 Flow 经过抽丝剥茧，核心代码和我们的玩具实现并没有太多区别，但提供了两个额外的保证：上下文保存（Context preservation）和异常透明（Exception transparency）。
 
-[[tip | 🔗]]
-| 关于 suspend 函数，欢迎阅读[《理解 Kotlin 的 suspend 函数》](/posts/understanding-kotlin-suspend-functions/)。
+<PullQuote emoji="🔗">
+  关于 suspend 函数，欢迎阅读[《理解 Kotlin 的 suspend 函数》](/posts/understanding-kotlin-suspend-functions/)。
+</PullQuote>
 
 ## Flow 的额外保证
 
@@ -410,11 +415,12 @@ lifecycleScope.launch {
 调用方因为要更新 UI，希望在主线程消费数据。androidx 提供的 `LifecycleScope` 指定了主线程为协程调度器。
 我们在 `LifecycleScope` 开启的协程内调用 suspend `collect` 方法，可以确定 collect 的块会在主线程执行。
 
-[[tip | 🚨]]
-| 在 Android UI 层，直接在 `lifecycleScope` 上 launch 协程 collect Flow 有一个隐患：**Activity 进入后台后 collect 数据消费不会跟着生命周期取消，可能会导致应用崩溃。**
-| `lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01` 的 `Flow.flowWithLifecycle` API 解决了这个问题。
-| 详情可以参考 [A safer way to collect flows from Android UIs](https://medium.com/androiddevelopers/a-safer-way-to-collect-flows-from-android-uis-23080b1f8bda)。
-| 本文最后也提供了一个更加完善的例子。
+<PullQuote emoji="🚨">
+  在 Android UI 层，直接在 `lifecycleScope` 上 launch 协程 collect Flow 有一个隐患：**Activity 进入后台后 collect 数据消费不会跟着生命周期取消，可能会导致应用崩溃。**
+  `lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01` 的 `Flow.flowWithLifecycle` API 解决了这个问题。
+  详情可以参考 [A safer way to collect flows from Android UIs](https://medium.com/androiddevelopers/a-safer-way-to-collect-flows-from-android-uis-23080b1f8bda)。
+  本文最后也提供了一个更加完善的例子。
+</PullQuote>
 
 这一设计和 Kotlin 协程一脉相承。suspend 函数在哪个线程执行却决于调用 suspend 函数的 CoroutineScope，完全在调用方的控制之内。suspend 函数内部可能会切到其他线程（比如 IO 场景下需要切换线程避免阻塞主线程），但调用方无须关心。
 线程切换的细节对 Flow 的调用方来说也几乎是透明的。**在 Android 客户端调用暴露 Flow 的 API 更新 UI，直接在主线程 `collect` Flow 即可，无须手动切换线程。**

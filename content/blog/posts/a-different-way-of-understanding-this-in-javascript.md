@@ -4,7 +4,7 @@ translate:
     url: http://2ality.com/2017/12/alternate-this.html
     title: A different way of understanding this in JavaScript
     author: Dr. Axel Rauschmayer
-date: 2018-05-19T01:17:03.284Z
+date: 2018-05-19T01:17:05.284Z
 ---
 本文尝试从一个新的视角解释 JavaScript 中 this 关键字的工作机制：我们假设箭头函数（arrow functions）是真正的函数，而普通的函数只是一种特殊的语法构造（language construct）。我认为这种解释可以使 `this` 更好理解，可以尝试一下。
 

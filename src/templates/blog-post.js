@@ -1,23 +1,33 @@
 import React, { useState } from "react"
-import { Link, graphql } from "gatsby"
+import { graphql, Link } from "gatsby"
 
 import Bio from "../components/Bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import { TranslateInfo, TranslateMark } from "../components/translate"
+import { TranslateInfo, TranslateMark } from "@/components/translate"
 import ToC from "../components/ToC"
 import Fab from "../components/Fab"
-import { UtterancesComments } from "../components/utterances"
+import { UtterancesComments } from "@/components/utterances"
 import GithubCorner from "../components/GithubCorner"
 import "./blog-post.scss"
 import DarkModeToggle from "../components/DarkModeToggle"
 import Helmet from "react-helmet"
 import "katex/dist/katex.min.css"
-import { MDXRenderer } from "gatsby-plugin-mdx"
-import MyMdxLayout from "@/templates/my-mdx-layout"
 import BookColumn from "@/components/BookColumn"
+import { MDXProvider } from "@mdx-js/react"
+import { PrismSyntaxHighlight } from "@/components/SyntaxHighlight"
 
-const BlogPostTemplate = ({ data, pageContext, location }) => {
+const mdxComponents = {
+  code: ({ children, className }) => {
+    return className ? (
+      <PrismSyntaxHighlight className={className}>{children}</PrismSyntaxHighlight>
+    ) : (
+      <code>{children}</code>
+    );
+  }
+}
+
+const BlogPostTemplate = ({ data, pageContext, location, children }) => {
   const post = data.mdx
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
@@ -40,7 +50,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
       title={siteTitle}
       aside={
         // should make child sibling of main scrollable content
-        // https://stackoverflow.com/a/20028988/6627776 
+        // https://stackoverflow.com/a/20028988/6627776
         post.tableOfContents &&
         <aside className={`sidebar ${menuIsOpen ? "" : "hide"}`}>
           <GithubCorner className="hide-on-desktop" url={githubUrl} />
@@ -73,9 +83,9 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           TranslateInfo(post.frontmatter.translate)}
         {post.book && <div className="xl:absolute xl:-left-80 xl:w-64 w-auto mb-16"><BookColumn {...post.book} /></div>}
         {
-          <MyMdxLayout>
-            <MDXRenderer>{post.body}</MDXRenderer>
-          </MyMdxLayout>
+          <MDXProvider components={mdxComponents}>
+            {children}
+          </MDXProvider>
         }
         <hr className="mb-2 mt-8" />
         <div className="text-caption text-xs mb-4">
@@ -120,32 +130,21 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
     </Layout>
   )
 }
-
 export default BlogPostTemplate
 
-export const pageQuery = graphql`
-  query BlogPostBySlug($slug: String!) {
-    site {
-      siteMetadata {
-        title
-      }
-    }
-    mdx(fields: { slug: { eq: $slug } }) {
+export const query = graphql`
+  query($slug: String!) {
+   site {
+     siteMetadata {
+       title
+     }
+   }
+    mdx(fields: {slug: {eq: $slug}}) {
       id
       excerpt
-      body
       tableOfContents
-      slug
       frontmatter {
         title
-        date(formatString: "MMMM DD, YYYY")
-        issueId
-        english
-        translate {
-          title
-          url
-          author
-        }
       }
       book {
         title
@@ -165,3 +164,41 @@ export const pageQuery = graphql`
     }
   }
 `
+
+// export const pageQuery = graphql`
+//   query BlogPostBySlug($slug: String!) {
+//     site {
+//       siteMetadata {
+//         title
+//       }
+//     }
+//     mdx(fields: { slug: { eq: $slug } }) {
+//       id
+//       excerpt
+//       body
+//       tableOfContents
+//       fields { slug }
+//       frontmatter {
+//         title
+//         date(formatString: "MMMM DD, YYYY")
+//         issueId
+//         english
+//       }
+//       book {
+//         title
+//         author
+//         year
+//         coverFile {
+//           childImageSharp {
+//             fixed {
+//                ...GatsbyImageSharpFixed
+//             }
+//             fluid {
+//                ...GatsbyImageSharpFluid
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// `

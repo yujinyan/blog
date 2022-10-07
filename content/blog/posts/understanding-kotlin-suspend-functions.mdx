@@ -4,11 +4,11 @@ date: "2021-01-24T23:14:03.284Z"
 issueId: "4"
 ---
 
+import PullQuote from "@/components/PullQuote"
+
 ## `suspend` 是回调（Callback）
 
 理解 `suspend` 其实不需要纠结神奇的「挂起」是什么意思或者拘泥于线程是怎么切换的。实际上 `suspend` 的背后是大家非常熟悉的回调。
-
-<!-- excerpt end -->
 
 假设 `postItem` 由三个有依赖关系的异步子任务组成： `requestToken`，`createPost` 和 `processPost` ，这三个函数都是基于回调的 API：
 
@@ -47,8 +47,9 @@ fun postItem(item: Item) = requestToken()
 
 Kotlin 的 `suspend` 关键字可以帮助我们消除回调，用同步的写法写异步：
 
-[[tip | 🏹 ]]
-| 代表挂起点（suspension point）
+<PullQuote emoji="🏹">
+  代表挂起点（suspension point）
+</PullQuote>
 
 ```kotlin
 suspend fun requestToken(): String
@@ -135,8 +136,9 @@ fun postItem(item: Item, cont: Continuation) {
 
 编译器将 `suspend` 编译成带有 continuation 参数的方法叫做 CPS (Continuation-Passing-Style) 变换。
 
-[[tip | 💡]]
-| 我们可以写一段简单的 `suspend` 函数，然后通过 IntelliJ IDEA / Android Studio 的 Tools → Kotlin → Show Kotlin Bytecode (Decompile) 查看 Kotlin 生成的状态机代码。尝试写一下这个状态机代码对理解 `suspend` 函数非常有益。可以在[这里](https://github.com/yujinyan/kotlin-playground/blob/master/src/main/kotlin/coroutine/continuation/ManualContinuationExercise.kt)查看笔者写的一个例子。
+<PullQuote emoji="💡">
+  我们可以写一段简单的 `suspend` 函数，然后通过 IntelliJ IDEA / Android Studio 的 Tools → Kotlin → Show Kotlin Bytecode (Decompile) 查看 Kotlin 生成的状态机代码。尝试写一下这个状态机代码对理解 `suspend` 函数非常有益。可以在[这里](https://github.com/yujinyan/kotlin-playground/blob/master/src/main/kotlin/coroutine/continuation/ManualContinuationExercise.kt)查看笔者写的一个例子。
+</PullQuote>
 
 ## 使用 `suspend` 函数无须关心线程切换
 
@@ -217,7 +219,7 @@ lifecycleScope.launch {
 这个 `Animator.awaitEnd` 包装了 `AnimatorListenerAdapter` 这个异步回调接口。Kotlin 协程库提供了 `suspendCoroutine` 和 `suspendCancellableCoroutine` 函数（注意这两个函数本身都是 `suspend` 的）。我们可以在传入的 lambda 中获取到对应当前「挂起」的 `Continuation` 实例。在合适的回调里调用这个实例的 `resume` 系列方法，便能桥接 `suspend` 函数和基于回调的 API：
 
 ```kotlin
-suspend fun Animator.awaitEnd() = 
+suspend fun Animator.awaitEnd() =
 🏹 suspendCancellableCoroutine<Unit> { cont -> // highlight-line
 
     // 如果执行这个 suspend 函数的协程被取消的话，同时取消这个 Animator。
@@ -256,7 +258,7 @@ suspend fun Animator.awaitEnd() =
 [Splitties](https://github.com/LouisCAD/Splitties) 是一个非常地道的 Kotlin Android 辅助函数库，其中提供了一个 `suspend AlertDialog.showAndAwait` 方法。下面的示例代码会打开一个对话框，等待用户确认是否要删除。这是一个异步的操作，于是将协程「挂起」，等用户选择完毕后返回一个布尔值。
 
 ```kotlin
-suspend fun shouldWeReallyDeleteFromTrash(): Boolean = 
+suspend fun shouldWeReallyDeleteFromTrash(): Boolean =
   alertDialog(
     message = txt(R.string.dialog_msg_confirm_delete_from_trash)
   ).🏹 showAndAwait( // highlight-line
@@ -268,8 +270,9 @@ suspend fun shouldWeReallyDeleteFromTrash(): Boolean =
 
 这里 `AlertDialog.showAndAwait` 使用 `suspendCancellableCoroutine` 包装了 `DialogInterface.OnClickListener` 接口。
 
-[[tip|😏]]
-| 基于回调的 API 都能用 `suspendCoroutine` （和它支持取消的兄弟）包装成 `suspend` 函数。合理使用可以提升代码表达力。
+<PullQuote emoji="😏">
+  基于回调的 API 都能用 `suspendCoroutine` （和它支持取消的兄弟）包装成 `suspend` 函数。合理使用可以提升代码表达力。
+</PullQuote>
 
 注意上面这些例子都只涉及主线程，并不涉及线程切换的问题。
 
@@ -383,8 +386,9 @@ println(depth(deepTree)) // 100_000
 
 Roman 是 Kotlin 协程的主要设计者，现在担任 Kotlin Project Lead，他在 [Medium](https://elizarov.medium.com/) 上有一系列介绍 Kotlin 和协程的文章，可以帮助我们学习和理解 Kotlin 的一些设计思想。
 
-[[tip | 🔗]]
-| 欢迎阅读本文的「姊妹篇」：[《谈谈 Kotlin 协程的 Context 和 Scope》](/posts/kotlin-coroutine-context-scope/)
+<PullQuote emoji="🔗">
+  欢迎阅读本文的「姊妹篇」：[《谈谈 Kotlin 协程的 Context 和 Scope》](/posts/kotlin-coroutine-context-scope/)
+</PullQuote>
 
 ## 题外话：Kotlin 的异常处理
 
@@ -393,8 +397,9 @@ Roman 是 Kotlin 协程的主要设计者，现在担任 Kotlin Project Lead，�
 所以笔者推荐在使用基于协程的 API 的时候，把所有的异常在全局位置（比如 Retrofit 的 call adapter）全部 catch 掉，然后根据业务逻辑封装成类似标准库 `Result` 类型或者 Λrrow 的 `Either` 。如果调用方不需要获取具体错误信息的话可以直接用 `T?` 可空类型来表示，这样既有类型安全又有 `?.` 、`?:` 语法糖。
 另外，Kotlin [计划在 1.5 版本中让空安全操作符同样适用于 `Result`](https://github.com/Kotlin/KEEP/pull/244)，非常期待。
 
-[[tip | 🔗]]
-| [《Kotlin 协程与 Retrofit》](/posts/kotlin-coroutine-retrofit) 介绍了使用 Retrofit Call Adapter 封装全局异常处理逻辑的方案。
+<PullQuote emoji="🔗">
+  [《Kotlin 协程与 Retrofit》](/posts/kotlin-coroutine-retrofit) 介绍了使用 Retrofit Call Adapter 封装全局异常处理逻辑的方案。
+</PullQuote>
 
 ## 题外话：没有用的 `await` 关键字
 

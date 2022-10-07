@@ -4,11 +4,12 @@ date: 2021-02-11T15:49:03.284Z
 issueId: "19"
 ---
 
+import Figure from "@/components/Figure"
+
 ## 引子
 
 开启 Kotlin 协程需要在 `CoroutineScope` 上调用 `launch` 或者 `async` 这些方法。这些定义在 `CoroutineScope` 上的扩展方法叫作 coroutine builder。
 
-<!-- excerpt end -->
 
 ```kotlin
 lifecycleScope.launch(Dispatchers.IO) {
@@ -43,7 +44,7 @@ Kotlin 的协程为何需要一个 Scope 的概念？能不能去掉 Scope 只�
 **Context 像一个集合（Set）**：这个集合由不同类型的 `Element` 组成。可以通过运算符重载的 add 添加元素，如果添加已经存在的类型的元素则会覆盖。
 
 ```kotlin
-CoroutineName("foo") + CoroutineName("bar") 
+CoroutineName("foo") + CoroutineName("bar")
   == CoroutineName("bar") // true
 ```
 
@@ -125,7 +126,7 @@ class ThemedButton extends React.Component {
 }
 ```
 
-一段可以作为整体执行的代码块可以叫作「子程序 routine」，比如函数、方法、lambda、条件块、循环块等。 
+一段可以作为整体执行的代码块可以叫作「子程序 routine」，比如函数、方法、lambda、条件块、循环块等。
 Kotlin 协程（coroutine）就是一段可以 suspend 的代码块。我们出于抽象复用的目的，将一部分含有异步的代码抽离出来封装成 suspend 函数。
 
 函数调用也类似 UI 组件，可以看作一个树状的结构。在 Kotlin 的 suspend 函数中，我们可以在调用链的任意层级获取 Context（Context propagation）：
@@ -201,11 +202,11 @@ suspend fun checkContinuationContext(): Boolean {
 `ContinuationInterceptor` 这个 Element 为协程的调度提供了基础设施。我们熟悉的用于指定执行协程的线程的 `Dispatchers.IO` 等 `CoroutineDispatcher` 就是 `ContinuationInterceptor` 。
 
 ```kotlin
-object CommonPoolContext : 
-  AbstractCoroutineContextElement(ContinuationInterceptor), 
+object CommonPoolContext :
+  AbstractCoroutineContextElement(ContinuationInterceptor),
   ContinuationInterceptor {
 
-  val pool: ForkJoinPool = ForkJoinPool() // highlight-line 
+  val pool: ForkJoinPool = ForkJoinPool() // highlight-line
 
   override fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T> =
     object : Continuation<T> {
@@ -380,7 +381,7 @@ func cancelled(done chan struct{}) bool {
 
 ```go
 type Context interface {
-  // Done returns a channel 
+  // Done returns a channel
   // that is closed when this Context is canceled
   // or times out.
   Done() <-chan struct{} // highlight-line
@@ -506,7 +507,7 @@ suspend fun sayHelloWorld() {
     delay(500)
     print("Hello ")
   }
-  GlobalScope.launch(job) { // highlight-line 
+  GlobalScope.launch(job) { // highlight-line
     delay(1000)
     print("World!")
   }
@@ -566,7 +567,7 @@ class MyActivity : CoroutineScope { // highlight-line
   override val coroutineContext = Dispatchers.Main + job // highlight-line
 
   fun doSomethingInBackground() = launch { ... }
-  fun onDestroy() { job.cancel() }    
+  fun onDestroy() { job.cancel() }
 }
 ```
 
@@ -633,7 +634,7 @@ Kotlin 协程抽象复用的机制除了 `CoroutineScope` 上的扩展函数之�
 // slow work but does not block caller's thread
 suspend foo(params: Params): Response
 
-// launch concurrent subprogram with surrounding code 
+// launch concurrent subprogram with surrounding code
 fun CoroutineScope.foo(params: Params): Response
 ```
 
