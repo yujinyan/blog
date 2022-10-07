@@ -154,7 +154,7 @@ module.exports = {
 
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
-    `gatsby-plugin-feed-mdx`,
+    // `gatsby-plugin-feed-mdx`, // this throws error on build after migrating to mdx2
     {
       resolve: `gatsby-plugin-manifest`,
       options: {

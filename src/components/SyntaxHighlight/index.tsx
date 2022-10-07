@@ -2,8 +2,16 @@ import Highlight, { defaultProps } from "prism-react-renderer"
 import React from "react"
 import "./code-higlight.css"
 
+const needExtraImport = ["kotlin", "swift", "php", "java"]
+const isBrowser = typeof window !== "undefined"
+
+
 export const PrismSyntaxHighlight = ({ children, className }) => {
   const language = className.replace(/language-/gm, "")
+
+  if (needExtraImport.includes(language) && isBrowser) {
+    require(`prismjs/components/prism-${language}`)
+  }
 
   return (
     <Highlight {...defaultProps} code={children} language={language} theme={null}>
