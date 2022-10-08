@@ -61,7 +61,7 @@ export const pageQuery = graphql`
       sort: { fields: [frontmatter___date], order: DESC },
       filter: { 
         internal: { contentFilePath: { regex: "/posts/" } }
-        frontmatter: { hidden: { ne: true } }
+        frontmatter: { hidden: { ne: true }, date: { ne: null } }
       }
     ) {
         nodes {
