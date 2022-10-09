@@ -38,10 +38,7 @@ const BlogPostTemplate = ({ data, pageContext, location, children }) => {
     "https://github.com/yujinyan/blog"
 
   const darkModeToggle = <DarkModeToggle
-    className={`fixed-on-desktop right-4 top-8 ${menuIsOpen ? "fixed" : "absolute"}`}
-    style={{
-      zIndex: 50,
-    }}
+    className={`z-50 fixed-on-desktop right-4 top-8 ${menuIsOpen ? "fixed" : "absolute"}`}
   />
 
   return (
@@ -145,6 +142,8 @@ export const query = graphql`
       tableOfContents
       frontmatter {
         title
+        issueId
+        english
       }
       book {
         title
