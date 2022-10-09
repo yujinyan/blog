@@ -4,7 +4,6 @@ date: "2022-09-14T23:00:03.284Z"
 ---
 
 import PullQuote from "@/components/PullQuote"
-import Figure from "@/components/Figure"
 
 <PullQuote emoji="🚧">
   尚未完成 - Work In Progress
@@ -392,9 +391,10 @@ class NaiveCounterDemoController {
 
 原因是 `counter++` 并非原子的操作，相当于 `counter = counter + 1`，先读取后写入。
 
-<Figure caption="并发加计数器的问题图解（引自 DDIA）">
+<figure>
   ![Race condition between two clients concurrently incrementing a counter](./counter-race.png)
-</Figure>
+  <figcaption>并发加计数器的问题图解（引自 DDIA）</figcaption>
+</figure>
 
 解决方法：
 - 提供原子操作的线程安全的数据机构 Thread-safe data structures: `AtomicInteger` （counter 场景首选）
