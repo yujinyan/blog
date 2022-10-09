@@ -9,18 +9,18 @@ module.exports = async (config, pluginOptions) => {
 
   visit(markdownAST, "image", node => {
     if (!node.url.startsWith("http")
-      && path.extname(node.url) == '.svg'
+      && path.extname(node.url) === '.svg'
     ) {
       nodes.push(node)
     }
   })
 
   await Promise.all(nodes.map(async node => {
-    const fileAbsolutePath = config.markdownNode.fileAbsolutePath
+    const fileAbsolutePath = config.markdownNode.internal.contentFilePath
     const svgPath = path.join(path.dirname(fileAbsolutePath), node.url)
     const content = processSvg(await fs.readFile(svgPath, "utf-8"))
     node.type = "html"
-    node.children = undefined
+    node.children = []
     node.value = content
   }))
 

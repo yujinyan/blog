@@ -20,7 +20,6 @@ module.exports = {
             require("remark-gfm"), // add support for tables
             require(`remark-math`),
             // require("remark-html-katex"),
-            // import(`remark-frontmatter`)
           ],
           rehypePlugins: [
             require('rehype-katex'),
@@ -29,9 +28,9 @@ module.exports = {
         },
         extensions: [".md", ".mdx"],
         gatsbyRemarkPlugins: [
-          // { // https://github.com/gatsbyjs/gatsby/issues/21592
-          //   resolve: require.resolve("./plugins/gatsby-remark-embed-svg"),
-          // },
+          { // https://github.com/gatsbyjs/gatsby/issues/21592
+            resolve: require.resolve("./plugins/gatsby-remark-embed-svg"),
+          },
           `gatsby-remark-autolink-headers`,
           {
             resolve: `gatsby-remark-images`,
