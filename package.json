@@ -68,7 +68,6 @@
     "rehype-react": "^7.0.4",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^1",
-    "remark-html-katex": "^3.0.0",
     "remark-math": "4.0.0",
     "remark-mdx-frontmatter": "^2.0.3",
     "runes": "^0.4.3",
