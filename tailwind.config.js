@@ -24,6 +24,9 @@ module.exports = {
       transitionProperty: {
         colors: "color, background-color",
       },
+      spacing: {
+        horizontal: "1.3125rem",
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {
@@ -36,9 +39,9 @@ module.exports = {
               color: "var(--primary)",
               textDecoration: "none",
             },
-            "code": null,
-            "code::before": null,
-            "code::after": null,
+            // "code": null,
+            // "code::before": null,
+            // "code::after": null,
             "blockquote p:first-of-type::before": null,
             "blockquote p:last-of-type::after": null,
             "hr": null,

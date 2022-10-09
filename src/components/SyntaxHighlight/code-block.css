@@ -1,0 +1,38 @@
+/* We have a lot of code snippets, scrollbars look like lots of hr's */
+/* CSS Standard, Firefox */
+.prose pre {
+    scrollbar-width: none;
+}
+
+/* Chrome and friends */
+.prose pre::-webkit-scrollbar {
+    display: none;
+}
+
+pre {
+    padding: 16px;
+    overflow-x: scroll;
+}
+
+.light pre {
+    /*border-radius: 3px;*/
+    @apply rounded-none sm:rounded ;
+    @apply -ml-horizontal -mr-horizontal sm:ml-0;
+    /* inspiration https://evan.tatarka.me/blog/2020-03-02-you-dont-need-to-null-out-views */
+    box-shadow: 0 6px 12px rgb(0 0 0 / 25%);
+}
+
+.dark pre {
+    @apply px-0;
+    background-color: transparent;
+}
+
+.line-highlight {
+    display: block;
+    background: #3c4846e0;
+    margin-right: -1.3125rem;
+    margin-left: -1rem;
+    /* padding-left + border-left = margin-left */
+    padding-left: 0.6875rem;
+    border-left: #cc99cd solid 0.3125em;
+}
