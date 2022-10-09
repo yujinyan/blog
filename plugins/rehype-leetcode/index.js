@@ -1,5 +1,4 @@
 const visit = require("unist-util-visit")
-const jsxparser = require("./jsxparser")
 
 const _data = require("./data.json")
 const problemsById = _data.stat_status_pairs.reduce((acc, item) => {
@@ -11,18 +10,9 @@ const LEVEL_TO_DIFFICULTY = {
 }
 
 const problems = {
-  // _data: data.stat_status_pairs,
-  // _length: data.stat_status_pairs.length,
   getById: function(id) {
-    // console.log(`length is ${this._length}`)
-    // const position = this._length - id
-    // console.log(`id is ${id}, position is ${this._length}`)
     const _data = problemsById[id]
-    if (!_data) throw Error(`LeetCode problem with id ${id} not found.`)
-    // const idInData = _data.stat.question_id
-    // if (idInData != id) {
-    //   throw Error(`leetcode id not match, looking for ${id}, but found ${idInData} at position ${position}`)
-    // }
+    if (!_data) throw Error(`leetcode problem with id ${id} not found.`)
     return {
       id,
       title: _data.stat.question__title,
@@ -33,22 +23,25 @@ const problems = {
   },
 }
 
+// For tree node structure, refer to
+// https://github.com/syntax-tree/mdast-util-mdx-jsx#syntax-tree
 module.exports = () => {
   return tree => {
-    visit(tree, "jsx", (node) => {
-      const jsx = jsxparser(node.value)
-      if (!jsx?.tag?.startsWith("LeetCode")) return
-
-      const tag = jsx.tag
-      const id = jsx.props["id"]
-      const problem = problems.getById(id)
-      const props = { ...jsx.props, ...problem }
-
-      let propertyStr = ""
-      Object.entries(props).forEach(([key, value]) => {
-        propertyStr += `${key}="${value}" `
+    visit(tree, "mdxJsxFlowElement", (node) => {
+      if (!node.name.startsWith("LeetCode")) {
+        return
+      }
+      const idAttribute = node.attributes.find(a => a.name === "id")
+      const leetcodeProblem = problems.getById(idAttribute.value.value)
+      Object.entries(leetcodeProblem).forEach(([key, value]) => {
+        node.attributes.push(
+          {
+            type: "mdxJsxAttribute",
+            name: key,
+            value
+          }
+        )
       })
-      node.value = `<${tag} ${propertyStr} />`
     })
   }
 }
