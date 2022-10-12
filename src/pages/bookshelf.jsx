@@ -1,7 +1,6 @@
 import React from "react"
 import { graphql, Link } from "gatsby"
 import Layout from "../components/layout"
-import BookColumn from "@/components/BookColumn"
 import Image from "gatsby-image"
 import "./bookshelf.scss"
 import get from "lodash/get"

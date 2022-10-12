@@ -3,16 +3,26 @@ const SourceHanSans = "source-han-sans-simplified-c"
 const colors = require("tailwindcss/colors")
 const monoFonts = (fontName) => `"${fontName}", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;`
 
+
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
     colors: {
-      primary: "var(--primary)",
+      primary: colors.sky,
+      secondary: colors.pink,
       body: "var(--body)",
       caption: "var(--caption)",
+      hr: "var(--hr)",
+      sky: colors.sky,
       gray: colors.gray,
-      hr: "var(--hr)"
+      red: colors.red,
+      green: colors.green,
+      yellow: colors.yellow,
+      background: "var(--bg)",
+      on: {
+        background: "var(--body)"
+      }
     },
     fontFamily: {
       "serif": `"source-serif-4", ${SourceHanSerif}, "Georgia", "serif"`,
