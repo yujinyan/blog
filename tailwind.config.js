@@ -14,7 +14,7 @@ module.exports = {
       gray: colors.gray,
     },
     fontFamily: {
-      "serif": `"source-serif-4", ${SourceHanSerif}, "Georgia", "serif"`,
+      "serif": `"source-serif-4", "LXGW WenKai Lite", ${SourceHanSerif}, "Georgia", "serif"`,
       "subtitle": `"Zilla Slab", "Georgia", "serif"`,
       "display": `"Roboto Slab", ${SourceHanSans}, "sans-serif"`,
       "mono": monoFonts("JetBrains Mono"),
