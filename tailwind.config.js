@@ -2,10 +2,11 @@ const SourceHanSerif = "source-han-serif-sc"
 const SourceHanSans = "source-han-sans-simplified-c"
 const colors = require("tailwindcss/colors")
 const monoFonts = (fontName) => `"${fontName}", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;`
+const defaultTheme = require("tailwindcss/stubs/defaultConfig.stub").theme
 
 
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: ["./src/**/*.{js,jsx,ts,tsx,mdx}"],
   darkMode: "class",
   theme: {
     colors: {
@@ -18,17 +19,20 @@ module.exports = {
       gray: colors.gray,
       red: colors.red,
       green: colors.green,
+      white: colors.white,
       yellow: colors.yellow,
       background: "var(--bg)",
       on: {
         background: "var(--body)"
-      }
+      },
+      transparent: colors.transparent
     },
     fontFamily: {
       "serif": `"source-serif-4", ${SourceHanSerif}, "Georgia", "serif"`,
       "subtitle": `"Zilla Slab", "Georgia", "serif"`,
       "display": `"Roboto Slab", ${SourceHanSans}, "sans-serif"`,
       "mono": monoFonts("JetBrains Mono"),
+      "sans": defaultTheme.fontFamily.sans
     },
     extend: {
       transitionProperty: {
@@ -37,7 +41,7 @@ module.exports = {
       spacing: {
         horizontal: "1.3125rem",
       },
-      typography: (theme) => ({
+      typography: ({ theme }) => ({
         DEFAULT: {
           css: {
             color: "var(--body)",
@@ -57,11 +61,12 @@ module.exports = {
             "hr": null,
           },
         },
-        dark: {
+        invert: {
           css: {
             strong: {
               color: colors.gray["50"],
             },
+            // "--tw-prose-bullets": theme('colors.sky[100]')
           },
         },
       }),

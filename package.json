@@ -13,6 +13,7 @@
     "@fontsource/jetbrains-mono": "^4.5.0",
     "@fontsource/roboto-slab": "^4.5.1",
     "@fontsource/zilla-slab": "^4.5.0",
+    "@headlessui/react": "^1.7.3",
     "@iconify/icons-feather": "^1.1.0",
     "@iconify/react": "^3.2.2",
     "@mdx-js/react": "^2.1.3",

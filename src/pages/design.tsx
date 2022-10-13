@@ -4,6 +4,7 @@ import { PrismSyntaxHighlight } from "../components/SyntaxHighlight"
 import Layout from "../components/layout"
 import Popout from "../components/Popout"
 import LeetCode from "../components/LeetCode"
+import {PrimaryButton} from "../components/Button"
 import tw from "twin.macro"
 
 export default function Page({ location }) {
@@ -12,6 +13,9 @@ export default function Page({ location }) {
       <section>
         <h2>Color</h2>
         <ColorPalette />
+        <p className="text-secondary-500">
+          Hello World!
+        </p>
       </section>
 
       <section>
@@ -27,7 +31,11 @@ export default function Page({ location }) {
             }, {
               className: `font-subtitle`,
               fontName: `Zilla Slab`,
-            },
+            }, {
+              className: `font-sans`,
+              fontName: `System default`,
+
+            }
             ].map(x =>
               <div>
                 <div className={`text-2xl mb-2 ${x.className} text-gray-700`}>The quick brown fox jumps over the lazy dog.</div>
@@ -51,6 +59,7 @@ export default function Page({ location }) {
 
       <section>
         <h2>Components</h2>
+        <PrimaryButton>Click me</PrimaryButton>
         <PullQuote emoji="😍">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </PullQuote>
@@ -65,6 +74,17 @@ export default function Page({ location }) {
 
       <section>
         <h2>Spacing</h2>
+        {
+          [
+            { label: "2", value: "w-2" },
+            { label: "4", value: "w-4" },
+            { label: "6", value: "w-6" },
+            { label: "horizontal", value: "w-horizontal" },
+          ].map(x => <div className="flex items-center gap-2">
+            <div className="w-32 text-right font-mono text-sm">{x.label}</div>
+            <div className={`bg-secondary-400 h-2 ${x.value}`}></div>
+          </div>)
+        }
       </section>
     </article>
   </Layout>

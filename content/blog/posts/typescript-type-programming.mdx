@@ -3,6 +3,9 @@ title: TypeScript 类型编程指南
 date: "2022-09-25T11:07:17.284Z"
 ---
 
+import PullQuote from "@/components/PullQuote"
+import DiscloseAnswer from "@/components/DiscloseAnswer"
+
 两个视角：
 
 - 类型系统是集合
@@ -80,13 +83,13 @@ function f2(a: unknown) {
 
 ```tsx
 function f2(a: unknown) {
-	if (typeof a == 'function') {
-		a()
-	}
+  if (typeof a == 'function') {
+    a()
+  }
 
-	if (typeof a == 'object' && a != null && "foo" in a) {
-		a["foo"]
-	}
+  if (typeof a == 'object' && a != null && "foo" in a) {
+    a["foo"]
+  }
 }
 ```
 
@@ -132,15 +135,20 @@ type User = {
 }
 
 type User1 = {
-  [F in keyof User as Capitalize<F>]: User[F]
+  [F in keyof User as Capitalize<F>]: User[F] // highlight-line
 }
 ```
 
+- 将 `User` 类型中每一个键 `F` 变换成 `Capitalize<F>`
+- 这个键对应的值类型是 `User[F]`，即保持不变
+
 ### 函数
+
+可以将范型类比函数：
 
 ```tsx
 function union(x, y) {
-    return [...new Set([...x, ...y])]
+  return [...new Set([...x, ...y])]
 }
 ```
 
@@ -148,16 +156,17 @@ function union(x, y) {
 type Union<X, Y> = X | Y
 ```
 
-[[tip|🖋️]]
-| [https://github.com/type-challenges/type-challenges/blob/main/questions/00003-medium-omit/README.md](https://github.com/type-challenges/type-challenges/blob/main/questions/00003-medium-omit/README.md)
+- `Union`: 函数名
+- `<X, Y>`: 声明函数入参
+- 等号右侧 `X | Y`: 函数返回值
 
-Implement the built-in `Omit<T, K>` generic without using it.
 
-Constructs a type by picking all properties from `T` and then removing `K`
+<PullQuote emoji="🖋">
 
-For example:
+  [Type Challenge](https://github.com/type-challenges/type-challenges/blob/main/questions/00003-medium-omit/README.md)：
+  尝试自己实现 ts 内置的辅助类：`Omit<T, K>`，其作用是从 `T` 中移除所有 `K` 里列出来的属性，例如：
 
-```tsx
+```typescript
 interface Todo {
   title: string
   description: string
@@ -167,13 +176,19 @@ interface Todo {
 type TodoPreview = MyOmit<Todo, 'description' | 'title'>
 
 const todo: TodoPreview = {
-  completed: false,
+  completed: false
 }
-```
+  ```
 
-练习2:
+  <DiscloseAnswer>
+    ```typescript
+    type MyOmit<T, O> = {
+      [P in keyof T as P extends O ? never : P]: T[P]
+    }
+    ```
+  </DiscloseAnswer>
+</PullQuote>
 
-`Readonly`
 
 ### 递归
 
@@ -211,41 +226,47 @@ const MyArray = [
 type Person = typeof MyArray[number];
 ```
 
-练习：
 
-实现一个类型安全的路由方法
+<PullQuote emoji="🖋">
+  假设有这样一个路由配置和跳转方法：
 
-假设有这样一个路由配置和方法：
-
-```tsx
-const routes = {
+  ```tsx
+  const routes = {
     index: {
-        path: "/index",
-        payload: {} as { page: number }
+      path: "/index",
+      payload: {} as { page: number }
     },
     search: {
-        path: "/search",
-        payload: {} as { query: string }
+      path: "/search",
+      payload: {} as { query: string }
     }
-}
+  }
 
-declare function navigateTo(
+  declare function navigateTo(
     route: string,
     payload: Record<string, string>
-)
+  )
+  navigateTo("index", { page: 1 })
+  ```
 
-navigateTo("index", { page: 1 })
-```
+  请重构 `navigateTo` 的类型标注，使得以下调用都编译错误：
 
-请重构 `navigateTo` 的类型标注，使得以下调用都编译错误：
+  ```jsx
+  navigateTo("blah", { page: 1 }) // 不存在的路由
+  navigateTo("search", { page: 1 }) // 不匹配的路由参数配置
+  ```
 
-```jsx
-navigateTo("blah", { page: 1 }) // 不存在的路由
-navigateTo("search", { page: 1 }) // 不匹配的路由参数配置
-```
+  <DiscloseAnswer>
+    ```typescript
+    declare function myNavigateTo<T extends keyof typeof routes>(
+      route: T,
+      payload: (typeof routes)[T]['payload']
+    ): void
+    ```
+  </DiscloseAnswer>
+</PullQuote>
 
 ## 参考资料
 
-[An introduction to type programming in TypeScript](https://www.zhenghao.io/posts/type-programming)
-
-[https://github.com/type-challenges/type-challenges](https://github.com/type-challenges/type-challenges)
+- [An introduction to type programming in TypeScript](https://www.zhenghao.io/posts/type-programming)
+- [https://github.com/type-challenges/type-challenges](https://github.com/type-challenges/type-challenges)

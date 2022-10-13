@@ -16,8 +16,8 @@ pre {
 
 .light pre {
     /*border-radius: 3px;*/
-    @apply rounded-none sm:rounded ;
-    @apply -mx-horizontal sm:ml-0;
+    @apply rounded-none sm:rounded;
+    @apply -mx-horizontal sm:mx-0;
     /* inspiration https://evan.tatarka.me/blog/2020-03-02-you-dont-need-to-null-out-views */
     box-shadow: 0 6px 12px rgb(0 0 0 / 25%);
 }
