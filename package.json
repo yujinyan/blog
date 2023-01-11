@@ -47,7 +47,7 @@
     "gatsby-remark-smartypants": "^5.4.0",
     "gatsby-source-filesystem": "^4.4.0",
     "gatsby-transformer-csv": "^4.4.0",
-    "gatsby-transformer-remark": "^5.4.0",
+    "gatsby-transformer-remark": "^5.25.1",
     "gatsby-transformer-sharp": "^4.4.0",
     "gitalk": "^1.7.0",
     "hamburger-react": "^2.4.0",
