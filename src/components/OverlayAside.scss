@@ -1,5 +1,5 @@
 .sidebar {
-  @apply bg-base-100;
+  @apply bg-base-100 xl:bg-transparent;
   @apply fixed z-20 h-screen;
   @apply w-full xl:w-[calc(50vw-500px)];// 50vw + main width + extra padding
   @apply m-0 left-0 top-0 bottom-0 right-0 xl:left-[calc(50vw+21rem+2rem)];
