@@ -55,7 +55,7 @@
     "hastscript": "^6.0.0",
     "katex": "^0.15.1",
     "pngquant-bin": "^6.0.0",
-    "postcss": "^8.4.5",
+    "postcss": "^8.4.31",
     "prismjs": "^1.26.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
