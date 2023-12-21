@@ -1,4 +1,3 @@
-import React from "react"
 
 export const TheAlgorithmDesignManual =
   ({ section, chapter }: { section?: [number, string], chapter?: [number, string] }) =>

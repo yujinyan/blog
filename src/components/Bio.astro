@@ -1,0 +1,47 @@
+---
+import avatar from "../assets/avatar.jpeg"
+import tropicalFish from "../assets/tropical-fish.svg"
+import {Image} from "astro:assets";
+import {AUTHOR_NAME} from "../consts";
+---
+
+<div class="flex items-center space-x-2">
+    <Image
+            src={tropicalFish}
+            alt={AUTHOR_NAME}
+            class="w-16"
+    />
+    <div class="font-subtitle m-0" lang="en">
+        Written by{" "}
+        <strong>
+            <a href={`mailto:i@yujinyan.me`}>i@yujinyan.me</a>
+        </strong>
+        .
+        <span class="nowrap">
+          <a
+                  class="social-icon"
+                  href="https://twitter.com/yujinyan92"
+                  title="Find me on Twitter"
+          >
+            <!--<img alt="twitter" src={twitter} class="inline" />-->
+          </a>
+          <a
+                  class="social-icon"
+                  href="https://t.me/fish_study_plz"
+                  title="I also chat on Telegram"
+          >
+            <!--<img alt="telegram" src={telegram} className="inline" />-->
+          </a>
+        </span>
+        <br />
+        Web, JVM, Android. Kotlin enthusiast.
+        <br />
+        {/* Find me on <a href="https://twitter.com/yujinyan92">Twitter</a>. */}
+        {/* I also chat on <a href="https://t.me/fish_study_plz">Telegram</a>. */}
+        {/* {author.summary} */}
+    </div>
+</div>
+
+
+
+

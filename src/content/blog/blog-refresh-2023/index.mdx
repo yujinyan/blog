@@ -1,0 +1,157 @@
+---
+title: "Blog Refresh 2023: 从 Gatsby 到 Astro"
+date: "2023-12-18T17:21:03.284Z"
+description: 2023年末翻新了这个博客，了解 Astro、Solid.js、Tailwind 等新技术。
+heroImage: ./astro-new.webp
+---
+
+import UiLibs2023 from "@/components/UiLibs2023.astro";
+import ThemeToggle from "@/components/ThemeToggle.tsx";
+import TemporalSection from "@/components/Bento/TemporalSection.astro";
+import Swatches from "@/components/Design/Swatches.astro";
+import KotlinSection from "@/components/Bento/KotlinSection.astro";
+
+
+## 框架：Astro
+
+原先博客使用 Gatsby 在编译时服务端渲染生成页面（SSG）。这一方案在客户端仍然需要重新 hydrate 整个 React App。对于个人博客这种内容为主的网站似乎有些重，不需要把整个页面跑在 React 里面，直接输出固定的 HTML 即可。对此，React 的回应是 React Server Component。RSC 依赖具体框架的实现，可以选择：
+
+**Next.js** - 更适合 web app 重交互的应用；
+
+**Gatsby.js** - 5.0 版本之后支持基于 RSC 的 [Partial hydration](https://www.gatsbyjs.com/docs/how-to/performance/partial-hydration/)。但比较遗憾的是 Gatsby 不怎么流行了，维护更新也比较慢。
+
+最终选择了针对内容型网站优化的 Astro。它的优点包括：
+
+- 简单易用、开发体验好
+- 能够自由选择不同的 UI 库
+
+Astro 模板包含组件 script 和模板两部分，通过类似 markdown frontmatter 的分割符分开。组件 script 运行在服务端（或者构建时），其中定义的变量可以在模版中应用。组件模版采用了类似 JSX 的语法。两者结合生成朴素的 HTML。
+
+```astro
+---
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+---
+<html lang="zh-CN">
+  <head>
+    <title>所有文章</title>
+  </head>
+  <body>
+    {posts.map(post => <p>{post.data.title}</p>)}
+  </body>
+</html>
+```
+
+原来博客中的组件大部分都是出于代码组织的用途，在这次翻新中都改成了 Astro 模版。有状态可交互的组件并不多，主要是文章页的可交互大纲、移动端悬浮按钮。
+对于这些组件 Astro 支持在模版中导入不同的 UI 组件库组件。目前支持 Alpine.js、Lit、Preact、React、Solid.js、Svelte、Vue。
+
+## UI 库：Solid.js
+
+体验了 Preact、Svelte 和 Solid.js 之后，我的感受是是各个 UI 库愈发趋同，只是在开发体验（偏模板还是偏 JSX）和状态更新检测机制不同方案间进行组合。
+
+<UiLibs2023 class="m-auto" />
+
+最终选择 Solid.js 的考虑：
+
+JSX 的方案是对 Astro 模板很好的补充。模板更适合做页面，而一些由小零件组成的组件用 JSX 可以放在一个文件里，代码组织更加灵活。
+
+使用了编译时反应式系统，在编译阶段确定了数据变化的侦测点，而不是在运行时动态追踪依赖关系，能够在运行时更高效地处理数据变化。
+
+## CSS方案：Tailwind 和 DaisyUI
+
+Tailwind 已经是主流的方案了。借助 Tailwind，样式和模版结合更加紧密，避免创建不必要的抽象层，提升了开发效率。
+
+上一版已经将 Tailwind 集成到了博客中，但和原有的 SASS 样式有一些冲突，特别是主题颜色。这一期的目标是都重构成 Tailwind 的类。
+但是使用像 `bg-primary` 这样的设计系统元素比直接使用 `bg-puple-500` 更好，方便统一颜色，也容易实现切换主题。
+
+DaisyUI 提供了一套开箱即用的颜色系统。在其默认的颜色主题中，选了两套最喜欢的颜色方案：浅色的 Cupcake 和深色的 Dracula。
+
+在这里放一个主题切换按钮方便大家体验：
+
+<div class="mockup-window ring-1 ring-base-content/20 shadow">
+    <div class="px-4">
+        <div class="flex items-center justify-end pb-4">
+            <ThemeToggle client:only="solid-js" />
+        </div>
+        <Swatches class="mb-4" />
+    </div>
+</div>
+
+
+
+## 设计
+
+### 移除中文网络字体
+
+我比较喜欢博客正文用一个衬线字体。在之前的版本中使用 Adobe Fonts 加载「思源宋体」。
+
+但是中文网络对性能有些影响，而且网络字体突然加载出来导致正文字体大面积发生变化感觉还是有点奇怪。
+
+最近我注意到自己的小米手机已经内置了宋体，了解了下使用 Tailwind 默认的 `font-serif` 情况下，目前操作系统可能默认会使用到的内置中文宋体：
+
+- Android 9.0 Pie 开始内置思源宋体；
+- iOS 无；
+- macOS：宋体-简 (Songti SC)。
+
+权衡之下，目前打算暂时先不加载网络字体。后续再针对不同系统做些小的优化。
+
+### Bento 便当 🍱
+
+Bento 是当下比较流行的设计趋势，其灵感来源于整齐、精致的日式便当。
+
+import BentoGridExample from "./BentoGridExample.astro";
+
+<figure>
+    <BentoGridExample />
+    <figcaption>[Givingli](https://givingli.com) 首页的 Bento grid 设计</figcaption>
+</figure>
+
+其他代表：
+
+- 苹果新闻发布会幻灯片
+- iOS 14 小组件
+- https://bento.me/
+- 产品落地页：https://diagram.com/
+
+更多灵感可以看 [Bentogrids](https://bentogrids.com/) 这个网站
+
+这个博客最受欢迎的是几篇 Kotlin 协程的文章。这次把几篇文章放在一起做成「便当盒」里的一个模块在首页和文章页展示。
+另外还可以把最推荐的文章做成 banner 模块展示。这样首页不再是一个单调的列表，更加丰富生动。
+
+<KotlinSection class="max-w-96 m-auto"/>
+
+<figcaption>Kotlin 协程系列文章模块</figcaption>
+
+
+### 共享元素动画
+
+Astro 3.0 主推的新功能，实现起来非常简单，顺手就加上了。目前用到的地方是「我的书架」中的图书封面和首页 Bento 到文章头图的切换。
+这个功能依赖浏览器的 View Transition API（Chrome 111 及以上支持）。
+
+在这里放一个文章头图方便大家体验：
+
+<TemporalSection class="w-full h-36" />
+
+<p class="text-base-content/50 text-sm font-sans text-center">Chrome 111 及以上支持共享元素动画</p>
+
+## 关注中
+
+|||
+|---|---|
+|[Biome](https://biomejs.dev)|一个「锈化」的 linter，formatter|
+|[方正悠宋](https://www.ifanr.com/1130607)|为屏幕显示优化的宋体，可以用来显示正文|
+|[霞鹜文楷](https://lxgw,.github.io/2021/01/28/Klee-Simpchin/)|另一个适用于正文的中文字体|
+|[StyleX](https://stylexjs.com)|Meta 最新的 css-in-js 库|
+|[Markdoc](https://markdoc.dev)|类似 Mdx，但是没有 Mdx 那么灵活，更加突出内容|
+
+
+## 灵感
+
+- https://svgl.vercel.app/
+- https://cali.so/
+- https://bento.me/en/home
+- https://press.stripe.com/
+- https://nevflynn.com/
+- https://whoisryosuke.com/blog/2022/blog-refresh-2022/
+- https://www.joshwcomeau.com/react/server-components/

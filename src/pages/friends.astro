@@ -1,0 +1,19 @@
+---
+import DefaultLayout from "@/layouts/DefaultLayout.astro";
+import MyAvatarOverline from "@/components/MyAvatarOverline.astro";
+import GithubCorner from "@/components/GithubCorner.astro";
+import { Content as FriendsPage } from "./_friends.mdx";
+---
+
+<DefaultLayout
+    lang="en"
+    title="Friends 友链"
+    pathname={Astro.url.pathname}
+    description="A list of blogs similar to this one."
+>
+    <GithubCorner url="https://github.com/yujinyan/blog/issues/46" />
+    <MyAvatarOverline slot="header" />
+    <article class="prose">
+        <FriendsPage />
+    </article>
+</DefaultLayout>

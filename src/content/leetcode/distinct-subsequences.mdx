@@ -1,0 +1,71 @@
+---
+title: Distinct Subsequences
+date: 2021-03-20T15:49:03.284Z
+lang: en
+---
+
+import LeetCode from "@/components/LeetCode.astro"
+// import { DpTable, dpFactory, key } from "@/components/DpTable"
+import DistinctSubSequences from "@/components/DpTables/DistinctSubsequences"
+
+
+<LeetCode id={115} />
+
+Given two strings `s` and `t`, return *the number of distinct subsequences* of `s` which equals `t`.
+
+Example:
+
+```
+Input: s = "babgbag", t = "bag"
+Output: 5
+```
+
+As shown below, there are 5 ways you can generate `"bag"` from `s`.
+
+* **ba**b**g**bag 
+* **ba**bgba**g**
+* **b**abgb**ag**
+* ba**b**gb**ag**
+* babg**bag**
+
+## Code
+
+```java
+// s: babgbag -> iterated by pointer j
+// t: bag     -> iterated by pointer i
+
+public int numDistinct(String s, String t) {
+  int S = s.length(), T = t.length();
+
+  int[][] dp = new int[T + 1][S + 1];
+
+  for (int j = 0; j <= S; j++) {
+    dp[0][j] = 1; // highlight-line
+  }
+
+  for (int i = 1; i <= T; i++) {
+    for (int j = 1; j <= S; j++) {
+      if (s.charAt(j - 1) == t.charAt(i - 1)) {
+        dp[i][j] = dp[i - 1][j - 1] + dp[i][j - 1]; // highlight-line
+      } else {
+        dp[i][j] = dp[i][j - 1]; // highlight-line
+      }
+    }
+  }
+
+  return dp[S][T];
+}
+```
+
+## State transition
+
+Fill in the DP table *row by row*. When dealing with a row,
+assume `t` (the shorter string) is *fixed* and `s` is increasing in character.
+
+Try clicking on different values to show how they are calculated.
+
+<DistinctSubSequences client:load/>
+
+
+## Reference
+[Easy to understand DP in Java](https://leetcode.com/problems/distinct-subsequences/discuss/37327/Easy-to-understand-DP-in-Java)

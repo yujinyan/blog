@@ -1,0 +1,315 @@
+@import '@fontsource/literata/700.css';
+@import "@fontsource/roboto-slab/900.css";
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+    body {
+        @apply bg-base-100 font-serif transition-colors;
+        font-feature-settings: "kern", "liga", "clig", "calt", "palt", "dlig", "onum";
+        text-rendering: optimizeLegibility;
+        word-wrap: break-word;
+    }
+
+    *::selection {
+        @apply bg-primary/30;
+    }
+
+    /*prevents overflow from scrolling*/
+    body.overflow-hidden {
+        overflow: hidden;
+    }
+
+    h1, h2, h3 {
+        @apply font-heading;
+        font-feature-settings: "halt"
+    }
+
+
+    .prose :where(a):not(:where([class~="not-prose"])) {
+        /** default underline, hover colored and underline **/
+        /* @apply border-b border-base-content/30 pb-0.5 hover:text-secondary hover:border-secondary/75; */
+
+        @apply text-secondary pb-0.5;
+    }
+
+    blockquote {
+        @apply lg:!p-0;
+    }
+    blockquote p {
+        @apply relative;
+        @apply stroke-base-content/50 fill-base-content/50;
+    }
+
+    blockquote p::before {
+        @apply font-serif text-[72px] absolute -left-8 -top-2 text-base-content/50 lg:-left-8;
+    }
+}
+
+@layer utilities {
+    .full-bleed {
+        left: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        max-width: 100vw;
+        position: relative;
+        right: 50%;
+        width: 100vw;
+    }
+
+    .full-bleed-none {
+        position: static;
+        margin-left: 0;
+        margin-right: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
+
+    .bento {
+        @apply ring-1 rounded-2xl ring-base-content/10 shadow-lg;
+    }
+}
+
+
+video {
+    width: 100%
+}
+
+html[lang=en] article > p, html[lang=en] article li {
+    @apply text-lg leading-snug
+}
+
+.caption {
+    @apply font-subtitle
+}
+
+.custom-block, .gatsby-highlight {
+    @apply mb-5
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.excalidraw {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.dark .excalidraw {
+    filter: invert(100%) hue-rotate(180deg);
+}
+
+span.katex-display {
+    @apply overflow-x-scroll;
+}
+
+/* a:active, a:hover {
+    box-shadow: 0 1px 0 0 currentColor;
+} */
+
+blockquote {
+    @apply text-xl
+}
+
+blockquote cite {
+    @apply font-subtitle text-sm text-base-content/75;
+    display: block;
+    position: relative;
+    margin-top: 2em;
+    font-style: normal;
+}
+
+blockquote cite:before {
+    top: -1.5em;
+    position: absolute;
+    content: "— "
+}
+
+article .math .katex-display {
+    overflow-x: scroll;
+}
+
+
+/* only use full-bleed code snippet if direct child of article */
+article > [data-rehype-pretty-code-fragment] pre {
+    @apply rounded-none md:rounded full-bleed md:full-bleed-none;
+}
+
+[data-theme=light] pre {
+    /* inspiration https://evan.tatarka.me/blog/2020-03-02-you-dont-need-to-null-out-views */
+    box-shadow: 0 6px 12px rgb(0 0 0 / 25%);
+}
+
+[data-theme=dark] .prose > [data-rehype-pretty-code-fragment] > pre[data-language] {
+    @apply pl-4 bg-transparent;
+}
+
+/* We have a lot of code snippets, scrollbars look like lots of hr's */
+/* CSS Standard, Firefox */
+.gatsby-highlight pre {
+    scrollbar-width: none;
+}
+
+/* Chrome and friends */
+.gatsby-highlight pre::-webkit-scrollbar {
+    display: none;
+}
+
+
+
+/* see https://github.com/yujinyan/blog/pull/10 */
+.gatsby-highlight pre > code {
+    display: inline-block;
+    min-width: 100%;
+    font-size: 14px;
+}
+
+.highlighted-line {
+    display: inline-block;
+    /* wider than 100% to account for negative margin */
+    width: 120%;
+    background: #3c4846e0;
+    margin-right: -1.3125rem;
+    margin-left: -1rem;
+    /* padding-left + border-left = margin-left */
+    padding-left: 0.6875rem;
+    border-left: #cc99cd solid 0.3125em;
+}
+
+video {
+    @apply full-bleed md:full-bleed-none;
+}
+
+.dark blockquote {
+    color: var(--textTitle);
+    border-left-color: var(--textNormal);
+}
+
+.prose figure img {
+    @apply mb-0;
+    margin: 0 auto;
+}
+
+.prose figcaption {
+    @apply text-center text-sm text-base-content/50 font-sans;
+}
+
+/* inline code */
+:not(pre) > code[class*="language-"] {
+    padding: 0 0.375em !important;
+    font-size: 0.8em !important
+}
+
+.light :not(pre) > code[class*="language-"] {
+    color: #606060;
+    background: #f6f3f2;
+}
+
+.dark :not(pre) > code[class*="language-"] {
+    color: #f6f3f2;
+    background: #6060608c;
+}
+
+a.anchor {
+    color: transparent;
+    fill: white;
+}
+
+a.anchor.before {
+    padding-right: 8px;
+}
+
+.tip {
+    position: relative;
+    border-top: 1px solid var(--hr);
+    border-bottom: 1px solid var(--hr);
+    padding: 1rem 0 1rem 0;
+}
+
+.pull-left {
+    margin-left: -4rem;
+}
+
+.tip p {
+    margin: 0;
+}
+
+.tip .custom-block-heading {
+    position: absolute;
+    left: -0.5rem;
+    font-size: 2.5rem;
+    top: -3rem;
+}
+
+.tip .custom-block-heading img {
+    margin-left: 0.5rem;
+    margin-top: 1rem;
+    width: 2.5rem;
+}
+
+@media (max-width: 1024px) {
+    .tip {
+        margin-left: 0;
+        margin-top: 3rem;
+    }
+}
+
+
+/**
+Style for `gatsby-remark-autolink-headers`,
+After migrating to mdx, the style is somehow not injected.
+Copy-pasting required style here.
+ */
+.anchor.before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    padding-right: 4px;
+}
+
+.anchor.after {
+    display: inline-block;
+    padding-left: 4px;
+}
+
+h1 .anchor svg,
+h2 .anchor svg,
+h3 .anchor svg,
+h4 .anchor svg,
+h5 .anchor svg,
+h6 .anchor svg {
+    visibility: hidden;
+}
+
+h1:hover .anchor svg,
+h2:hover .anchor svg,
+h3:hover .anchor svg,
+h4:hover .anchor svg,
+h5:hover .anchor svg,
+h6:hover .anchor svg,
+h1 .anchor:focus svg,
+h2 .anchor:focus svg,
+h3 .anchor:focus svg,
+h4 .anchor:focus svg,
+h5 .anchor:focus svg,
+h6 .anchor:focus svg {
+    visibility: visible;
+}
+
+/*excalidraw*/
+@font-face {
+    font-family: "Virgil";
+    src: url("../fonts/Virgil.woff2");
+}
+
+@font-face {
+    font-family: "Cascadia";
+    src: url("../fonts/Cascadia.woff2");
+}

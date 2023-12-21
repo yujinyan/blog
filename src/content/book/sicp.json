@@ -1,0 +1,8 @@
+{
+    "id": "sicp",
+    "title": "Structure and Interpretation of Computer Programs",
+    "author": "H. Abelson, G.J. Sussman with J. Sussman",
+    "cover": "./sicp.jpg",
+    "year": 1996,
+    "status": "planned"
+}

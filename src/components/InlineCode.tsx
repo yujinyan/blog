@@ -1,3 +1,1 @@
-import React from "react"
-
-export default (props) => <code {...props} className="language-text" />
+export default (props) => <code {...props} class="language-text" />

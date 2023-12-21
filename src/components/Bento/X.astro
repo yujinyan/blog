@@ -1,0 +1,18 @@
+---
+import twitterLogo from "@/assets/x.svg?raw"
+import {Image} from "astro:assets"
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["bento p-4 bg-base-100 flex flex-col justify-between", className]}>
+    <div class="fill-base-content  max-w-[36px]">
+        <Fragment set:html={twitterLogo} />
+    </div>
+    <p class="font-sans text-sm m-0 mt-8">Find me on X</p>
+</div>
+
+

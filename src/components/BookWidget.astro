@@ -1,0 +1,25 @@
+---
+import {Image} from "astro:assets";
+
+interface Props {
+  id: string,
+  title: string;
+  author: string;
+  year: string | number;
+  cover: ImageMetadata;
+}
+
+const { id, title, author, year, cover} = Astro.props
+
+---
+
+<div class="book-widget flex xl:block items-center not-prose">
+    <Image src={cover}
+           alt={title}
+           transition:name={`book-${id}`}
+           class="flex-[1_0_auto] ring-1 ring-base-content/20 rounded shadow-lg xl:w-64 w-32" />
+    <div class="flex-[2_2_auto] flex-auto ml-4 xl:ml-0">
+        <p class="text-2xl font-subtitle mt-4 mb-1 leading-tight font-bold xl:text-right">{title}</p>
+        <p class="italic m-0 xl:text-right text-opacity-50 leading-tight">{author}, {year}</p>
+    </div>
+</div>

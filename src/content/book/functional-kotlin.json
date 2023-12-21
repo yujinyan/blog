@@ -1,0 +1,8 @@
+{
+    "id": "functional-kotlin",
+    "title": "Functional Programming in Kotlin",
+    "author": "M. Vermeulen, R. Bjarnason and P. Chiusano",
+    "cover": "./functional-programming-in-kotlin.png",
+    "year": 2021,
+    "status": "planned"
+}

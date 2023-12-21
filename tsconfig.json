@@ -1,6 +1,23 @@
 {
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "jsx": "react"
-  },
+    "strictNullChecks": true,
+    "baseUrl": "/Users/jinyu14/code/blog-astro",
+    "paths": {
+      "@/components/*": [
+        "src/components/*"
+      ],
+      "@/assets/*": [
+        "src/assets/*"
+      ],
+      "@/layouts/*": [
+        "src/layouts/*"
+      ],
+      "@/*": [
+        "src/*"
+      ],
+    },
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  }
 }

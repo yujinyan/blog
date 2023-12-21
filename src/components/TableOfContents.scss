@@ -1,0 +1,26 @@
+.toc-root {
+    @apply font-sans border-none xl:border-l-divider xl:border-solid xl:border-l-[0.5px];
+
+    .isActive {
+        @apply border-l-2 border-solid border-base-content;
+        margin-left: -1px;
+    }
+
+    a {
+        display: block;
+        @apply text-lg xl:text-xs leading-10 xl:leading-6;
+        @apply text-base-content/50;
+        transition: color 0.2s ease-in;
+
+        &.isActive {
+            @apply text-base-content font-bold;
+        }
+
+        padding-left: 1rem;
+
+        &.depth-3 {
+            padding-left: 1.75rem
+        }
+
+    }
+}

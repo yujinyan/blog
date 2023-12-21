@@ -1,0 +1,18 @@
+---
+import { ProblemCard, type Problem } from "./LeetCode/LeetCodePartials.tsx";
+import { Image } from "astro:assets";
+import leetCodeLogo from "./LeetCode/LeetCode.svg";
+import { getProblemById } from "./LeetCode/index";
+
+interface Props {
+    id: number;
+    thisSite?: boolean;
+}
+
+const { id, thisSite } = Astro.props;
+const problem: Problem = getProblemById(id);
+---
+
+<ProblemCard {...problem} thisSite={thisSite}>
+    <Image slot="image" src={leetCodeLogo} alt="LeetCode" />
+</ProblemCard>

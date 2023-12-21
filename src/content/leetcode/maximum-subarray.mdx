@@ -1,0 +1,59 @@
+---
+title: Maximum Subarray
+date: 2021-03-21T15:49:03.284Z
+lang: en
+---
+
+import LeetCode from "@/components/LeetCode.astro"
+import PullQuote from "@/components/PullQuote.astro"
+import MaximumSubarray from "@/components/DpTables/MaximumSubarray"
+// import DpTable from "@/components/DpTable"
+// import Code from "components/InlineCode"
+// import { InlineMath } from "react-katex"
+
+<LeetCode id={53} />
+
+Given an integer array `nums`, find the *contiguous* subarray (containing at least one number) which has the largest sum and return its sum.
+
+Example:
+```
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: [4,-1,2,1] has the largest sum = 6.
+```
+
+## Code
+
+```java
+public int maxSubArray(int[] nums) {
+  int globalMax = nums[0];
+  int currentMax = nums[0];
+
+  for (int i = 1; i < nums.length; i++) {
+    currentMax = Math.max(currentMax + nums[i], nums[i]); // highlight-line
+    globalMax = Math.max(globalMax, currentMax);
+  }
+
+  return globalMax;
+}
+```
+
+## State transition
+
+Try clicking on a cell to see how the value is calculated.
+
+
+<MaximumSubarray client:load />
+
+<PullQuote emoji="🛎️">
+
+To understand the state transition function, it's important to realize that for `dp[i]`,
+we're only concerned with *contiguous subarrays that end in that position*.
+It effectively compares the subarrays in a similar way to the $O(n^2)$ brute-force approach.
+
+</PullQuote>
+
+
+## Reference
+
+- [YouTube Video: Kadane's Algorithm to Maximum Sum Subarray Problem by CS Dojo](https://www.youtube.com/watch?v=86CQq3pKSUw)

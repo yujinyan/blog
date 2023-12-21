@@ -1,101 +1,69 @@
-# [blog.yujinyan.me](https://blog.yujinyan.me)
+# Astro Starter Kit: Blog
 
-Cloned from [Gatsby's blog starter](https://github.com/gatsbyjs/gatsby-starter-blog) and mostly inspired by [Dan Abramov's blog](https://github.com/gaearon/overreacted.io).
-
-## 💡 Comments are welcome!
-
-可以通过 issues 对文章进行评论，欢迎分享您的想法！
-
-The `issues` labeled by `👋 comments welcome` serve as comment section for blog posts, powered by [utterances](https://utteranc.es/).
-
-To enable the comment section for a blog post, I manually create an issue, take note of the issue id and record it in the corresponding post's front matter with a custom attribute `issueId`. This could be automated in the future.
-
-Feel free to open new issues for older posts.
-
-## 🔮 Custom blocks
-
-I made some custom blocks for layout elements not supported by markdown syntax natively.
-
-The implementation uses [`remark-custom-blocks`](https://github.com/zestedesavoir/zmarkdown/tree/master/packages/remark-custom-blocks) and its [Gatsby plugin](https://www.gatsbyjs.com/plugins/gatsby-remark-custom-blocks/).
-
-### `tip` cutom block
-
-Example:
 ```
-[[tip | 🚨]]
-| 作为顶层函数的 coroutine builders 已被废弃，在目前的 API 中相当于通过 `GlobalScope` 开启协程。本文使用 `GlobalScope` 来模拟全局顶层的 coroutine builders。
+npm create astro@latest -- --template blog
 ```
 
-### `fig` custom block
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/blog)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/blog/devcontainer.json)
 
-The whole thing will be wrapped in a `<figure>` element, while the title portion will end up in a `<figcaption>`
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-Example:
+
+![blog](https://user-images.githubusercontent.com/4677417/186189140-4ef17aac-c3c9-4918-a8c2-ce86ba1bb394.png)
+
+Features:
+
+- ✅ Minimal styling (make it your own!)
+- ✅ 100/100 Lighthouse performance
+- ✅ SEO-friendly with canonical URLs and OpenGraph data
+- ✅ Sitemap support
+- ✅ RSS Feed support
+- ✅ Markdown & MDX support
+
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
+
 ```
-[[fig | 黑盒性质：控制流流入 → [黑盒] → 控制流流出，复刻自[njs blog](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).]]
-| ![Structured Programming](./structured-programming.svg)
-```
-
-## Frontmatter
-
-| field          | description                                                                                     |
-|----------------|-------------------------------------------------------------------------------------------------|
-| `hidden: true` | Hide the post from index page.                                                                  |
-| `book: jcip`   | Display book widget with cover and info. See [#108](https://github.com/yujinyan/blog/pull/108). |
-
-
-## 📰 Typography
-
-Font combination
-- heading: `Roboto Slab`, `Noto Sans SC Black`
-- text: `Noto Serif SC`
-- Code: `JetBrains Mono`
-- blockquote: `Zilla Slab` (italic)
-
-Notes
-- `Zilla Slab` is a bit too small to mix with `Noto Serif SC`.
-- `Roboto Slab` does not have italic version.
-
-## 🚀 Develop
-
-Start dev server.
-```shell
-gatsby develop
+├── public/
+├── src/
+│   ├── components/
+│   ├── content/
+│   ├── layouts/
+│   └── pages/
+├── astro.config.mjs
+├── README.md
+├── package.json
+└── tsconfig.json
 ```
 
-Build production files.
-```shell
-gatsby build
-```
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-Currently production files are built by and hosted on [Vercel](https://vercel.com/).
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-## 🧐 What's inside?
-    .
-    ├── src
-    ├── .gitignore
-    ├── .prettierrc
-    ├── gatsby-browser.js
-    ├── gatsby-config.js
-    ├── gatsby-node.js
-    ├── gatsby-ssr.js
-    ├── LICENSE
-    ├── package-lock.json
-    ├── package.json
-    └── README.md
+The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
 
-**`gatsby-browser.js`**: This file is where Gatsby expects to find any usage of the [Gatsby browser APIs](https://www.gatsbyjs.org/docs/browser-apis/) (if any). These allow customization/extension of default Gatsby settings affecting the browser.
+Any static assets, like images, can be placed in the `public/` directory.
 
-**`gatsby-config.js`**: This is the main configuration file for a Gatsby site. This is where you can specify information about your site (metadata) like the site title and description, which Gatsby plugins you’d like to include, etc. (Check out the [config docs](https://www.gatsbyjs.org/docs/gatsby-config/) for more detail).
+## 🧞 Commands
 
-**`gatsby-node.js`**: This file is where Gatsby expects to find any usage of the [Gatsby Node APIs](https://www.gatsbyjs.org/docs/node-apis/) (if any). These allow customization/extension of default Gatsby settings affecting pieces of the site build process.
+All commands are run from the root of the project, from a terminal:
 
-**`gatsby-ssr.js`**: This file is where Gatsby expects to find any usage of the [Gatsby server-side rendering APIs](https://www.gatsbyjs.org/docs/ssr-apis/) (if any). These allow customization of default Gatsby settings affecting server-side rendering.
+| Command                | Action                                           |
+| :--------------------- | :----------------------------------------------- |
+| `npm install`          | Installs dependencies                            |
+| `npm run dev`          | Starts local dev server at `localhost:3000`      |
+| `npm run build`        | Build your production site to `./dist/`          |
+| `npm run preview`      | Preview your build locally, before deploying     |
+| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro --help` | Get help using the Astro CLI                     |
 
-## 🎓 Learning Gatsby
+## 👀 Want to learn more?
 
-Looking for more guidance? Full documentation for Gatsby lives [on the website](https://www.gatsbyjs.org/). Here are some places to start:
+Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
 
-- **For most developers, we recommend starting with our [in-depth tutorial for creating a site with Gatsby](https://www.gatsbyjs.org/tutorial/).** It starts with zero assumptions about your level of ability and walks through every step of the process.
+## Credit
 
-- **To dive straight into code samples, head [to our documentation](https://www.gatsbyjs.org/docs/).** In particular, check out the _Guides_, _API Reference_, and _Advanced Tutorials_ sections in the sidebar.
+This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).

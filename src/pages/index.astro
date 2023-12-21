@@ -1,0 +1,69 @@
+---
+import { getCollection } from "astro:content";
+import {
+	SITE_DESCRIPTION,
+	GITHUB_URL,
+} from "../consts";
+import GithubCorner from "@/components/GithubCorner.astro";
+import DefaultLayout from "@/layouts/DefaultLayout.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import MyAvatar from "@/components/MyAvatar.astro";
+import FrontpageBento from "@/components/Bento/FrontpageBento.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import QuillIcon from "@/assets/quill-pen-line.svg?raw";
+
+const posts = (await getCollection("blog")).sort(
+	(a, b) => -(a.data.date.valueOf() - b.data.date.valueOf()),
+);
+---
+
+<DefaultLayout
+	lang="zh-cmn-Hans"
+	title={""}
+	pathname={Astro.url.pathname}
+	description={SITE_DESCRIPTION}
+>
+	<section slot="header" class="flex items-center gap-2">
+		<MyAvatar size={72} />
+		<div class="font-display">
+			<p class="text-lg">i@yujinyan.me</p>
+			<p class="font-sans text-sm text-base-content/50">
+				Web, JVM, Android. Kotlin enthusiast.
+			</p>
+		</div>
+	</section>
+	<GithubCorner url={GITHUB_URL} />
+	<FrontpageBento
+		class="mb-16 w-full ml-auto xl:w-[calc(100%+8rem)] xl:-ml-[4rem]"
+	/>
+	<SectionHeader>
+		<Fragment slot="icon" set:html={QuillIcon} class="stroke-primary" />
+		所有文章 All Posts
+	</SectionHeader> 
+	{
+		posts.map((post) => {
+			const title = post.data.title || post.slug;
+			return (
+				<article class="not-prose dark:prose-invert mb-4">
+					<header class="mb-2">
+						<h3 class="text-lg leading-tight font-heading font-bold text-base-content/75 hover:text-secondary transition-colors">
+							<a href={`/posts/${post.slug}`}>
+								<span style={{ verticalAlign: "middle" }}>
+									{title}
+								</span>
+							</a>
+						</h3>
+						{post.data.description && (
+							<p class="font-sans text-base-content/50 text-sm leading-snug mt-1">
+								{post.data.description}
+							</p>
+						)}
+						<small class="text-base-content/50 text-sm">
+							<FormattedDate date={post.data.date} />
+						</small>
+					</header>
+				</article>
+			);
+		})
+	}
+</DefaultLayout>

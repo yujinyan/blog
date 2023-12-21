@@ -1,0 +1,51 @@
+---
+title: Longest Increasing Subsequence
+date: 2021-02-11T15:49:03.284Z
+url: https://leetcode-cn.com/problems/longest-increasing-subsequence/
+lang: en
+---
+
+import LeetCode from "@/components/LeetCode.astro"
+import { TheAlgorithmDesignManual} from "@/components/Citations"
+
+<LeetCode id={300} />
+
+Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+A subsequence is a sequence that can be derived from an array by deleting some or no elements without changing the
+order of the remaining elements. For example, `[3,6,2,7]` is a subsequence of the array `[0,3,1,6,2,2,7]`.
+
+
+## Key Intuition
+
+To build the recurrence relation, we could ask ourselves whether the answer for $n - 1$ elements help us solve the entire sequence.
+
+Suppose we know the longest increasing sequence in $(S_0, S_1, ..., S_{n-1})$ is of length $5$, and that $S_n = 8$. Will the longest increasing subsequence of $S$ be $5$ or $6$? It depends on whether the length-$5$ sequence ends with a value less than $8$.
+
+Therefore, we really need to check every number $(S_0, S_1,...S_j)$ where $j < n$ and see whether $S_n > S_j$.
+
+## Code
+
+```java
+public int lengthOfLIS(int[] nums) {
+  int result = 1;
+  int dp[] = new int[nums.length];
+  Arrays.fill(dp, 1);
+
+  for (int i = 1; i < nums.length; i++) {
+    for (int j = 0; j < i; j++) {
+      if (nums[i] > nums[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+      }
+    }
+    result = Math.max(dp[i], result);
+  }
+
+  return result;
+}
+```
+
+## Best Explanation
+
+- [相同的思路：从最长递增子序列谈起](https://leetcode-cn.com/problems/palindrome-partitioning-ii/solution/xiang-tong-de-si-lu-cong-zui-chang-di-ze-9kfm/)
+- <TheAlgorithmDesignManual section={[10.3, "Longest Increasing Subsequence"]}/>

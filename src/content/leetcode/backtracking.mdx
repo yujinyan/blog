@@ -1,0 +1,112 @@
+---
+title: Backtracking
+date: 2021-04-01T16:52:03.284Z
+english: true
+---
+
+
+import LeetCode from "@/components/LeetCode.astro"
+import PullQuote from "@/components/PullQuote.astro"
+import { TheAlgorithmDesignManual } from "@/components/Citations"
+import kotlinLogo from "@/assets/kotlin.svg"
+import {Image} from "astro:assets"
+import Figure from "@/components/Figure.astro"
+
+## Subsets
+
+<LeetCode id={78} />
+
+Given an integer array `nums` of unique elements, return all possible subsets.
+
+```
+Example: 
+Input: nums = [1,2,3]
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+```
+
+<figure>
+![Subsets Tree](./assets/subsets-tree.svg)
+<figcaption>Search tree enumerating all subsets</figcaption>
+</figure>
+
+```kotlin
+fun subsets(nums: IntArray): List<List<Int>> {
+  val ret = mutableListOf<List<Int>>()
+  val list = mutableListOf<Int>()
+
+  fun dfs(i: Int) {
+    // `i` also corresponds with the current level
+    // of the search tree.
+    if (i == nums.size) {
+      // We've gotton to bottom of the search tree.
+      // Report the answer by first creating a copy.
+      ret.add(list.toList())
+      return
+    }
+
+    // We make the choice of taking the current element.
+    list.add(nums[i])
+    dfs(i + 1)
+
+    // Backtrack: undo the previous choice
+    list.removeAt(list.size - 1) // highlight-line
+    dfs(i + 1)
+  }
+
+  dfs(0)
+  return ret
+}
+```
+
+Notice the two recursive calls in the `dfs` procedure
+correspond with the two branches on each level of the decision tree.
+
+## Permutations
+
+<LeetCode id={46} />
+
+<figure>
+![Permutations Tree](./assets/permutations-tree.svg)
+<figcaption>Search tree enumerating all permutations.</figcaption>
+</figure>
+
+```kotlin
+fun permute(nums: IntArray): List<List<Int>> {
+  val ret = mutableListOf<List<Int>>()
+  val list = mutableListOf<Int>()
+
+  fun dfs() {
+    if (list.size == nums.size) {
+      ret += list.toList()
+      return
+    }
+    for (n in nums) {
+      if (n in list) continue
+      list += n
+      dfs()
+      list.removeAt(list.size - 1) // highlight-line
+    }
+  }
+
+  dfs()
+  return ret
+}
+```
+
+<PullQuote>
+  <Image width={36} height={36} src={kotlinLogo} alt="Kotlin" class="mt-4 mb-0"/>
+
+  I usually stick with Java for LeetCode solutions. Recently, I feel Kotlin also shines in this area.
+  For example, Java solutions of these backtracking problems require
+  either storing some of the inputs in class fields, which, IMO, is poor programming style,
+  or passing a long list of arguments to the `dfs` method, which obscures the algorithm a bit.
+  With Kotlin, the code is concise and full of substance without being as gimmicky as Python.
+
+</PullQuote>
+
+
+## References
+
+<ul>
+  <li>{<TheAlgorithmDesignManual chapter={[9, "Combinatorial Search"]} />}</li>
+</ul>

@@ -1,0 +1,22 @@
+$size: 3.75rem;
+
+// inspiration: https://ray.so/
+.fab {
+  width: $size;
+  height: $size;
+  border: 1px solid hsla(0, 0%, 100%, 0.3);
+
+  @apply fixed right-8 bottom-8;
+  @apply rounded-full shadow-xl backdrop-blur-md;
+  @apply visible xl:invisible;
+  @apply bg-secondary/75;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  -webkit-tap-highlight-color: transparent;
+  &:active {
+    @apply bg-secondary/90 shadow-lg;
+  }
+}

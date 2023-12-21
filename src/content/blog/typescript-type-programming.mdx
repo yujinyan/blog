@@ -1,0 +1,274 @@
+---
+title: TypeScript 类型编程指南
+date: "2022-09-25T11:07:17.284Z"
+description: 将 TypeScript 的类型系统视作一个编程语言
+---
+
+import PullQuote from "@/components/PullQuote.astro"
+import ClickReveal from "@/components/ClickReveal.astro"
+
+两个视角：
+
+- 类型系统是集合
+- 类型系统是编程语言
+
+
+## 类型是集合
+
+### 元素交集与并集
+
+```typescript
+type S1 = 1 | 2 | 3
+type S2 = 3 | 4 | 5
+type S3 = 6 | 7 | 8
+type S4 = 1 | 2
+
+type R1 = S1 | S2 // 1 | 2 | 3 | 4 | 5
+type R2 = S1 & S2 // 3
+type R4 = Exclude<S1, S2> // 1 | 2
+type R5 = S4 extends S1 ? "Yes" : "No"
+type R6 = S3 extends S1 ? "Yes" : "No"
+```
+
+
+### 全集与空集
+
+空集：`never`
+
+```tsx
+(1 | 2 | 3) & (4 | 5 | 6) // never
+keyof {}                  // never
+```
+
+全集：`unknown`
+
+```tsx
+// In an intersection everything absorbs unknown
+type T00 = unknown & null;              // null
+type T01 = unknown & undefined;         // undefined
+type T02 = unknown & null & undefined;  // null & undefined (which becomes never in union)
+type T03 = unknown & string;            // string
+type T04 = unknown & string[];          // string[]
+type T05 = unknown & unknown;           // unknown
+type T06 = unknown & any;               // any
+
+// In a union an unknown absorbs everything
+type T10 = unknown | null;              // unknown
+type T11 = unknown | undefined;         // unknown
+type T12 = unknown | null | undefined;  // unknown
+type T13 = unknown | string;            // unknown
+type T14 = unknown | string[];          // unknown
+type T15 = unknown | unknown;           // unknown
+type T16 = unknown | any;               // any
+```
+
+### `unknown` 与 `any` 的区别
+
+`any` 相当于关闭了类型检查，可以对 `any` 做任何任何操作，改成 `unknown` 后都是编译错误：
+
+```tsx
+function f1(a: any) {
+  a.foo
+  a["foo"]
+  a()
+}
+
+function f2(a: unknown) {
+  a.foo    // error
+  a["foo"] // error
+  a()      // error
+}
+```
+
+必须对 `unknown` 的值做出相应的类型检查：
+
+```tsx
+function f2(a: unknown) {
+  if (typeof a == 'function') {
+    a()
+  }
+
+  if (typeof a == 'object' && a != null && "foo" in a) {
+    a["foo"]
+  }
+}
+```
+
+[https://github.com/microsoft/TypeScript/pull/24439](https://github.com/microsoft/TypeScript/pull/24439)
+
+## 类型是编程语言
+
+TypeScript = JavaScript + 类型语言：
+
+|     | JavaScript | 类型语言 |
+|-----|------------|------|
+| 作用于 | 值          | 集合   |
+| 存在于 | 运行时        | 编译时  |
+
+JavaScript 和类型语言之间的交互：
+
+- JavaScript → 类型语言：`foo: Foo`
+- 类型语言 → JavaScript：`typeOf foo`
+
+### 绑定声明
+
+```tsx
+const obj = {name: 'foo'}
+type Obj = {name: string}
+```
+
+### 条件判断
+
+[https://www.typescriptlang.org/docs/handbook/2/conditional-types.html](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html)
+
+```tsx
+SomeType extends OtherType ? TrueType : FalseType;
+```
+
+[https://github.com/microsoft/TypeScript/pull/21316](https://github.com/microsoft/TypeScript/pull/21316)
+
+### 遍历
+
+```tsx
+type User = {
+  name: string
+  gender: "M" | "F"
+}
+
+type User1 = {
+  [F in keyof User as Capitalize<F>]: User[F] // highlight-line
+}
+```
+
+- 将 `User` 类型中每一个键 `F` 变换成 `Capitalize<F>`
+- 这个键对应的值类型是 `User[F]`，即保持不变
+
+### 函数
+
+可以将范型类比函数：
+
+```tsx {2}
+function union(x, y) {
+  return [...new Set([...x, ...y])]
+}
+```
+
+```tsx
+type Union<X, Y> = X | Y
+```
+
+- `Union`: 函数名
+- `<X, Y>`: 声明函数入参
+- 等号右侧 `X | Y`: 函数返回值
+
+
+<PullQuote emoji="🖋">
+
+  [Type Challenge](https://github.com/type-challenges/type-challenges/blob/main/questions/00003-medium-omit/README.md)： 
+  尝试自己实现 ts 内置的辅助类：`Omit<T, K>`，其作用是从 `T` 中移除所有 `K` 里列出来的属性，例如：
+
+```typescript
+interface Todo {
+  title: string
+  description: string
+  completed: boolean
+}
+
+type TodoPreview = MyOmit<Todo, 'description' | 'title'>
+
+const todo: TodoPreview = {
+  completed: false
+}
+```
+
+  <ClickReveal title="查看解答">
+    ```typescript
+    type MyOmit<T, O> = {
+      [P in keyof T as P extends O ? never : P]: T[P]
+    }
+    ```
+  </ClickReveal>
+
+</PullQuote>
+
+
+### 递归
+
+练习：
+
+`DeepReadonly`
+
+### 模板字符串
+
+```tsx
+type Events = 'Created' | 'Approved' | 'Terminated'
+type EventHandler = `on${Events}`
+```
+
+[https://github.com/microsoft/TypeScript/pull/40336](https://github.com/microsoft/TypeScript/pull/40336)
+
+### 属性、元素访问
+
+访问对象属性：
+
+```tsx
+type Config = { key: string, value: string }
+type Key = Config['key'] // string
+```
+
+访问数组内元素：`ArrayType[number]`
+
+```tsx
+const MyArray = [
+  { name: "Alice", age: 15 },
+  { name: "Bob", age: 23 },
+  { name: "Eve", age: 38 },
+];
+
+type Person = typeof MyArray[number];
+```
+
+
+<PullQuote emoji="🖋">
+  假设有这样一个路由配置和跳转方法：
+
+  ```tsx
+  const routes = {
+    index: {
+      path: "/index",
+      payload: {} as { page: number }
+    },
+    search: {
+      path: "/search",
+      payload: {} as { query: string }
+    }
+  }
+
+  declare function navigateTo(
+    route: string,
+    payload: Record<string, string>
+  )
+  navigateTo("index", { page: 1 })
+  ```
+
+  请重构 `navigateTo` 的类型标注，使得以下调用都编译错误：
+
+  ```jsx
+  navigateTo("blah", { page: 1 }) // 不存在的路由
+  navigateTo("search", { page: 1 }) // 不匹配的路由参数配置
+  ```
+
+  <ClickReveal title="查看解答">
+    ```typescript
+    declare function myNavigateTo<T extends keyof typeof routes>(
+      route: T,
+      payload: (typeof routes)[T]['payload']
+    ): void
+    ```
+  </ClickReveal>
+</PullQuote>
+
+## 参考资料
+
+- [An introduction to type programming in TypeScript](https://www.zhenghao.io/posts/type-programming)
+- [https://github.com/type-challenges/type-challenges](https://github.com/type-challenges/type-challenges)

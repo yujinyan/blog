@@ -1,0 +1,122 @@
+---
+import { type CollectionEntry, getCollection, getEntry } from "astro:content";
+import BookWidget from "@/components/BookWidget.astro";
+import DefaultLayout from "@/layouts/DefaultLayout.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { INDEX_TITLE, githubUrl, githubDiscussionUrl } from "@/consts";
+import GithubCorner from "@/components/GithubCorner.astro";
+import TableOfContents from "@/components/TableOfContents";
+import Fab from "@/components/Fab";
+import OverlayAside from "@/components/OverlayAside";
+import MyAvatarOverline from "@/components/MyAvatarOverline.astro";
+import ThemeToggle from "@/components/ThemeToggle";
+import { Image } from "astro:assets";
+import SectionHeader from "@/components/SectionHeader.astro";
+import DiscussionSection from "@/components/DiscussionSection";
+import DiscussionIcon from "@/assets/discussion.svg?raw";
+
+import "katex/dist/katex.min.css";
+
+export interface Props {
+    post: CollectionEntry<"blog"> | CollectionEntry<"leetcode">;
+}
+
+const { post } = Astro.props;
+const book = post.data.book ? await getEntry(post.data.book) : undefined;
+const { Content, headings } = await post.render();
+const githubCornerUrl = githubUrl(post.data.issueId ?? "index");
+
+/**
+ * eg. /_astro/temporal-cover.JA57hMkV.png -> temporal-cover
+ */
+function extractFilename(src: string): string | undefined {
+    const regex = /\/([^\/]*?)\./;
+    const match = src.match(regex);
+    if (match == null) return undefined;
+    return match[1].replace("/", "").replace(".", "");
+}
+---
+
+<DefaultLayout
+    title={post.data.title + " | " + INDEX_TITLE}
+    description={post.data.title}
+    pathname={Astro.url.pathname}
+    lang={post.data.lang}
+>
+    <MyAvatarOverline slot="header" />
+    {githubCornerUrl && <GithubCorner url={githubCornerUrl} />}
+    <Fab client:load />
+    {
+        post.data.heroImage && (
+            <Image
+                transition:name={extractFilename(post.data.heroImage.src)}
+                src={post.data.heroImage}
+                class="rounded-3xl shadow-xl ring-1 ring-base-content/10 mb-8"
+                widths={[720, post.data.heroImage.width, 1280]}
+                alt={post.data.title}
+            />
+        )
+    }
+    <article
+        class="relative prose dark:prose-invert font-serif transition-colors"
+    >
+        <header>
+            <h1 class="m-0 mt-4 font-heading">
+                <span class="align-middle">{post.data.title}</span>
+            </h1>
+            <p class="mt-2 caption mb-8 text-sm">
+                <FormattedDate date={post.data.date} />
+            </p>
+        </header>
+        {
+            book && (
+                <aside class="xl:absolute xl:-left-80 xl:w-64 w-auto mb-16">
+                    <BookWidget
+                        id={book.data.id}
+                        title={book.data.title}
+                        author={book.data.author}
+                        year={book.data.year}
+                        cover={book.data.cover}
+                    />
+                </aside>
+            )
+        }
+        <Content />
+    </article>
+    {
+        post.data.discussionId && (
+            <>
+                <hr class="my-8 text-base-content/20" />
+                <SectionHeader>
+                    <Fragment slot="icon" set:html={DiscussionIcon}/>
+                    评论区 Discussions
+                        <span class="text-base-content/50 font-sans text-sm ml-2 font-normal">
+                            · 也可前往
+                            <a class="text-secondary" href={githubDiscussionUrl(post.data.discussionId)}>GitHub 评论区</a>
+                            互动
+                        </span>
+                    </SectionHeader>
+                <DiscussionSection
+                    client:only="solid-js"
+                    discussionId={post.data.discussionId}
+                    lang={post.data.lang == "zh-cmn-Hans" ? "zh-CN" : "en"}
+                />
+            </>
+        )
+    }
+    <OverlayAside slot="sidebar" client:load>
+        {
+            githubCornerUrl && (
+                <GithubCorner
+                    url={githubCornerUrl}
+                    class="visible xl:invisible"
+                />
+            )
+        }
+        <TableOfContents client:load headings={headings} />
+        <ThemeToggle
+            client:only="solid-js"
+            class="fixed z-20 visible xl:invisible"
+        />
+    </OverlayAside>
+</DefaultLayout>

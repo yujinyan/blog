@@ -1,0 +1,9 @@
+{
+    "id": "pragmatic",
+    "title": "The Pragmatic Programmer: Your Journey to Mastery",
+    "author": "David Thomas and Andrew Hunt",
+    "cover": "./pragmatic.jpg",
+    "year": 2020,
+    "status": "done",
+    "post": "the-pragmatic-programmer-notes"
+}
