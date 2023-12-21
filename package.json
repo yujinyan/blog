@@ -1,7 +1,7 @@
 {
-  "name": "blog-astro",
+  "name": "blog-yujinyan-me",
   "type": "module",
-  "version": "0.0.1",
+  "version": "3.0.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -38,5 +38,6 @@
   },
   "devDependencies": {
     "daisyui": "^4.4.17"
-  }
+  },
+  "homepage": "https://blog.yujinyan.me",
 }
