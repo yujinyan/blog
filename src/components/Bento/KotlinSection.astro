@@ -1,0 +1,79 @@
+---
+import { getEntryBySlug } from "astro:content";
+import kodee from "@/assets/kodee.svg";
+import { Image } from "astro:assets";
+
+const kodeeSize = 160;
+
+const posts = [
+    await getEntryBySlug("blog", "understanding-kotlin-suspend-functions"),
+    await getEntryBySlug("blog", "kotlin-coroutine-context-scope"),
+    await getEntryBySlug("blog", "kotlin-coroutine-retrofit"),
+    await getEntryBySlug("blog", "kotlin-flow-introduction"),
+];
+
+interface Props {
+    class?: string;
+    currentSlug ?: typeof posts[number]["slug"];
+}
+
+const { class: className, currentSlug } = Astro.props;
+---
+
+<style>
+    ol {
+        counter-reset: counter;
+    }
+    ol li {
+        counter-increment: counter;
+        position: relative;
+    }
+    ol li:before {
+        content: counter(counter);
+        @apply font-mono absolute bg-secondary/50 text-secondary-content text-center align-middle rounded-full w-6 h-6 leading-6 -left-10 top-2 text-sm;
+    }
+</style>
+
+<div
+    class:list={[
+        "relative ring-1 rounded-2xl ring-base-content/10 not-prose flex shadow-lg",
+        "bg-base-200",
+        className,
+    ]}
+>
+    <Image
+        src={kodee}
+        alt="kodee"
+        width={kodeeSize}
+        height={kodeeSize}
+        class="absolute -left-12 -top-12 drop-shadow-md"
+    />
+    <div class="ml-10 p-4">
+        <p class="font-heading text-xl mb-2 text-right">Kotlin 协程系列</p>
+        <p
+            class="mt-4 ml-4 text-sm leading-tight font-sans mb-4 text-base-content/50"
+        >
+            Kotlin 协程可以帮助我们用顺序执行的代码实现异步方法的调用，在
+            async、await 编程模型的基础上有自己独特的设计。
+        </p>
+        <ol class="grid grid-cols-1 gap-2 divide-y divide-base-content/10">
+            {
+                posts.map((p) => {
+                    const activeClassName = p.slug === currentSlug ? "text-secondary/75" : undefined;
+                    return <li>
+                        <a href={`/posts/${p.slug}`}>
+                            <section class="py-2">
+                                <h3 class:list={["text-lg font-bold leading-snug text-base-content/75", activeClassName]}>
+                                    {p.data.title}
+                                </h3>
+                                <p class:list={["text-sm font-sans text-base-content/50", activeClassName]}>
+                                    {p.data.description}
+                                </p>
+                            </section>
+                        </a>
+                    </li>
+                })
+            }
+        </ol>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+---
+import { getCollection } from "astro:content";
+
+import DefaultLayout from "@/layouts/DefaultLayout.astro";
+import MyAvatarOverline from "@/components/MyAvatarOverline.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+
+const posts = await getCollection("leetcode");
+---
+
+<DefaultLayout
+    lang="zh-cmn-Hans"
+    description="LeetCode Notes"
+    pathname={Astro.url.pathname}
+    title="LeetCode Notes"
+    >
+    <MyAvatarOverline slot="header" />
+	{
+		posts.map((post) => {
+			const title = post.data.title || post.slug;
+			return (
+				<article class="not-prose dark:prose-invert mb-4">
+					<header class="mb-2">
+						<h3 class="text-lg leading-tight font-heading font-bold text-base-content/90">
+							<a href={`leetcode/${post.slug}`}>
+								<span style={{ verticalAlign: "middle" }}>
+									{title}
+								</span>
+							</a>
+						</h3>
+						<small class="text-base-content/50 text-sm">
+							<FormattedDate date={post.data.date} />
+						</small>
+					</header>
+				</article>
+			);
+		})
+	}
+</DefaultLayout>

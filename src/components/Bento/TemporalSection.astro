@@ -1,0 +1,23 @@
+---
+import temporalBg from "@/assets/temporal-cover.png";
+import { getImage } from "astro:assets";
+const bg = await getImage({ src: temporalBg, widths: [720] });
+
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<a
+    href="/posts/temporal-introduction"
+    style={`background-image: url('${bg.src}')`}
+    transition:name="temporal-cover"
+    class:list={[
+        "w-full ring-1 ring-base-content/10 flex bg-cover bg-center shadow-lg rounded-2xl",
+        "hover:scale-105", "transition-transform",
+        className,
+    ]}
+>
+</a>

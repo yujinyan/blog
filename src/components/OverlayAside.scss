@@ -1,0 +1,18 @@
+.sidebar {
+  @apply bg-base-100;
+  @apply fixed z-20 h-screen;
+  @apply w-full xl:w-[calc(50vw-500px)];// 50vw + main width + extra padding
+  @apply m-0 left-0 top-0 bottom-0 right-0 xl:left-[calc(50vw+21rem+2rem)];
+  @apply xl:flex xl:flex-col xl:justify-end;
+  padding-top: 7.75rem; // leave space for toggle
+  padding-bottom: 1.75rem;
+  overflow-y: auto;
+
+  @apply transition-opacity transition-transform;
+  @apply opacity-100 pointer-events-auto translate-y-0;
+
+  &.hide {
+    @apply opacity-0 pointer-events-none translate-y-[40px] ;
+    @apply xl:opacity-100 xl:pointer-events-auto xl:translate-y-0;
+  }
+}

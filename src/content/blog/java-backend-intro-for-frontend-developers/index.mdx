@@ -1,0 +1,433 @@
+---
+title: 给前端同学的 Java 后端开发介绍
+date: "2022-09-14T23:00:03.284Z"
+---
+
+import PullQuote from "@/components/PullQuote.astro"
+
+## 关于 Java 语言
+
+The Java language is …
+
+- Compiled: 需要用 javac 将 .java 源代码文件编译成 .class 字节码文件
+- Object-oriented: 面向对象
+
+### Hello World
+
+```java
+// HelloWorld.java
+class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
+    }
+}
+```
+
+```shell
+$ javac HelloWorld.java
+$ java HelloWorld
+```
+
+### 面向对象 Object-oriented
+
+Java:
+```java
+@Value
+public class Person implements A {
+    String name;
+
+    String introduce() {
+        return "I'm " + name;
+    }
+
+    // Run this programmin with `java Person`
+    public static void main(String[] args) {
+        A harry = new Person("Harry");
+        String a = "abc";
+
+        System.out.println(harry.introduce());
+    }
+}
+
+interface A {
+  String introduce();
+}
+```
+
+### Duck typing vs. Nominative typing
+
+TypeScript:
+```tsx
+type Person = {
+  name: string
+}
+
+const harry = {
+  name: "Harry"
+}
+
+function introduce(person: Person) {
+  return `I'm ${person.name}`
+}
+
+console.log(introduce(harry))
+```
+
+<PullQuote emoji="🔑">
+  Java 和 TypeScript 类型系统的区别
+</PullQuote>
+
+**Nominative typing**: 对象类型、继承关系必须显式声明. An object is of a given type *if it is declared to be* (or if a type's association with the object is inferred through mechanisms such as object inheritance).
+
+**Duck typing**: 对象满足类型的约束条件（含有特定属性或方法）即可. An object is of a given type if it has all methods and properties required by that type.
+
+<PullQuote emoji="🦆">
+  能像鸭子一样叫的对象就是一只鸭子
+</PullQuote>
+
+## Java 虚拟机
+
+### The runtime environment
+
+JVM 是 Java 的运行时，类似 Node.js （或者说 V8） 和 JavaScript 之间的关系
+
+其他广泛使用的 Java 运行时：
+- Android 的 Dalvik 以及后来的 Android Runtime (ART)
+
+<PullQuote emoji="🔑">
+  Difference between `java HelloWorld` and `node hello.js`
+</PullQuote>
+
+interpreting vs. compiling
+
+- V8 compiles JavaScript source code to native machine code [at runtime](https://en.wikipedia.org/wiki/Just-in-time_compilation). As of 2016, it also includes Ignition, a [bytecode interpreter](https://en.wikipedia.org/wiki/Bytecode_interpreter). [(Wikipedia - Node.js)](https://en.wikipedia.org/wiki/Node.js)
+- JVM interprets bytecode produced by javac. It also uses JIT (just-in-time compilation) to translate part of Java bytecode into native machine code.
+
+### 其他主流 JVM 语言
+
+- Kotlin：改良版 Java、Android 开发首选语言
+- Groovy：弱类型、动态、Gradle
+- Scala：学院派、函数式、大数据、Flink
+- Clojure：动态、函数式、Lisp
+
+## Spring Boot
+
+### 快速上手
+
+在 [Spring Initializr](https://start.spring.io/) 创建一个项目脚手架，导入 IDE 即可
+
+### JSON 序列化、反序列化
+
+<PullQuote emoji="🔑">
+  前端传给后端的 JSON 字符串是如何变成对象的？
+</PullQuote>
+
+JavaScript:
+```js
+const c = JSON.stringify({id: 1, title: "hi"})
+JSON.parse(c)
+```
+
+类比 Java：
+```java
+@Value
+class Campaign {
+  int id;
+  String title;
+}
+
+ObjectMapper objectMapper = new ObjectMapper();
+
+Campaign campaign = new Campaign(1, "hi");
+String json = objectMapper.writeValueToString(campaign); // highlight-line
+Campaign c = objectMapper.readValueFromString(json, Campaign.class); // highlight-line
+```
+
+<PullQuote emoji="🔍">
+  不同于 JavaScript，Java 在反序列化成对象的时候需要指定类型
+</PullQuote>
+
+有多种 JSON 序列化/反序列化的库，如 Jackson、Gson 等。Java 后端项目推荐用 Jackson（也是 Spring Boot 默认的 JSON 库）。
+
+常见数据类型对应关系：
+
+|     | Java 类型                   | JS 类型                      |
+|-----|---------------------------|----------------------------|
+| 日期  | `java.time.ZonedDateTime` | 原生 Date、moment.js、day.js * |
+| 枚举  | enum                      | string                     |
+
+
+`LocalDateTime` vs `ZonedDateTime`
+- `ZonedDateTime` 带有时区
+- `LocalDateTime` 不带时区
+
+```shell
+$ node
+Welcome to Node.js v16.17.0.
+Type ".help" for more information.
+> new Date()
+2022-09-13T02:10:14.100Z
+```
+
+JS 的 `Date` 带时区，所以直接对应 Java 的 `ZonedDateTime`
+
+## 注解 Annotation
+
+Java 的注解和 JavaScript 的 Decorator 语法相似，但语义不同。Java 注解的作用是给 class、方法、字段等添加元信息（Metadata）。
+
+| 用途    | 主要场景         | 例                        |
+|-------|--------------|--------------------------|
+| 编译器提示 | 给编译器额外信息     | `@Override`              |
+| 编译时处理 | 代码生成         | Lombok                   |
+| 运行时处理 | 路由配置、Bean 校验 | JSR-303: Bean Validation |
+
+### 编译器提示
+
+```java
+public class OverrideDemo {
+
+    static class Shape {
+        String name() {
+            return "Shape";
+        }
+    }
+
+    static class Circle extends Shape {
+        @Override // highlight-line
+        String name() { // highlight-line
+            return "Circle";
+        }
+    }
+}
+```
+
+假设 `Circle#name` 方法注解了 `@Override`，但是实际上并没有覆写父类的任何方法，会报编译错误。`@Override` 注解是可选的，
+给编译器额外的提示信息。
+
+### 编译时处理
+
+[Project Lombok](https://projectlombok.org/features/) 是一个利用 Java 的注解处理器机制，
+通过在编译期生成代码帮助我们减少样板代码（boilerplate）的工具类库。
+
+我用得最多的：`@Value`，用于 immutable data class
+
+JDK 17 的话可以直接用 record
+
+### 运行时处理
+
+也可以在运行时获取注解上标注的信息。常见的 Bean 数据校验（JSR-303）、Spring MVC 基于注解的路由配置都是采用这种机制。
+
+在 Spring Boot 项目中使用 Hibernate 的 Bean 校验库：
+
+```groovy
+implementation 'org.springframework.boot:spring-boot-starter-validation'
+```
+
+API Demo:
+
+```java
+import lombok.Value;
+import org.hibernate.validator.HibernateValidatorFactory;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.validation.constraints.Min;
+import java.util.Set;
+
+/**
+ * https://hibernate.org/validator/documentation/getting-started/
+ */
+public class BeanValidationDemo {
+
+    @Value
+    static class Article {
+        @Min(5)
+        String title;
+    }
+
+    public static void main(String[] args) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<Article>> violations =
+            validator.validate(new Article("Hi")); // highlight-line
+        System.out.println(violations);
+    }
+}
+```
+
+假设我们自己写一个这样的库：
+
+```java
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
+
+@Slf4j
+public class RuntimeDemo {
+    // 自定义注解，需要保留到运行时
+    @Retention(RetentionPolicy.RUNTIME) // highlight-line
+    @interface Range { // highlight-line
+        int min();
+        int max();
+    }
+
+    @Value
+    static class Article {
+        @Range(min = 1, max = 100)
+        String title;
+    }
+
+    public static void main(String[] args) {
+        Article article = new Article("Hello World");
+        Field[] fields = article.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            // 获取 Range 类型的注解
+            Range range = field.getAnnotation(Range.class); // highlight-line
+            if (range != null) {
+                log.info("range: min is {}, max is {}, field {}",
+                    range.min(),
+                    range.max(),
+                    field);
+            }
+        }
+    }
+}
+```
+
+## 并发编程
+
+### 线程 API
+
+```java
+public class ThreadDemo {
+    @SneakyThrows
+    public static void main(String[] args) {
+        Thread aThread = new Thread(() -> {
+            try {
+                Thread.sleep(1000L);
+                System.out.printf("Inside %s%n",
+                    Thread.currentThread().getName()); // highlight-line
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        // 调用 start 方法后，aThread 开始运行
+        // aThread 和 main 线程并发
+        aThread.start();
+        System.out.printf("Inside %s%n",
+            Thread.currentThread().getName()); // highlight-line
+        // 等待 aThread 执行完成
+        aThread.join();
+    }
+}
+```
+
+JVM 线程对应操作系统线程，是比较昂贵的资源。实际开发中几乎不会直接 `new Thread`，而是使用线程池做多任务并发。
+
+<PullQuote emoji="🚀">
+  [JEP 425](https://openjdk.org/jeps/425) 将为 JVM 带来虚拟线程，即在一个操作系统线程上复用多个虚拟线程，从而提供应用吞吐量。
+  关于虚拟线程推荐阅读 Brian Goetz 的 [Virtual Threads: New Foundations for High-Scale Java Applications](https://www.infoq.com/articles/java-virtual-threads/)
+</PullQuote>
+
+### 线程池
+
+```java
+public class ThreadPoolDemo {
+
+    // 创建一个线程池
+    private static final ExecutorService POOL =
+        Executors.newCachedThreadPool();
+
+    @SneakyThrows
+    static String writeFile() {
+        Thread.sleep(1000);
+        return "file.csv";
+    }
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        Future<String> filename = POOL.submit(ThreadPoolDemo::writeFile);
+        System.out.println(filename.get());
+    }
+}
+```
+
+### Request Per Thread
+
+传统 Spring MVC 使用的是一个 http 请求对应一个线程的模型
+
+```java
+@RestController
+class NaiveCounterDemoController {
+    // 线程不安全的示范
+    private int counter = 0; // highlight-line
+
+    @PostMapping("/inc")
+    public void inc() {
+        counter++; // highlight-line
+    }
+
+    @GetMapping("/get")
+    public int get() {
+        return counter;
+    }
+}
+```
+
+### Shared Mutable State
+
+在上面的 `NaiveCounterDemoController` 中，多个线程各自处理自己的请求，并发修改 `counter` 会造成问题。
+
+假如有 100 个并发请求增加计数器，最终计数器的结果可能小于 100。
+
+原因是 `counter++` 并非原子的操作，相当于 `counter = counter + 1`，先读取后写入。
+
+<figure>
+  ![Race condition between two clients concurrently incrementing a counter](./counter-race.png)
+  <figcaption>并发加计数器的问题图解（引自 DDIA）</figcaption>
+</figure>
+
+解决方法：
+- 提供原子操作的线程安全的数据机构 Thread-safe data structures: `AtomicInteger` （counter 场景首选）
+- 互斥锁 Mutual exclusion
+- 线程隔离 Thread confinement
+
+参考：[Shared Mutable State and Concurrency in Kotlin](https://kotlinlang.org/docs/shared-mutable-state-and-concurrency.html)
+
+## 数据库持久化
+
+- Raw SQL / Template Engine: MyBatis XML
+- SQL DSL: JOOQ
+
+```java
+SELECT AUTHOR.FIRST_NAME, AUTHOR.LAST_NAME, COUNT(*)
+FROM AUTHOR
+JOIN BOOK ON AUTHOR.ID = BOOK.AUTHOR_ID
+WHERE BOOK.LANGUAGE = 'DE'
+AND BOOK.PUBLISHED > DATE '2008-01-01'
+GROUP BY AUTHOR.FIRST_NAME, AUTHOR.LAST_NAME
+HAVING COUNT(*) > 5
+ORDER BY AUTHOR.LAST_NAME ASC NULLS FIRST
+LIMIT 2
+OFFSET 1
+```
+
+```java
+create.select(AUTHOR.FIRST_NAME, AUTHOR.LAST_NAME, count())
+      .from(AUTHOR)
+      .join(BOOK).on(AUTHOR.ID.equal(BOOK.AUTHOR_ID))
+      .where(BOOK.LANGUAGE.eq("DE"))
+      .and(BOOK.PUBLISHED.gt(date("2008-01-01")))
+      .groupBy(AUTHOR.FIRST_NAME, AUTHOR.LAST_NAME)
+      .having(count().gt(5))
+      .orderBy(AUTHOR.LAST_NAME.asc().nullsFirst())
+      .limit(2)
+      .offset(1)
+```
+
+- ORM: Hibernate / prisma.io

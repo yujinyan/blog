@@ -1,0 +1,81 @@
+---
+import VueLogo from "@/assets/framework/vue.svg";
+import SolidLogo from "@/assets/framework/solidjs.svg";
+import ReactLogo from "@/assets/framework/react.svg";
+import SvelteLogo from "@/assets/framework/svelte.svg";
+import { Image } from "astro:assets";
+
+interface Props {
+    class?: string
+}
+
+const logoSize = 48;
+const { class: className } = Astro.props;
+
+---
+
+<table class:list={["not-prose", className]}>
+    <thead>
+        <tr>
+            <th></th>
+            <th class="divide-v">编译时反应式</th>
+            <th>运行时反应式</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="divide-h">
+            <th>JSX</th>
+            <td class="divide-v">
+                <Image src={SolidLogo} alt="Solid" width={logoSize} />
+                <span>Solid</span>
+            </td>
+            <td>
+                <Image src={ReactLogo} alt="React" width={logoSize} />
+                <span>React</span>
+            </td>
+        </tr>
+        <tr>
+            <th>模板</th>
+            <td class="divide-v">
+                <Image src={SvelteLogo} alt="Svelte" width={logoSize} />
+                <span>Svelte</span>
+            </td>
+            <td>
+                <Image src={VueLogo} alt="Vue" width={logoSize} />
+                <span>Vue</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+    .divide-h {
+        @apply border-b border-b-base-content/20;
+    }
+
+    .divide-v {
+        @apply border-r border-r-base-content/20;
+
+    }
+    th {
+        @apply text-primary font-sans text-sm;
+    }
+    thead th {
+        @apply pb-2;
+    }
+    tbody th {
+        @apply pr-2;
+    }
+
+    td span {
+        @apply text-base-content/50 font-sans text-sm ml-1;
+    }
+
+    td {
+        @apply p-2 text-left;
+    }
+    td img {
+        @apply inline;
+    }
+    
+</style>

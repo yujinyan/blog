@@ -1,0 +1,390 @@
+---
+title: Calculator
+date: 2021-04-02T15:50:03.284Z
+lang: en
+---
+import LeetCode from "@/components/LeetCode.astro"
+
+The *calculator* problems require us to evaluate an arithmetic expression given in a string.
+
+For example:
+
+```javascript
+Input: s = "(2+6*3+5-(3*14/7+2)*5)+3"
+Output: -12
+```
+
+<LeetCode id={224} />
+
+Spaces, brackets, $+$ $-$.
+
+
+<LeetCode id={227} />
+
+Spaces, no brackets, $+$  $-$  $\times$ $\div$.
+
+<LeetCode id={772} />
+
+No spaces, brackets, $+$  $-$  $\times$ $\div$.
+
+The *Reverse Polish Notation* helps us solve all of these problems.
+
+## Reverse Polish Notation
+
+In reverse Polish notation (a.k.a. *postfix notation*), the operators follow their operands.
+
+$$
+\begin{array}{rcc}
+\text{infix notation} & a + b \times c - d \\
+\text{postfix notation} & a \ b \ c \times + \ d \ - \\
+\end{array}
+$$
+
+Evaluating RPN with an *operand* stack is straightforward.
+
+<LeetCode id={150} />
+
+Valid operators are `+`, `-`, `*`, and `/`. Each operand may be an integer or another expression.
+
+Example:
+
+```kotlin
+Input: tokens = ["2","1","+","3","*"]
+Output: 9
+Explanation: ((2 + 1) * 3) = 9
+```
+
+Solution:
+
+```kotlin
+fun evalRPN(tokens: Array<String>): Int {
+  val operands = Stack<Int>()
+  for (s in tokens) {
+    val i = s.toIntOrNull()
+    if (i != null) {
+      operands.push(i); continue
+    }
+    with(operands) {
+      when (s) {
+        "+" -> push(pop() + pop())
+        "-" -> push(pop().let { pop() - it })
+        "*" -> push(pop() * pop())
+        "/" -> push(pop().let { pop() / it })
+        else -> TODO()
+      }
+    }
+  }
+  return operands.pop()
+}
+```
+
+How do we convert from infix notation to RPN?
+
+## Dijkstra's Shunting-yard Algorithm
+
+[Wikipedia: Shunting-yard algorithm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm)
+
+Intuitively, since operators come last in RPN, we need to *stash* them in a stack.
+In contrast, when evaluating an RPN, we stash the operands.
+
+Iterate over the input, for every character `c`:
+- If it's an *operand* (numbers), add it to the output.
+- If it's an *operator* ($+$, $-$, etc.),
+pop all the operators with greater precedence than `c` off the stack and add them to the output.
+Then add `c` to the output.
+
+Last, pop the remaining operator off the stack.
+
+The algorithm was invented by Edsger Dijkstra. He named it "shunting yard" algorithm
+because its operation resembles that of a railroad shunting yard.
+
+It's helpful to keep the following picture in mind, and the code is not too hard to write.
+
+<figure>
+| ![Shunting-yard Algorithm](./assets/Shunting_yard.svg)
+  <figcaption>Shunting-yard Algorithm trace for A + B * C - D</figcaption>
+</figure>
+
+
+```kotlin
+val Char.weight
+  get() = when (this) {
+    '+' -> 1
+    '-' -> 1
+    '*' -> 2
+    '/' -> 2
+    else -> TODO()
+  }
+
+fun shuntingYard(string: String): String {
+  val ret = StringBuilder()
+  val operators = Stack<Char>()
+
+  for (c in string.toCharArray()) {
+    if (c.isLetter()) {
+      ret.append(c)
+    } else {
+      while (
+        !operators.isEmpty()
+        && operators.peek().weight >= c.weight
+      ) ret.append(operators.pop())
+
+      operators.push(c)
+    }
+  }
+
+  while (!operators.isEmpty())
+    ret.append(operators.pop())
+
+  return ret.toString()
+}
+
+fun main() {
+  shuntingYard("a+b*c-d") // "abc*+d-"
+}
+```
+
+[Infix to Postfix Conversion](https://scriptasylum.com/tutorials/infix_postfix/algorithms/infix-postfix/)
+also provides a step-by-step trace of the algorithm.
+
+
+## Handling brackets
+
+$$
+1 \times \textcolor{#EC407A}{(}2 + 3\textcolor{#EC407A}{)}
+$$
+
+To handle brackets:
+
+- Push the opening bracket `(` to the operator stack.
+- When we encounter a closing bracket `)`, keep popping the operators in the stack until we find the matching `(`.
+- We are done with this pair of brackets. Pop the `(` off the stack.
+
+```kotlin
+fun shuntingYardWithBrackets(string: String): String {
+  val ret = StringBuilder()
+  val ops = Stack<Char>()
+
+  for (c in string.toCharArray()) {
+    when {
+      c.isLetter() -> ret.append(c)
+      c == '(' -> ops.push(c) // highlight-line
+      // highlight-range{1-3}
+      c == ')' -> {
+        while (ops.peek() != '(') ret.append(ops.pop())
+        ops.pop()
+      }
+      else -> {
+        while (!ops.isEmpty() && ops.peek().weight >= c.weight) {
+          ret.append(ops.pop())
+        }
+        ops.push(c)
+      }
+    }
+  }
+
+  while (!ops.isEmpty()) ret.append(ops.pop())
+
+  return ret.toString()
+}
+
+val Char.weight
+  get() = when (this) {
+    '+' -> 1
+    '-' -> 1
+    // Set to a small value, so other operators
+    // won't pop `(` off the stack.
+    // Only the matching `)` can do so.
+    '(' -> 0 // highlight-line
+    else -> TODO()
+  }
+```
+
+Two things to note about the opening bracket `(`:
+
+- It shouldn't engage with previous operators (i.e. pop off other operators), so we handle it in a separate case.
+- Other operators shouldn't pop it off the stack. Only the closing brackets `)` can. So we set its weight to a smaller value.
+
+## Handling unary operators
+
+Our current code cannot handle unary operators, because when evaluating RPN, we always assume there are two operands.
+
+We can accommodate the unary operators $-$ and $+$ by prefixing them with a zero. Notice they can only appear:
+
+- at the beginning of the expression, or
+- after an opening bracket `(`.
+
+$$
+\textcolor{#EC407A}{-}1+2
+$$
+
+$$
+1+(\textcolor{#EC407A}{-}1+2)
+$$
+
+```kotlin
+fun toRPN(s: String): List<Any> {
+  val ret = mutableListOf<Any>()
+  val ops = Stack<Char>();
+
+  var i = 0
+  // The first char could be an unary operator.
+  var checkUnary = true // highlight-line
+  while (i < s.length) {
+    val c = s[i]
+    // highlight-range{2-3}
+    if (checkUnary) {
+      if (c == '-' || c == '+') ret += 0
+      checkUnary = false
+    }
+    // The following char could be a unary operator.
+    if (c == '(') checkUnary = true // highlight-line
+    /* ommitted */
+  }
+  while (!ops.isEmpty()) ret += ops.pop()
+  return ret
+}
+```
+
+## Atoi
+
+To parse numbers with multiple digits, we can use this idiom:
+
+```kotlin
+var n = 0
+string.toCharArray().forEach { c: Char ->
+  n = 10 * n + (c - '0') // highlight-line
+}
+```
+
+There is a question for exactly this operation.
+
+<LeetCode id={8} />
+
+Atoi is a C library function that converts an ASCII string to an integer.
+
+This problem asks to implement the atoi function.
+Most of the code deals with edge cases like leading whitespaces and integer overflows.
+The string to integer idiom is highlighted.
+
+```java
+public int myAtoi(String s) {
+  if (s.equals("")) return 0;
+  int sign = 1;
+  int ret = 0; // highlight-line
+
+  int i = 0;
+
+  // Ignore leading whitespace.
+  while (i < s.length() && s.charAt(i) == ' ') i++;
+
+  // Handle sign.
+  if (i < s.length() && s.charAt(i) == '+') {
+    i++;
+  } else if (i < s.length() && s.charAt(i) == '-') {
+    i++;
+    sign = -1;
+  }
+
+  for (; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (!Character.isDigit(c)) break;
+    // Handle overflow.
+    if (
+        ret > Integer.MAX_VALUE / 10  ||
+        (ret == Integer.MAX_VALUE / 10
+        && c - '0' > Integer.MAX_VALUE % 10)
+    ) {
+        return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+    }
+    ret = ret * 10 + (c - '0'); // highlight-line
+  }
+
+  return sign * ret;
+}
+```
+
+## Complete code
+
+We can combine these building blocks to write our solution for the calculator problems.
+
+```kotlin
+fun calculate(s: String): Int {
+  val exp: List<Any> = toRPN(s)
+  val operands = Stack<Int>()
+  with(operands) {
+    for (c in exp) {
+      if (c is Int) {
+        push(c)
+        continue
+      }
+      when (c) {
+        '+' -> push(pop() + pop())
+        '-' -> push(pop().let { pop() - it })
+        '*' -> push(pop() * pop())
+        '/' -> push(pop().let { pop() / it })
+      }
+    }
+  }
+  return operands.pop()
+}
+
+val Char.weight get() = when(this) {
+  '+' -> 1
+  '-' -> 1
+  '*' -> 2
+  '/' -> 2
+  '(' -> 0
+  else -> TODO()
+}
+
+fun toRPN(s: String): List<Any> {
+  val ret = mutableListOf<Any>()
+  val ops = Stack<Char>();
+
+  var i = 0
+  while (i < s.length) {
+    val c = s[i]
+    if (c.isDigit()) {
+      var n = c - '0'
+      while (++i < s.length && s[i].isDigit()) {
+        n = 10 * n + (s[i] - '0')
+      }
+      ret += n
+      continue
+    }
+
+    when {
+      c == ' ' -> { }
+      c == '(' -> ops.push(c)
+      c == ')' -> {
+        while (ops.peek() != '(') ret += ops.pop()
+        ops.pop()
+      }
+      c.isDigit() -> ret += c
+      else -> {
+        while (!ops.isEmpty() && ops.peek().weight >= c.weight) {
+          ret += ops.pop()
+        }
+        ops.push(c)
+      }
+    }
+
+    i++
+  }
+  while (!ops.isEmpty()) ret += ops.pop()
+  return ret
+}
+```
+
+## Interpreter Pattern
+
+🚧 WIP
+
+<blockquote class="twitter-tweet"><p lang="zh" dir="ltr">在LeetCode上有道编程题——实现一个简单的计算器（<a href="https://t.co/D20mQJo0TP">https://t.co/D20mQJo0TP</a>），一般来说用两个stack就可以解决问题，但是因为我对设计模式实在是太熟，所以情不自禁用Interpreter 撸了一个（<a href="https://t.co/PF9JNhg8Gk">https://t.co/PF9JNhg8Gk</a>） 大家可以看看其易读性和代码的扩展性，绝对比“双栈法”要好得多……</p>&mdash; Hao Chen (@haoel) <a href="https://twitter.com/haoel/status/1377248342921519108?ref_src=twsrc%5Etfw">March 31, 2021</a></blockquote>
+
+## Reference
+
+- [LeetCode discuss: Accepted Java Infix to Postfix based solution with explanation](https://leetcode.com/problems/basic-calculator/discuss/62372/Accepted-Java-Infix-to-Postfix-based-solution-with-explaination-600ms)
+- [Shunting-yard algorithm - Wikipedia](https://en.wikipedia.org/wiki/Shunting-yard_algorithm)
+

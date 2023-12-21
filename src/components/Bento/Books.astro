@@ -1,0 +1,66 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+
+interface Props {
+    class?: string;
+}
+
+const books = await getCollection("book");
+// const selectedBooks = books.slice(0, 3);
+const selectedBooks = books.filter(x => ["dddf", "pragmatic", "code"].includes(x.id));
+const selectedBookCovers = selectedBooks.map((book) => book.data.cover);
+
+const { class: className } = Astro.props;
+---
+
+<style>
+    .book-stack {
+        display: grid;
+    }
+
+    .book-stack .book {
+        grid-row: 1;
+        grid-column: 1;
+    }
+</style>
+
+<a
+    href="/bookshelf"
+    class:list={[
+        "bg-secondary/25",
+        "ring-1 rounded-2xl ring-base-content/10 not-prose shadow-lg",
+        "p-4",
+        className,
+    ]}
+>
+    <p class="text-lg font-heading text-base-content/75">我的书架 Bookshelf</p>
+    <div class:list={["w-full flex justify-end"]}>
+        <div
+            class:list={[
+                "book-stack mt-6 px-12 justify-evenly",
+                "-mb-8",
+                // "grid grid-cols-[1] grid-rows-[1]"
+            ]}
+        >
+            {
+                selectedBookCovers.map((cover, index) => (
+                    <Image
+                    width="256"
+                        src={cover}
+                        class:list={[
+                            // "rounded shadow-xl xl:w-48 w-36 ring-1 ring-base-content/20 origin-bottom",
+                            // "absolute",
+                            // "row-span-1 column-span-1",
+                            "book",
+                            "rounded shadow-xl w-36 ring-1 ring-base-content/20 origin-bottom",
+                            { "-rotate-12": index == 1 },
+                            { "rotate-12": index == 2 },
+                        ]}
+                        alt={""}
+                    />
+                ))
+            }
+        </div>
+    </div>
+</a>

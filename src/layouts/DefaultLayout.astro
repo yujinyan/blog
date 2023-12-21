@@ -1,0 +1,83 @@
+---
+import "../styles/global.css";
+import SiteNav from "@/components/SiteNav.astro";
+import BaseHead from "@/components/BaseHead.astro";
+import ThemeToggle from "@/components/ThemeToggle.tsx";
+import { INDEX_TITLE, SITE_TITLE } from "../consts";
+import type { Lang } from "../content/config";
+import { ViewTransitions } from "astro:transitions";
+
+export interface Props {
+  title: string;
+  description: string;
+  pathname: string;
+  lang: Lang;
+}
+
+const { title, description, pathname, lang } = Astro.props;
+function titleDisplay() {
+  if (!title) {
+    return INDEX_TITLE;
+  }
+  if (title.includes("|")) {
+    return title;
+  }
+  return `${title} | ${SITE_TITLE}`;
+}
+---
+
+<html lang={lang}>
+  <head>
+    <BaseHead
+      title={titleDisplay()}
+      description={description}
+    />
+    <script is:inline>
+      // https://docs.astro.build/en/tutorials/add-view-transitions/#update-scripts
+      function setupTheme() {
+        if (document.querySelector("html")?.getAttribute("data-theme")) {
+          // already setup
+          return;
+        }
+        const theme = (() => {
+          if (
+            typeof localStorage !== "undefined" &&
+            localStorage.getItem("theme")
+          ) {
+            return localStorage.getItem("theme");
+          }
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return "dark";
+          }
+          return "light";
+        })();
+        if (theme) {
+          document.querySelector("html")?.setAttribute("data-theme", theme);
+        }
+      }
+      setupTheme()
+      document.addEventListener("astro:after-swap", setupTheme);
+      document.addEventListener("astro:page-load", setupTheme);
+    </script>
+    <ViewTransitions />
+  </head>
+
+  <body>
+    <div class="max-w-2xl ml-auto mr-auto py-8 px-4 px-horizontal">
+      <div class="flex items-center mb-4">
+        <SiteNav pathname={pathname} class="pr-20" />
+        <ThemeToggle client:only="solid-js" class="absolute z-20" />
+      </div>
+      <header class="flex mb-8 items-center">
+        <slot name="header" />
+      </header>
+      <main>
+        <slot />
+      </main>
+      <slot name="sidebar" />
+      <footer class="font-subtitle mt-8">
+        © {new Date().getFullYear()} yujinyan.me
+      </footer>
+    </div>
+  </body>
+</html>

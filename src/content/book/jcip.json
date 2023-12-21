@@ -1,0 +1,9 @@
+{
+  "id": "jcip",
+  "title": "Java Concurrency in Practice",
+  "author": "Brian Goetz",
+  "cover": "./jcip.jpg",
+  "year": 2006,
+  "status": "done",
+  "post": "jcip-notes-interruption-cancellation"
+}

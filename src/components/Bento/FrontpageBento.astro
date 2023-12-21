@@ -1,0 +1,21 @@
+---
+import TemporalSection from "@/components/Bento/TemporalSection.astro";
+import Books from "@/components/Bento/Books.astro";
+import KotlinSection from "@/components/Bento/KotlinSection.astro";
+
+interface Props {
+    class?: string
+}
+
+const {class: className} = Astro.props;
+
+
+---
+
+<div class:list={["grid grid-cols-2 grid-rows-2 gap-4 mt-16", className]}>
+    <KotlinSection class="col-span-2 lg:col-span-1 row-span-2" />
+    <TemporalSection
+        class="col-span-2 lg:col-span-1 row-span-1 h-32 lg:h-auto"
+    />
+    <Books class="col-span-2 lg:col-span-1 row-span-2 lg:row-span-1" />
+</div>

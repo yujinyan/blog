@@ -1,0 +1,42 @@
+---
+const data = [
+    { link: "/", title: "Home" },
+    { link: "/bookshelf", title: "Bookshelf" },
+    { link: "/leetcode", title: "LeetCode" },
+    { link: "/friends", title: "Friends" },
+];
+
+function isActive(pathname: string, link: string): boolean {
+    if (link == "/" && pathname !== "/") return false;
+    return pathname.includes(link.substr(1));
+}
+
+export interface Props {
+    pathname: string;
+    class: string;
+}
+
+const props = Astro.props;
+---
+
+<nav class:list={["site-nav", "leading-tight", props.class]}>
+    {
+        data.map((it, index) => (
+            <span>
+                <a
+                    href={it.link}
+                    class:list={[
+                        "font-sans",
+                        "text-xs",
+                        isActive(props.pathname, it.link)
+                            ? ["text-secondary"]
+                            : "text-base-content/75",
+                    ]}
+                >
+                    {it.title.toUpperCase()}
+                </a>
+                {index === data.length - 1 ? undefined : " · "}
+            </span>
+        ))
+    }
+</nav>

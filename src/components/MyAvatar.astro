@@ -1,0 +1,14 @@
+---
+import tropicalFish from "@/assets/tropical-fish.svg"
+import {AUTHOR_NAME} from "../consts"
+import {Image} from "astro:assets"
+
+export interface Props {
+    class?: string,
+    size: number,
+}
+
+const {class: className, size} = Astro.props
+---
+
+<Image src={tropicalFish} alt={AUTHOR_NAME} width={size} height={size} class={className} />

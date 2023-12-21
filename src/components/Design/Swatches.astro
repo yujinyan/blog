@@ -1,0 +1,34 @@
+---
+export interface Props {
+    class?: string
+}
+
+const {class: className} = Astro.props
+---
+
+<style lang="scss">
+    .swatch {
+        @apply ring-1 ring-base-content/20 rounded-lg shadow flex items-center justify-center h-24 basis-20 grow shrink-0;
+    }
+</style>
+
+<div class:list={["flex flex-wrap gap-2 font-sans flex-wrap", className]}>
+    <div class="swatch bg-primary">
+        <span class="text-primary-content">primary</span>
+    </div>
+    <div class="swatch bg-secondary">
+        <span class="text-secondary-content">secondary</span>
+    </div>
+    <div class="swatch bg-accent">
+        <span class="text-accent-content">accent</span>
+    </div>
+    <div class="swatch bg-base-100">
+        <span class="text-base-content">base-100</span>
+    </div>
+    <div class="swatch bg-base-200">
+        <span class="text-base-content">base-200</span>
+    </div>
+    <div class="swatch bg-info">
+        <span class="text-info-content">info</span>
+    </div>
+</div>

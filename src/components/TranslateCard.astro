@@ -1,0 +1,18 @@
+---
+interface Props {
+    author: string,
+    title: string,
+    url: string
+}
+
+const { author, title, url } = Astro.props
+
+---
+
+<section class="not-prose p-3 ring-1 ring-primary/20 shadow rounded">
+    <p class="text-sm text-primary font-sans mb-1">翻译自</p>
+    <p class="font-heading text-lg leading-tight">
+        <a href={url}>{title}</a>
+    </p>
+    <p class="text-sm text-base-content/75">{author}</p>
+</section>

@@ -1,0 +1,38 @@
+.is-active {
+  @apply bg-primary/75 text-primary-content font-bold;
+}
+
+.is-comparing {
+  @apply bg-secondary/75 text-secondary-content font-bold;
+}
+
+
+.dp-table {
+  @apply block font-mono cursor-pointer text-center my-0 mx-auto w-auto;
+
+  overflow-x: scroll;
+  -webkit-tap-highlight-color: transparent;
+
+  tbody {
+    @apply inline-block my-0 mx-auto w-auto;
+  }
+
+  tr {
+    @apply flex w-auto;
+  }
+
+  td,
+  th {
+    @apply block w-10 h-10 p-2 text-center;
+  }
+}
+
+.explanation {
+  p,
+  ol,
+  ul {
+    margin-bottom: 1em;
+  }
+
+  margin-top: 1.75em;
+}
