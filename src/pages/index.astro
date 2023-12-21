@@ -9,6 +9,7 @@ import DefaultLayout from "@/layouts/DefaultLayout.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import MyAvatar from "@/components/MyAvatar.astro";
 import FrontpageBento from "@/components/Bento/FrontpageBento.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
 import QuillIcon from "@/assets/quill-pen-line.svg?raw";
 
 const posts = (await getCollection("blog")).sort(
@@ -35,14 +36,10 @@ const posts = (await getCollection("blog")).sort(
 	<FrontpageBento
 		class="mb-16 w-full ml-auto xl:w-[calc(100%+8rem)] xl:-ml-[4rem]"
 	/>
-	<h2
-		class="flex font-bold items-center text-primary stroke-primary border-base-content/50 pt-2 w-full mb-4 bg-base-100 font-sans align-middle"
-	>
-		<span class="mr-1">
-			<Fragment set:html={QuillIcon} class="stroke-primary" />
-		</span>
-		 所有文章 All Posts
-	</h2>
+	<SectionHeader>
+		<Fragment slot="icon" set:html={QuillIcon} class="stroke-primary" />
+		所有文章 All Posts
+	</SectionHeader> 
 	{
 		posts.map((post) => {
 			const title = post.data.title || post.slug;

@@ -16,3 +16,10 @@ export function githubUrl(type: 'index' | number | undefined): string | undefine
     }
     return `https://github.com/yujinyan/blog/issues/${type}`
 }
+
+export function githubDiscussionUrl(discussionId: number | undefined): string | undefined {
+    if (!discussionId) {
+        return undefined
+    }
+    return `https://github.com/yujinyan/blog/discussions/${discussionId}`
+}
