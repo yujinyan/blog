@@ -1,0 +1,65 @@
+---
+import { Image } from "astro:assets"
+import { URL, fileURLToPath } from 'node:url';
+import { getEntry } from "astro:content"
+import {slug} from "../plugins/bookmark"
+
+const { class: className, url } = Astro.props
+
+
+export interface Props {
+  url: string,
+  class?: string
+}
+
+const bookmark = await getEntry("bookmark", slug(new URL(url)))
+console.log(`bookmark is ${JSON.stringify(bookmark)}`)
+const title = bookmark?.data.title
+const description = bookmark?.data.description
+const image = bookmark?.data.image
+console.log(`image is ${image}`)
+
+---
+
+<div
+  class:list={[
+    "w-full flex outline-base-content/10 p-2 items-start not-prose gap-4 hover:bg-base-200 transition-colors",
+    className,
+  ]}
+>
+  <div class="grow shrink min-w-0">
+    <div class="leading-tight font-heading text-lg mb-2">{title}</div>
+    <p class="text-sm text-base-content/50 font-sans leading-tight line-clamp-3">
+      {description}
+    </p>
+    <div class="align-middle -m-0.5">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        class="w-4 h-4 inline text-secondary"
+      >
+        <path
+          fillRule="evenodd"
+          d="M8.914 6.025a.75.75 0 0 1 1.06 0 3.5 3.5 0 0 1 0 4.95l-2 2a3.5 3.5 0 0 1-5.396-4.402.75.75 0 0 1 1.251.827 2 2 0 0 0 3.085 2.514l2-2a2 2 0 0 0 0-2.828.75.75 0 0 1 0-1.06Z"
+          clipRule="evenodd"></path>
+        <path
+          fillRule="evenodd"
+          d="M7.086 9.975a.75.75 0 0 1-1.06 0 3.5 3.5 0 0 1 0-4.95l2-2a3.5 3.5 0 0 1 5.396 4.402.75.75 0 0 1-1.251-.827 2 2 0 0 0-3.085-2.514l-2 2a2 2 0 0 0 0 2.828.75.75 0 0 1 0 1.06Z"
+          clipRule="evenodd"></path>
+      </svg>
+
+      <a href={url} class="font-mono text-xs p-0 leading-tight">{url}</a>
+    </div>
+  </div>
+  <Image
+    src={image}
+    alt={title ?? ""}
+    width={512}
+    class="m-1 w-40 grow-0 shrink-0 rounded-lg outline outline-1 outline-base-content/25 object-cover bg-center basis-40 h-24" /> 
+  <!-- <div
+    style={`background-image: url(${image})`}
+    class="grow-0 shrink-0 rounded-lg outline outline-1 outline-base-content/25 bg-cover bg-center basis-40 h-24"
+  >
+  </div> -->
+</div>
