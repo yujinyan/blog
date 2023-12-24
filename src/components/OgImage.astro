@@ -1,0 +1,64 @@
+---
+import { getEntry } from "astro:content"
+import { Image } from "astro:assets"
+import fish from "@/assets/tropical-fish.svg"
+
+const post = await getEntry("blog", "blog-refresh-2023")
+const title = post.data.title
+const description = post.data.description
+---
+
+<style>
+  .og-image {
+    /* width: 1200px;
+    height: 630px; */
+    aspect-ratio: 1.91;
+  }
+  @font-face {
+    font-family: SongRan;
+    src: url(MFSongRan-Regular.otf);
+  }
+  .font-display {
+    /* font-family: 'FZShuSong-Z01S'; */
+    /* font-family: 'MFSongRan'; */
+    /* font-family: '造字工房松然'; */
+    font-family: "SongRan";
+  }
+  p,
+  h2 {
+    font-feature-settings: "halt";
+  }
+</style>
+
+<div
+  class="not-prose shadow grid grid-cols-3 grid-rows-3 my-4 og-image p-3 gap-3 *:shadow *:rounded-xl *:ring-1 *:ring-base-content/10"
+>
+  {
+    post.data.heroImage && (
+      <Image
+        src={post.data.heroImage}
+        alt={post.data.title}
+        class="object-cover col-start-2 col-span-2 row-span-2 base-full h-full"
+      />
+    )
+  }
+  <div class="col-span-full row-start-3 p-3 flex items-center bg-secondary/25">
+    <div>
+      <h2 class="text-secondary-content/75 text-2xl font-display">{title}</h2>
+      <p class="font-sans text-secondary-content/50">{description}</p>
+    </div>
+  </div>
+  <Image
+    src={fish}
+    alt={post.data.title}
+    class="object-cover col-start-1 col-span-1 row-start-1 row-span-1 w-full h-full"
+  />
+  <div class="font-display p-3 flex items-center bg-primary/25">
+    <div>
+      <div class="text-primary-content/75">Jinyan's Blog</div>
+      <p class="text-secondary text-xs font-mono tracking-tighter">
+        https://blog.yujinyan.me
+      </p>
+    </div>
+  </div>
+</div>
