@@ -7,7 +7,9 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "bookmark": "node ./src/plugins/bookmark.js",
+    "test": "vitest"
   },
   "dependencies": {
     "@astrojs/mdx": "^2.0.0",
@@ -20,10 +22,12 @@
     "@giscus/solid": "^2.3.0",
     "@iconify-icon/solid": "^1.0.8",
     "@iconify/icons-feather": "^1.2.3",
+    "@rollup/plugin-dynamic-import-vars": "^2.1.2",
     "@tailwindcss/typography": "^0.5.10",
     "astro": "^4.0.3",
     "astro-icon": "^0.8.2",
     "astro-themes": "^0.2.4",
+    "cheerio": "1.0.0-rc.12",
     "katex": "^0.16.9",
     "rehype-katex": "^7.0.0",
     "rehype-pretty-code": "^0.9.5",
@@ -37,7 +41,8 @@
     "unist-util-visit": "^4.1.2"
   },
   "devDependencies": {
-    "daisyui": "^4.4.17"
+    "daisyui": "^4.4.17",
+    "vitest": "^1.1.0"
   },
   "homepage": "https://blog.yujinyan.me"
 }
