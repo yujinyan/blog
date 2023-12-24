@@ -1,39 +1,40 @@
 ---
 import { Image } from "astro:assets"
-import { URL, fileURLToPath } from 'node:url';
+import { URL } from "node:url"
 import { getEntry } from "astro:content"
-import {slug} from "../plugins/bookmark"
+import { slug } from "../plugins/bookmark"
 
 const { class: className, url } = Astro.props
 
-
 export interface Props {
-  url: string,
+  url: string
   class?: string
 }
 
 const bookmark = await getEntry("bookmark", slug(new URL(url)))
-console.log(`bookmark is ${JSON.stringify(bookmark)}`)
 const title = bookmark?.data.title
 const description = bookmark?.data.description
 const image = bookmark?.data.image
-console.log(`image is ${image}`)
-
 ---
 
+<!-- <a href={url} class:list={["not-prose"]}> -->
 <div
   class:list={[
-    "w-full flex outline-base-content/10 p-2 items-start not-prose gap-4 hover:bg-base-200 transition-colors",
+    "not-prose block w-full flex flex-col sm:flex-row content-start gap-4 hover:bg-base-200 transition-colors",
     className,
   ]}
 >
   <div class="grow shrink min-w-0">
     <div class="leading-tight font-heading text-lg mb-2">{title}</div>
-    <p class="text-sm text-base-content/50 font-sans leading-tight line-clamp-3">
+    <p
+      class="mb-2 text-sm text-base-content/50 font-sans leading-tight line-clamp-3"
+    >
       {description}
     </p>
-    <div class="align-middle -m-0.5">
-      <svg
+    <!-- <a href={url} class="font-mono text-xs p-0 leading-tight block">{url}</a> -->
+    <!-- <div class="font-mono text-xs p-0 leading-tight">{url}</div> -->
+    <div class="align-middle -ml-0.5">
+      <!-- <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"
         fill="currentColor"
@@ -47,19 +48,19 @@ console.log(`image is ${image}`)
           fillRule="evenodd"
           d="M7.086 9.975a.75.75 0 0 1-1.06 0 3.5 3.5 0 0 1 0-4.95l2-2a3.5 3.5 0 0 1 5.396 4.402.75.75 0 0 1-1.251-.827 2 2 0 0 0-3.085-2.514l-2 2a2 2 0 0 0 0 2.828.75.75 0 0 1 0 1.06Z"
           clipRule="evenodd"></path>
-      </svg>
+      </svg> -->
 
-      <a href={url} class="font-mono text-xs p-0 leading-tight">{url}</a>
+      <a href={url} class="font-mono text-xs p-0 leading-tight block">{url}</a>
     </div>
   </div>
   <Image
     src={image}
     alt={title ?? ""}
     width={512}
-    class="m-1 w-40 grow-0 shrink-0 rounded-lg outline outline-1 outline-base-content/25 object-cover bg-center basis-40 h-24" /> 
-  <!-- <div
-    style={`background-image: url(${image})`}
-    class="grow-0 shrink-0 rounded-lg outline outline-1 outline-base-content/25 bg-cover bg-center basis-40 h-24"
-  >
-  </div> -->
+    class:list={[
+      "m-0 w-full sm:w-40 order-first sm:order-last",
+      "sm:m-1 grow-0 shrink-0 rounded-lg outline outline-1 outline-base-content/25 object-cover bg-center basis-40 h-24",
+    ]}
+  />
 </div>
+<!-- </a> -->
