@@ -17,8 +17,8 @@ const description = bookmark?.data.description
 const image = bookmark?.data.image
 ---
 
-<!-- <a href={url} class:list={["not-prose"]}> -->
-<div
+<a
+  href={url}
   class:list={[
     "not-prose block w-full flex flex-col sm:flex-row content-start gap-4 hover:bg-base-200 transition-colors",
     className,
@@ -31,8 +31,6 @@ const image = bookmark?.data.image
     >
       {description}
     </p>
-    <!-- <a href={url} class="font-mono text-xs p-0 leading-tight block">{url}</a> -->
-    <!-- <div class="font-mono text-xs p-0 leading-tight">{url}</div> -->
     <div class="align-middle -ml-0.5">
       <!-- <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +48,7 @@ const image = bookmark?.data.image
           clipRule="evenodd"></path>
       </svg> -->
 
-      <a href={url} class="font-mono text-xs p-0 leading-tight block">{url}</a>
+      <div class="text-secondary font-mono text-xs p-0 leading-tight block">{url}</div>
     </div>
   </div>
   <Image
@@ -62,5 +60,5 @@ const image = bookmark?.data.image
       "sm:m-1 grow-0 shrink-0 rounded-lg outline outline-1 outline-base-content/25 object-cover bg-center basis-40 h-24",
     ]}
   />
-</div>
+</a>
 <!-- </a> -->

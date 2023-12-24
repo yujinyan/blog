@@ -9,6 +9,7 @@ import X from "@/components/Bento/X.astro";
 import ThemeToggle from "@/components/ThemeToggle";
 import UiLibs2023 from "@/components/UiLibs2023.astro";
 import Swatches from "@/components/Design/Swatches.astro";
+import Bookmark from "@/components/Bookmark.astro";
 
 const sampleText = "博学而笃志切问而近思 Hinc lucem et pocula sacra";
 const description = "Kitchen sink of all design elements.";
@@ -77,7 +78,7 @@ const description = "Kitchen sink of all design elements.";
         <div class="note not-prose">
             {
                 [
-                    "text-base-content",
+                    "text-base-content" ,
                     "text-base-content/90",
                     "text-base-content/75",
                     "text-base-content/50",
@@ -104,5 +105,13 @@ const description = "Kitchen sink of all design elements.";
         <!-- <TechGrid /> -->
         <LeetCodeProblemCard id={1} />
         <LeetCodeProblemCard id={2} />
+        <section class="divide-y divide-base-content/10 mb-3">
+            <!-- <Bookmark url="https://github.com/"/> -->
+            <Bookmark class="py-3" url="https://stripe.com/"/>
+            <Bookmark class="py-3" url="https://benjamindauton.com/"/>
+            <!-- <Bookmark url="https://github.com/"/> -->
+        </section>
+        <Bookmark url="https://www.joshwcomeau.com/react/server-components/" class="p-3 ring-1 ring-base-content/10 shadow rounded-lg"/>
+        </div>
     </article>
 </DefaultLayout>

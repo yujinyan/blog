@@ -11,15 +11,21 @@ import ThemeToggle from "@/components/ThemeToggle.tsx";
 import TemporalSection from "@/components/Bento/TemporalSection.astro";
 import Swatches from "@/components/Design/Swatches.astro";
 import KotlinSection from "@/components/Bento/KotlinSection.astro";
+import Bookmark from "@/components/Bookmark.astro";
 
 
 ## 框架：Astro
 
-原先博客使用 Gatsby 在编译时服务端渲染生成页面（SSG）。这一方案在客户端仍然需要重新 hydrate 整个 React App。对于个人博客这种内容为主的网站似乎有些重，不需要把整个页面跑在 React 里面，直接输出固定的 HTML 即可。对此，React 的回应是 React Server Component。RSC 依赖具体框架的实现，可以选择：
+原先博客使用 Gatsby 在编译时服务端渲染生成页面（SSG）。这一方案在客户端仍然需要重新 hydrate 整个 React App。对于个人博客这种内容为主的网站似乎有些重，不需要把整个页面跑在 React 里面，直接输出固定的 HTML 即可。对此，React 的回应是 React Server Component。
+
+<Bookmark url="https://www.joshwcomeau.com/react/server-components/" class="ring-1 ring-base-content/20 shadow rounded-lg p-3"/>
+
+RSC 依赖具体框架的实现，可以选择：
 
 **Next.js** - 更适合 web app 重交互的应用；
 
 **Gatsby.js** - 5.0 版本之后支持基于 RSC 的 [Partial hydration](https://www.gatsbyjs.com/docs/how-to/performance/partial-hydration/)。但比较遗憾的是 Gatsby 不怎么流行了，维护更新也比较慢。
+
 
 最终选择了针对内容型网站优化的 Astro。它的优点包括：
 
@@ -147,12 +153,13 @@ Astro 3.0 主推的新功能，实现起来非常简单，顺手就加上了。�
 |[Markdoc](https://markdoc.dev)|类似 Mdx，但是没有 Mdx 那么灵活，更加突出内容|
 
 
-## 灵感
+## 灵感和素材
 
-- https://svgl.vercel.app/
-- https://cali.so/
-- https://bento.me/en/home
-- https://press.stripe.com/
-- https://nevflynn.com/
-- https://whoisryosuke.com/blog/2022/blog-refresh-2022/
-- https://www.joshwcomeau.com/react/server-components/
+<section class="divide-y divide-base-content/10 *:py-3">
+  <Bookmark url="https://cali.so" />
+  <Bookmark url="https://whoisryosuke.com/blog/2022/blog-refresh-2022/" />
+  <Bookmark url="https://press.stripe.com/" />
+  <Bookmark url="https://nevflynn.com/" />
+  <Bookmark url="https://bento.me/en/home" />
+</section>
+

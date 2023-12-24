@@ -39,7 +39,16 @@ const book = defineCollection({
 	})
 })
 
+const bookmark = defineCollection({
+	type: "data",
+	schema: ({image}) => z.object({
+		url: z.string(),
+		title: z.string(),
+		description: z.string().optional(),
+		image: image().optional(),
+	})
+})
 
-export const collections = { blog, book, leetcode: blog };
+export const collections = { blog, book, leetcode: blog, bookmark };
 export type Lang = typeof languages[number];
 export type BookStatus = typeof bookStatuses[number]
