@@ -42,10 +42,10 @@ const description = post.data.description
       />
     )
   }
-  <div class="col-span-full row-start-3 p-3 flex items-center bg-secondary/25">
+  <div class="col-span-full row-start-3 p-3 flex items-center">
     <div>
-      <h2 class="text-secondary-content/75 text-2xl font-display">{title}</h2>
-      <p class="font-sans text-secondary-content/50">{description}</p>
+      <h2 class="text-base-content/75 text-2xl font-display">{title}</h2>
+      <p class="font-sans text-base-content/50">{description}</p>
     </div>
   </div>
   <Image
@@ -53,10 +53,10 @@ const description = post.data.description
     alt={post.data.title}
     class="object-cover col-start-1 col-span-1 row-start-1 row-span-1 w-full h-full"
   />
-  <div class="font-display p-3 flex items-center bg-primary/25">
+  <div class="font-display p-3 flex items-center bg-gradient-to-r from-secondary/25 to-primary/50">
     <div>
-      <div class="text-primary-content/75">Jinyan's Blog</div>
-      <p class="text-secondary text-xs font-mono tracking-tighter">
+      <div class="text-base-content/75 tracking-wide mb-1">Jinyan's Blog</div>
+      <p class="-ml-1 rounded-full bg-secondary text-base-content/75 text-red-50 px-2 py-1 text-xs font-sans">
         https://blog.yujinyan.me
       </p>
     </div>

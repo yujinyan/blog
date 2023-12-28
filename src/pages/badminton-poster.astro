@@ -1,0 +1,52 @@
+---
+import DefaultLayout from "@/layouts/DefaultLayout.astro"
+import {Image} from "astro:assets"
+import bg from "@/assets/wantihui-badminton-court.jpeg"
+
+const date = new Date(2023, 11, 24, 18, 0)
+---
+
+<style>
+  .writing-mode-vertical {
+    writing-mode: vertical-lr;
+  }
+  .clock-font {
+
+  }
+</style>
+
+<DefaultLayout
+  title="约羽毛球"
+  description="约羽毛球"
+  lang="zh-cmn-Hans"
+  pathname={Astro.url.pathname}
+>
+  <div class="w-[440px] not-prose shadow-lg base-content-100 rounded-lg font-sans grid grid-cols-3 grid-flow-row p-4 *:ring-1 *:ring-base-content/10 gap-4 *:shadow-md *:rounded-lg">
+    <div class="relative col-span-full overflow-clip">
+      <Image src={bg} alt="badminton" class:list={["object-cover", "col-span-full", "h-56"]}/>
+      <div class="absolute bottom-3 left-3 glass rounded-full py-1 px-2 text-emerald-800 font-bold">徐家汇体育公园</div>
+    </div>
+    <div class="shadow rounded base-content-100 p-2 inline-block">
+      <div class="text-base-content/40 font-bold text-center">
+        {date.toLocaleDateString("zh-CN", { year: "numeric", month: "long" })}
+      </div>
+      <div class="flex items-center">
+        <div class="text-6xl font-bold text-base-content/60">
+          {date.getDate()}
+        </div>
+        <div class="writing-mode-vertical text-red-500 dark:text-red-300">
+          {date.toLocaleDateString("zh-CN", { weekday: "long" })}
+        </div>
+      </div>
+    </div>
+    <div class="clock-font text-base-content/60 font-bold  text-center tracking-tighter col-span-2 flex flex-col items-center justify-center">
+      <div class="text-6xl -mt-1">
+        11:30
+      </div>
+      <div class="align-bottom">
+        <span class="text-xs bg-red-400 text-white rounded-full py-1 px-2 m-auto tracking-widest mr-1 -mt-1 inline-block">1小时</span>
+        <span>12:30 结束</span>
+      </div>
+    </div>
+  </div>
+</DefaultLayout>

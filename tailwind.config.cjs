@@ -27,8 +27,12 @@ module.exports = {
 			body: "var(--body)",
 			caption: "var(--caption)",
 			hr: "var(--hr)",
+			red: colors.red,
 			white: colors.white,
-			transparent: colors.transparent
+			emerald: colors.emerald,
+			transparent: colors.transparent,
+			slate: colors.slate,
+			rose: colors.rose,
 		},
 		fontFamily: {
 			"serif": [`"source-serif-4", ${SourceHanSerif}`, defaultTheme.fontFamily.serif],
