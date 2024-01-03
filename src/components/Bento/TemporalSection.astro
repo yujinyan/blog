@@ -16,7 +16,7 @@ const { class: className } = Astro.props;
     transition:name="temporal-cover"
     class:list={[
         "w-full ring-1 ring-base-content/10 flex bg-cover bg-center shadow-lg rounded-2xl",
-        "hover:scale-105", "transition-transform",
+        "hover:scale-105", "active:scale-95", "transition-transform", "ease-out",
         className,
     ]}
 >

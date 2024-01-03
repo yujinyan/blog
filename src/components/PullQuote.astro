@@ -1,22 +1,32 @@
 ---
-import {type JSXElement} from "solid-js"
+import { type JSXElement } from "solid-js"
 export interface Props {
-    emoji: string | JSXElement;
-    dontPull?: boolean;
-    class?: string;
+  emoji: string | JSXElement
+  dontPull?: boolean
+  class?: string
 }
 
-const { emoji, dontPull = false, class: className } = Astro.props;
+const { emoji, dontPull = false, class: className } = Astro.props
 ---
-<div class:list={["ml-0", {"lg:-ml-16": !dontPull}, dontPull ? "mt-16" : "mt-12", "relative", "border-t", "border-b", "border-divider"]}>
-    {
-        emoji && (
-            <div class="absolute ml-0 lg:-ml-2 -top-12 text-[2.5rem]">
-                {emoji}
-            </div>
-        )
-    }
-    <div>
-        <slot />
-    </div>
+
+<div
+  class:list={[
+    "ml-0",
+    { "lg:-ml-16": !dontPull },
+    dontPull ? "mt-16" : "mt-12",
+    "relative",
+    "border-t",
+    "border-b",
+    "border-base-content/10",
+    className
+  ]}
+>
+  <div class="absolute ml-0 lg:-ml-2 -top-8 text-5xl w-full">
+    <slot name="emoji">
+      {emoji}
+    </slot>
+  </div>
+  <div>
+    <slot />
+  </div>
 </div>

@@ -58,13 +58,14 @@ if (isThisFileBeingRunViaCLI) {
 
   const imageLocalPath = await (async () => {
     if (!image) return undefined;
-    const url = new URL(image)
-    const response = await fetch(image)
+    console.log(`image is ${image}`)
+    const url = new URL(image.startsWith("//") ? "https:" + image : image)
+    const response = await fetch(url)
     const buffer = await response.arrayBuffer()
     const imageBuffer = Buffer.from(buffer)
 
     const dir = [bookmarkContentPath, url.host];
-    const filename = path.basename(new URL(image).pathname)
+    const filename = path.basename(url.pathname)
 
     const imagePath = path.join(...dir, filename)
     const imageDir = path.join(...dir);
