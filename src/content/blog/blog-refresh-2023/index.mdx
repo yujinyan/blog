@@ -70,11 +70,11 @@ JSX 的方案是对 Astro 模板很好的补充。模板更适合做页面，而
 Tailwind 已经是主流的方案了。借助 Tailwind，样式和模版结合更加紧密，避免创建不必要的抽象层，提升了开发效率。
 
 上一版已经将 Tailwind 集成到了博客中，但和原有的 SASS 样式有一些冲突，特别是主题颜色。这一期的目标是都重构成 Tailwind 的类。
-但是使用像 `bg-primary` 这样的设计系统元素比直接使用 `bg-puple-500` 更好，方便统一颜色，也容易实现切换主题。
+但是使用像 `bg-primary` 这样的设计系统元素比直接使用 `bg-purple-500` 更好，方便统一颜色，也容易实现切换主题。
 
 DaisyUI 提供了一套开箱即用的颜色系统。在其默认的颜色主题中，选了两套最喜欢的颜色方案：浅色的 Cupcake 和深色的 Dracula。
 
-在这里放一个主题切换按钮方便大家体验：
+这里放一个主题切换按钮方便大家体验：
 
 <div class="mockup-window ring-1 ring-base-content/20 shadow">
     <div class="px-4">
@@ -101,7 +101,7 @@ DaisyUI 提供了一套开箱即用的颜色系统。在其默认的颜色主题
 - iOS 无；
 - macOS：宋体-简 (Songti SC)。
 
-权衡之下，目前打算暂时先不加载网络字体。后续再针对不同系统做些小的优化。
+权衡之下，目前打算暂时先不加载中文网络字体。后续再针对不同系统做些小的优化。
 
 ### Bento 便当 🍱
 
@@ -121,7 +121,7 @@ import BentoGridExample from "./BentoGridExample.astro";
 - https://bento.me/
 - 产品落地页：https://diagram.com/
 
-更多灵感可以看 [Bentogrids](https://bentogrids.com/) 这个网站
+更多灵感可以看 [Bentogrids](https://bentogrids.com/) 这个网站。
 
 这个博客最受欢迎的是几篇 Kotlin 协程的文章。这次把几篇文章放在一起做成「便当盒」里的一个模块在首页和文章页展示。
 另外还可以把最推荐的文章做成 banner 模块展示。这样首页不再是一个单调的列表，更加丰富生动。
