@@ -1,117 +1,116 @@
 ---
-import DefaultLayout from "@/layouts/DefaultLayout.astro";
-import KotlinSection from "@/components/Bento/KotlinSection.astro";
-import TechGrid from "@/components/TechGrid.astro";
-import LeetCodeProblemCard from "@/components/LeetCode.astro";
-import TemporalSection from "@/components/Bento/TemporalSection.astro";
-import Books from "@/components/Bento/Books.astro";
-import X from "@/components/Bento/X.astro";
-import ThemeToggle from "@/components/ThemeToggle";
-import UiLibs2023 from "@/components/UiLibs2023.astro";
-import Swatches from "@/components/Design/Swatches.astro";
-import Bookmark from "@/components/Bookmark.astro";
+import DefaultLayout from "@/layouts/DefaultLayout.astro"
+import KotlinSection from "@/components/Bento/KotlinSection.astro"
+import TechGrid from "@/components/TechGrid.astro"
+import LeetCodeProblemCard from "@/components/LeetCode.astro"
+import TemporalSection from "@/components/Bento/TemporalSection.astro"
+import Books from "@/components/Bento/Books.astro"
+import X from "@/components/Bento/X.astro"
+import ThemeToggle from "@/components/ThemeToggle"
+import UiLibs2023 from "@/components/UiLibs2023.astro"
+import Swatches from "@/components/Design/Swatches.astro"
+import Bookmark from "@/components/Bookmark.astro"
+import OgImage from "@/components/OgImage.astro"
 
-const sampleText = "博学而笃志切问而近思 Hinc lucem et pocula sacra";
-const description = "Kitchen sink of all design elements.";
+const sampleText = "博学而笃志切问而近思 Hinc lucem et pocula sacra"
+const description = "Kitchen sink of all design elements."
 ---
 
 <style lang="scss">
-    .note {
-        @apply rounded-lg ring-1 ring-base-content/20 p-3 bg-base-100 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px];
-    }
+  .note {
+    @apply rounded-lg ring-1 ring-base-content/20 p-3 bg-base-100 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px];
+  }
 </style>
 
 <DefaultLayout
-    title="Design"
-    pathname={Astro.url.pathname}
-    description={description}
-    lang="zh-cmn-Hans"
+  title="Design"
+  pathname={Astro.url.pathname}
+  description={description}
+  lang="zh-cmn-Hans"
 >
-
-    <div class="fixed left-8 bottom-8">
-        <ThemeToggle client:only="solid-js" />
+  <div class="fixed left-8 bottom-8">
+    <ThemeToggle client:only="solid-js" />
+  </div>
+  <article class="prose">
+    <h2>Color</h2>
+    <Swatches />
+    <p>Outline: <code>ring-1 ring-base-content/20</code></p>
+    <div class="note not-prose">
+      {
+        ["text-primary", "text-secondary", "text-accent"].map((color) => (
+          <p class:list={[color, "text-xl"]}>{sampleText}</p>
+        ))
+      }
     </div>
-    <article class="prose">
-        <h2>Color</h2>
-        <Swatches />
-        <p>Outline: <code>ring-1 ring-base-content/20</code></p>
-        <div class="note not-prose">
-            {
-                ["text-primary", "text-secondary", "text-accent"].map(
-                    (color) => (
-                        <p class:list={[color, "text-xl"]}>{sampleText}</p>
-                    ),
-                )
-            }
+    <h2>Sizes</h2>
+    {
+      [
+        ["w-1", "4px", "0.25rem"],
+        ["w-4", "16px", "1rem"],
+        ["w-8", "32px", "2rem"],
+      ].map((w) => (
+        <div class="w-full mb-4">
+          <div class:list={["h-2", "bg-primary", "rounded", w[0]]} />
+          <span class="text-sm font-mono text-base-content/50">
+            {w[0]} | {w[1]} | {w[2]}
+          </span>
         </div>
-        <h2>Sizes</h2>
-        {
-            [
-                ["w-1", "4px", "0.25rem"],
-                ["w-4", "16px", "1rem"],
-                ["w-8", "32px", "2rem"],
-            ].map((w) => (
-                <div class="w-full mb-4">
-                    <div class:list={["h-2", "bg-primary", "rounded", w[0]]} />
-                    <span class="text-sm font-mono text-base-content/50">
-                        {w[0]} | {w[1]} | {w[2]}
-                    </span>
-                </div>
-            ))
-        }
-        <h2>Font Family</h2>
-        <div class="note not-prose">
-            {
-                ["font-display", "font-heading", "font-sans", "font-serif"].map(
-                    (font) => (
-                        <div class="mb-4">
-                            <p class="text-sm text-base-content/50 font-mono">
-                                {font}
-                            </p>
-                            <p class:list={[font, "text-xl"]}>{sampleText}</p>
-                        </div>
-                    ),
-                )
-            }
-        </div>
-        <h2>Text Color</h2>
-        <div class="note not-prose">
-            {
-                [
-                    "text-base-content" ,
-                    "text-base-content/90",
-                    "text-base-content/75",
-                    "text-base-content/50",
-                ].map((opacity) => (
-                    <div class="mb-4">
-                        <p class="text-sm text-base-content/50 font-mono">
-                            {opacity}
-                        </p>
-                        <p class:list={[opacity, "text-xl", "font-heading"]}>
-                            {sampleText}
-                        </p>
-                    </div>
-                ))
-            }
-        </div>
-        <h2>Widgets</h2>
-        <div class="grid grid-cols-4 grid-rows-4 gap-4 mt-16">
-            <KotlinSection class="col-span-4 lg:col-span-2 row-span-4"/>
-            <TemporalSection class="col-span-4 lg:col-span-2 row-span-2 h-32 lg:h-auto"/>
-            <Books class="col-span-4 lg:col-span-2 row-span-4 lg:row-span-2" />
-            <X class="row-span-1 col-span-2 lg:col-span-1" />
-        </div>
-        <UiLibs2023 class="my-8" />
-        <!-- <TechGrid /> -->
-        <LeetCodeProblemCard id={1} />
-        <LeetCodeProblemCard id={2} />
-        <section class="divide-y divide-base-content/10 mb-3">
-            <!-- <Bookmark url="https://github.com/"/> -->
-            <Bookmark class="py-3" url="https://stripe.com/"/>
-            <Bookmark class="py-3" url="https://benjamindauton.com/"/>
-            <!-- <Bookmark url="https://github.com/"/> -->
-        </section>
-        <Bookmark url="https://www.joshwcomeau.com/react/server-components/" class="p-3 ring-1 ring-base-content/10 shadow rounded-lg"/>
-        </div>
-    </article>
+      ))
+    }
+    <h2>Font Family</h2>
+    <div class="note not-prose">
+      {
+        ["font-display", "font-heading", "font-sans", "font-serif"].map(
+          (font) => (
+            <div class="mb-4">
+              <p class="text-sm text-base-content/50 font-mono">{font}</p>
+              <p class:list={[font, "text-xl"]}>{sampleText}</p>
+            </div>
+          )
+        )
+      }
+    </div>
+    <h2>Text Color</h2>
+    <div class="note not-prose">
+      {
+        [
+          "text-base-content",
+          "text-base-content/90",
+          "text-base-content/75",
+          "text-base-content/50",
+        ].map((opacity) => (
+          <div class="mb-4">
+            <p class="text-sm text-base-content/50 font-mono">{opacity}</p>
+            <p class:list={[opacity, "text-xl", "font-heading"]}>
+              {sampleText}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+    <h2>Widgets</h2>
+    <div class="grid grid-cols-4 grid-rows-4 gap-4 mt-16">
+      <KotlinSection class="col-span-4 lg:col-span-2 row-span-4" />
+      <TemporalSection
+        class="col-span-4 lg:col-span-2 row-span-2 h-32 lg:h-auto"
+      />
+      <Books class="col-span-4 lg:col-span-2 row-span-4 lg:row-span-2" />
+      <X class="row-span-1 col-span-2 lg:col-span-1" />
+    </div>
+    <UiLibs2023 class="my-8" />
+    <!-- <TechGrid /> -->
+    <LeetCodeProblemCard id={1} />
+    <LeetCodeProblemCard id={2} />
+    <section class="divide-y divide-base-content/10 mb-3">
+      <!-- <Bookmark url="https://github.com/"/> -->
+      <Bookmark class="py-3" url="https://stripe.com/" />
+      <Bookmark class="py-3" url="https://benjamindauton.com/" />
+      <!-- <Bookmark url="https://github.com/"/> -->
+    </section>
+    <Bookmark
+      url="https://www.joshwcomeau.com/react/server-components/"
+      class="p-3 ring-1 ring-base-content/10 shadow rounded-lg"
+    />
+    <OgImage />
+  </article>
 </DefaultLayout>

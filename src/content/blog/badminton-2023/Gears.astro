@@ -1,0 +1,28 @@
+---
+import bg80p from "./images/bg80p_ex_pac_221006.webp"
+import shb65z3Black from "./images/shb65z3_black.webp"
+// import astrox100zz from "./images/az100zz-08.webp"
+import astrox100zz from "./images/astrox100zz_kurenai.webp"
+import axforce90 from "./images/axforce-90-dragon-2.jpeg"
+import halbertec5000 from "./images/halbertec-5000.jpeg"
+import shb65z3c from "./images/shb65z3c.jpeg"
+import g300 from "./images/g300.jpg"
+import { Image } from "astro:assets"
+---
+
+<div
+  class:list={"gear not-prose grid grid-cols-3 grid-rows-3 gap-3 *:object-cover *:object-center *:h-48"}
+>
+  <!-- <div class="row-span-2 !h-full bento">
+    <Image src={astrox100zz} class="scale-120" alt="Astrox 100zz" />
+  </div> -->
+  <Image src={astrox100zz} class="row-span-2 !h-full bento" alt="Astrox 100zz"/>
+  <Image src={shb65z3Black} alt="65z3 Black" class="bento" />
+  <Image src={g300} class="col-span-1 bento" alt="G300" />
+  <Image src={axforce90} alt="Axforce 90 Max" class="bento" />
+  <Image src={shb65z3c} class="col-span-1 bento" alt="Halbertec 5000" />
+  <div class="overflow-hidden flex items-center justify-center bento p-2">
+    <Image src={bg80p} alt="bg80p" class="w-36 rounded-xl drop-shadow" />
+  </div>
+  <Image src={halbertec5000} class="col-span-2 bento" alt="Halbertec 5000" />
+</div>

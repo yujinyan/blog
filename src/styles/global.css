@@ -48,6 +48,14 @@
     blockquote p::before {
         @apply font-serif text-[72px] absolute -left-8 -top-2 text-base-content/50 lg:-left-8;
     }
+
+    strong {
+        @apply font-sans;
+    }
+
+    figure.bento-wrapper img {
+        @apply bento;
+    }
 }
 
 @layer utilities {

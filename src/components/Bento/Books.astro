@@ -20,8 +20,7 @@ const { class: className } = Astro.props;
     }
 
     .book-stack .book {
-        grid-row: 1;
-        grid-column: 1;
+        grid-area: 1 / 1 / 2/ 2;
     }
 </style>
 
@@ -49,9 +48,7 @@ const { class: className } = Astro.props;
                     width="256"
                         src={cover}
                         class:list={[
-                            // "rounded shadow-xl xl:w-48 w-36 ring-1 ring-base-content/20 origin-bottom",
                             // "absolute",
-                            // "row-span-1 column-span-1",
                             "book",
                             "rounded shadow-xl w-36 ring-1 ring-base-content/20 origin-bottom",
                             { "-rotate-12": index == 1 },
