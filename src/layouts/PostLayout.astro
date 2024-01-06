@@ -14,6 +14,7 @@ import { Image } from "astro:assets";
 import SectionHeader from "@/components/SectionHeader.astro";
 import DiscussionSection from "@/components/DiscussionSection";
 import DiscussionIcon from "@/assets/discussion.svg?raw";
+import Flourish from "@/components/Flourish.astro";
 
 import "katex/dist/katex.min.css";
 
@@ -82,11 +83,11 @@ function extractFilename(src: string): string | undefined {
             )
         }
         <Content />
+        <Flourish class="my-16" />
     </article>
     {
         post.data.discussionId && (
             <>
-                <hr class="my-8 text-base-content/20" />
                 <SectionHeader>
                     <Fragment slot="icon" set:html={DiscussionIcon}/>
                     评论区 Discussions
