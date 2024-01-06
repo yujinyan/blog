@@ -11,6 +11,9 @@ import UiLibs2023 from "@/components/UiLibs2023.astro"
 import Swatches from "@/components/Design/Swatches.astro"
 import Bookmark from "@/components/Bookmark.astro"
 import OgImage from "@/components/OgImage.astro"
+import {Image} from "astro:assets"
+import flourish from "@/assets/flourish.svg"
+import Flourish from "@/components/Flourish.astro"
 
 const sampleText = "博学而笃志切问而近思 Hinc lucem et pocula sacra"
 const description = "Kitchen sink of all design elements."
@@ -112,5 +115,6 @@ const description = "Kitchen sink of all design elements."
       class="p-3 ring-1 ring-base-content/10 shadow rounded-lg"
     />
     <OgImage />
+    <Flourish />
   </article>
 </DefaultLayout>
